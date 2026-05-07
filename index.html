@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FilSil — Gestão de Treinos</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0d0d0d;
@@ -16,6 +16,8 @@
     --text: #f0f0f0;
     --muted: #888;
     --danger: #ff4d4d;
+    --warn: #f0a030;
+    --info: #4ab8f0;
     --radius: 10px;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -27,10 +29,11 @@
     background: radial-gradient(ellipse at 60% 40%, #1a2500 0%, #0d0d0d 70%);
   }
   .auth-box {
-    width:100%; max-width:400px; padding:48px 40px;
+    width:100%; max-width:420px; padding:48px 40px;
     background:var(--surface); border:1px solid var(--border); border-radius:16px;
+    box-shadow: 0 24px 80px rgba(0,0,0,.5);
   }
-  .auth-logo { font-family:'Syne',sans-serif; font-size:2rem; font-weight:800; color:var(--accent); margin-bottom:8px; }
+  .auth-logo { font-family:'Syne',sans-serif; font-size:2.2rem; font-weight:800; color:var(--accent); margin-bottom:4px; letter-spacing:-.02em; }
   .auth-sub { color:var(--muted); font-size:.9rem; margin-bottom:32px; }
   .auth-tabs { display:flex; gap:4px; margin-bottom:28px; background:var(--bg); border-radius:8px; padding:4px; }
   .auth-tab {
@@ -38,69 +41,90 @@
     font-family:'DM Sans',sans-serif; font-size:.9rem; border-radius:6px; cursor:pointer; transition:.2s;
   }
   .auth-tab.active { background:var(--accent); color:#000; font-weight:600; }
-  label { display:block; font-size:.8rem; color:var(--muted); margin-bottom:6px; letter-spacing:.05em; text-transform:uppercase; }
-  input[type=text], input[type=email], input[type=password], input[type=number], textarea, select {
+  label { display:block; font-size:.78rem; color:var(--muted); margin-bottom:6px; letter-spacing:.05em; text-transform:uppercase; }
+  input[type=text], input[type=email], input[type=password], input[type=number], input[type=date], textarea, select {
     width:100%; padding:12px 14px; background:var(--bg); border:1px solid var(--border);
     border-radius:var(--radius); color:var(--text); font-family:'DM Sans',sans-serif; font-size:.95rem;
     outline:none; transition:.2s; margin-bottom:16px;
   }
-  input:focus, textarea:focus, select:focus { border-color:var(--accent); }
+  input:focus, textarea:focus, select:focus { border-color:var(--accent); box-shadow: 0 0 0 3px rgba(200,240,74,.07); }
   textarea { resize:vertical; min-height:90px; }
+  select option { background:var(--surface2); }
   .btn {
     display:inline-flex; align-items:center; gap:8px; padding:11px 20px;
     border:none; border-radius:var(--radius); font-family:'DM Sans',sans-serif;
     font-size:.9rem; font-weight:500; cursor:pointer; transition:.18s; text-decoration:none;
+    white-space:nowrap;
   }
   .btn-primary { background:var(--accent); color:#000; font-weight:700; }
-  .btn-primary:hover { background:#d9ff52; }
+  .btn-primary:hover { background:#d9ff52; transform:translateY(-1px); }
   .btn-ghost { background:transparent; color:var(--muted); border:1px solid var(--border); }
   .btn-ghost:hover { border-color:var(--accent); color:var(--accent); }
   .btn-danger { background:#2a0a0a; color:var(--danger); border:1px solid #3a1010; }
   .btn-danger:hover { background:#3a1010; }
+  .btn-warn { background:#2a1a00; color:var(--warn); border:1px solid #3a2500; }
+  .btn-warn:hover { background:#3a2500; }
   .btn-full { width:100%; justify-content:center; }
-  .err { color:var(--danger); font-size:.85rem; margin-top:-8px; margin-bottom:12px; display:none; }
+  .err { color:var(--danger); font-size:.85rem; margin-top:-8px; margin-bottom:12px; display:none; background:#1a0505; border:1px solid #3a1010; padding:8px 12px; border-radius:6px; }
+  .success { color:var(--accent); font-size:.85rem; margin-top:-8px; margin-bottom:12px; display:none; background:#0d1a00; border:1px solid #2a3a10; padding:8px 12px; border-radius:6px; }
 
   /* APP LAYOUT */
   #app { display:none; min-height:100vh; }
   .sidebar {
-    width:240px; background:var(--surface); border-right:1px solid var(--border);
-    position:fixed; top:0; left:0; height:100vh; display:flex; flex-direction:column; padding:24px 16px;
+    width:252px; background:var(--surface); border-right:1px solid var(--border);
+    position:fixed; top:0; left:0; height:100vh; display:flex; flex-direction:column; padding:24px 14px;
+    overflow-y:auto;
   }
-  .logo { font-family:'Syne',sans-serif; font-size:1.5rem; font-weight:800; color:var(--accent); padding:0 8px; margin-bottom:32px; }
+  .logo { font-family:'Syne',sans-serif; font-size:1.5rem; font-weight:800; color:var(--accent); padding:0 10px; margin-bottom:28px; letter-spacing:-.02em; }
+  .nav-section { font-size:.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:.1em; padding:0 10px; margin:12px 0 6px; }
   .nav-item {
     display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px;
-    color:var(--muted); cursor:pointer; transition:.15s; font-size:.9rem; margin-bottom:4px;
+    color:var(--muted); cursor:pointer; transition:.15s; font-size:.88rem; margin-bottom:2px;
     border:none; background:transparent; width:100%; text-align:left;
   }
   .nav-item:hover { background:var(--surface2); color:var(--text); }
   .nav-item.active { background:var(--accent); color:#000; font-weight:600; }
   .nav-item svg { flex-shrink:0; }
-  .sidebar-bottom { margin-top:auto; }
+  .nav-badge { margin-left:auto; background:var(--surface2); color:var(--muted); border-radius:20px; padding:1px 7px; font-size:.72rem; font-weight:600; }
+  .nav-item.active .nav-badge { background:rgba(0,0,0,.2); color:#000; }
+  .sidebar-bottom { margin-top:auto; padding-top:16px; border-top:1px solid var(--border); }
   .user-chip {
     display:flex; align-items:center; gap:10px; padding:10px 12px;
     border-radius:8px; background:var(--surface2); margin-bottom:8px;
   }
-  .avatar { width:32px; height:32px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; color:#000; font-size:.85rem; flex-shrink:0; }
-  .user-info { overflow:hidden; }
+  .avatar { width:34px; height:34px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; color:#000; font-size:.85rem; flex-shrink:0; }
+  .user-info { overflow:hidden; flex:1; }
   .user-name { font-size:.85rem; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .user-role { font-size:.75rem; color:var(--muted); }
+  .user-role { font-size:.72rem; color:var(--muted); }
+  .support-chip {
+    display:flex; align-items:center; gap:8px; padding:10px 12px;
+    border-radius:8px; background:#0d1a00; border:1px solid #1a3000; margin-bottom:8px;
+    text-decoration:none; transition:.15s;
+  }
+  .support-chip:hover { border-color:var(--accent); }
+  .support-chip-icon { font-size:1rem; }
+  .support-chip-text { font-size:.78rem; }
+  .support-chip-label { color:var(--muted); font-size:.7rem; }
+  .support-chip-num { color:var(--accent); font-weight:600; }
 
-  .main { margin-left:240px; padding:32px 40px; }
+  .main { margin-left:252px; padding:32px 40px; min-height:100vh; }
   .page { display:none; }
-  .page.active { display:block; }
-  .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; }
-  .page-title { font-family:'Syne',sans-serif; font-size:1.6rem; font-weight:800; }
-  .page-subtitle { color:var(--muted); font-size:.9rem; margin-top:4px; }
+  .page.active { display:block; animation: fadeUp .25s ease; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  .page-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:28px; gap:16px; flex-wrap:wrap; }
+  .page-title { font-family:'Syne',sans-serif; font-size:1.7rem; font-weight:800; letter-spacing:-.02em; }
+  .page-subtitle { color:var(--muted); font-size:.88rem; margin-top:4px; }
 
   /* CARDS */
-  .card {
-    background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px;
-  }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; }
   .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
   .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
-  .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px 24px; }
-  .stat-label { font-size:.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
-  .stat-val { font-family:'Syne',sans-serif; font-size:2rem; font-weight:800; color:var(--accent); }
+  .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px 24px; transition:.2s; }
+  .stat-card:hover { border-color:var(--accent); }
+  .stat-label { font-size:.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+  .stat-val { font-family:'Syne',sans-serif; font-size:2.2rem; font-weight:800; color:var(--accent); line-height:1; }
+  .stat-sub { font-size:.78rem; color:var(--muted); margin-top:4px; }
 
   /* STUDENTS LIST */
   .student-list { display:flex; flex-direction:column; gap:10px; }
@@ -108,61 +132,108 @@
     background:var(--surface); border:1px solid var(--border); border-radius:10px;
     padding:16px 20px; display:flex; align-items:center; gap:16px; cursor:pointer; transition:.15s;
   }
-  .student-card:hover { border-color:var(--accent); }
-  .student-av { width:42px; height:42px; border-radius:50%; background:var(--surface2); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:700; color:var(--accent); flex-shrink:0; }
-  .student-info { flex:1; }
+  .student-card:hover { border-color:var(--accent); background:var(--surface2); }
+  .student-av {
+    width:44px; height:44px; border-radius:50%; background:var(--surface2);
+    display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif;
+    font-weight:700; color:var(--accent); flex-shrink:0; font-size:1.1rem;
+    border:2px solid var(--border);
+  }
+  .student-info { flex:1; min-width:0; }
   .student-name { font-weight:600; font-size:.95rem; }
-  .student-meta { font-size:.8rem; color:var(--muted); margin-top:2px; }
-  .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:.75rem; font-weight:600; background:var(--surface2); color:var(--muted); }
-  .badge-green { background:#1a2a00; color:var(--accent); }
+  .student-meta { font-size:.8rem; color:var(--muted); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .student-actions { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+  .badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:20px; font-size:.72rem; font-weight:600; background:var(--surface2); color:var(--muted); }
+  .badge-green { background:#0d1a00; color:var(--accent); border:1px solid #1a3000; }
+  .badge-yellow { background:#1a1200; color:var(--warn); border:1px solid #2a2000; }
+  .badge-red { background:#1a0505; color:var(--danger); border:1px solid #2a1010; }
+
+  /* SEARCH BAR */
+  .search-bar { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+  .search-input-wrap { position:relative; flex:1; }
+  .search-input-wrap input { padding-left:36px; margin-bottom:0; }
+  .search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none; }
+  .filter-chips { display:flex; gap:6px; flex-wrap:wrap; }
+  .filter-chip { padding:5px 12px; border:1px solid var(--border); border-radius:20px; background:transparent; color:var(--muted); font-size:.78rem; cursor:pointer; transition:.15s; font-family:'DM Sans',sans-serif; }
+  .filter-chip.active { background:var(--accent); color:#000; border-color:var(--accent); font-weight:600; }
 
   /* WORKOUT */
-  .workout-list { display:flex; flex-direction:column; gap:10px; margin-top:16px; }
+  .workout-list { display:flex; flex-direction:column; gap:12px; margin-top:8px; }
   .workout-card {
-    background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:16px 20px;
+    background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:20px 24px;
+    transition:.15s;
   }
-  .workout-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
-  .workout-title { font-weight:600; font-size:.95rem; }
-  .workout-date { font-size:.78rem; color:var(--muted); }
-  .exercise-table { width:100%; border-collapse:collapse; margin-top:10px; }
-  .exercise-table th { text-align:left; font-size:.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; padding:0 8px 6px 0; border-bottom:1px solid var(--border); }
-  .exercise-table td { padding:8px 8px 8px 0; font-size:.88rem; border-bottom:1px solid #1a1a1a; vertical-align:middle; }
+  .workout-card:hover { border-color:var(--border); }
+  .workout-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px; gap:12px; }
+  .workout-title { font-weight:700; font-size:.98rem; font-family:'Syne',sans-serif; }
+  .workout-date { font-size:.75rem; color:var(--muted); margin-top:2px; }
+  .workout-actions { display:flex; gap:8px; flex-shrink:0; }
+  .exercise-table { width:100%; border-collapse:collapse; margin-top:12px; }
+  .exercise-table th { text-align:left; font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; padding:0 10px 8px 0; border-bottom:1px solid var(--border); }
+  .exercise-table td { padding:9px 10px 9px 0; font-size:.87rem; border-bottom:1px solid #1a1a1a; vertical-align:middle; }
   .exercise-table tr:last-child td { border-bottom:none; }
+  .exercise-table td:first-child { font-weight:500; }
+  .ex-chip { display:inline-block; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:2px 8px; font-size:.78rem; }
+
+  /* PROGRESS / HISTORY SECTION */
+  .history-entry {
+    display:flex; align-items:center; gap:12px; padding:12px 16px;
+    border:1px solid var(--border); border-radius:8px; margin-bottom:8px; background:var(--surface);
+  }
+  .history-dot { width:10px; height:10px; border-radius:50%; background:var(--accent); flex-shrink:0; }
+  .history-date { font-size:.78rem; color:var(--muted); width:80px; flex-shrink:0; }
+  .history-desc { font-size:.85rem; flex:1; }
+  .history-weight { font-size:.85rem; color:var(--accent); font-weight:600; }
+
+  /* TABS */
+  .tabs { display:flex; gap:0; margin-bottom:20px; border-bottom:1px solid var(--border); }
+  .tab-btn { padding:10px 18px; border:none; background:transparent; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:.88rem; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:.15s; }
+  .tab-btn.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:600; }
 
   /* MODAL */
   .modal-overlay {
-    display:none; position:fixed; inset:0; background:rgba(0,0,0,.7);
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,.75);
     z-index:100; align-items:center; justify-content:center; padding:20px;
+    backdrop-filter:blur(2px);
   }
   .modal-overlay.open { display:flex; }
   .modal {
     background:var(--surface); border:1px solid var(--border); border-radius:16px;
-    padding:32px; width:100%; max-width:520px; max-height:90vh; overflow-y:auto;
+    padding:32px; width:100%; max-width:540px; max-height:90vh; overflow-y:auto;
+    box-shadow: 0 32px 100px rgba(0,0,0,.6);
+    animation: modalIn .2s ease;
   }
-  .modal-title { font-family:'Syne',sans-serif; font-size:1.2rem; font-weight:800; margin-bottom:20px; }
-  .modal-footer { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
+  @keyframes modalIn { from { opacity:0; transform:scale(.97) translateY(8px); } to { opacity:1; transform:scale(1) translateY(0); } }
+  .modal-title { font-family:'Syne',sans-serif; font-size:1.25rem; font-weight:800; margin-bottom:20px; }
+  .modal-footer { display:flex; gap:10px; justify-content:flex-end; margin-top:24px; padding-top:16px; border-top:1px solid var(--border); }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .form-row > div { display:flex; flex-direction:column; }
+  .form-row input, .form-row select { margin-bottom:0; }
 
   /* EXERCISE BUILDER */
   .ex-row {
-    display:grid; grid-template-columns:2fr 1fr 1fr 1fr 32px; gap:8px; align-items:end; margin-bottom:8px;
+    display:grid; grid-template-columns:2fr 60px 80px 90px 32px; gap:8px; align-items:end; margin-bottom:8px;
   }
-  .ex-row label { font-size:.75rem; }
-  .ex-row input { margin-bottom:0; }
-  .remove-ex { background:none; border:none; color:var(--danger); cursor:pointer; font-size:1.1rem; padding:0; height:42px; display:flex; align-items:center; justify-content:center; }
-  #add-exercise-btn { background:none; border:1px dashed var(--border); color:var(--muted); border-radius:8px; padding:8px 14px; cursor:pointer; font-size:.85rem; transition:.15s; margin-top:4px; }
+  .ex-row input { margin-bottom:0; font-size:.85rem; padding:10px 10px; }
+  .remove-ex { background:#2a0a0a; border:1px solid #3a1010; color:var(--danger); cursor:pointer; font-size:.9rem; padding:0; height:40px; width:32px; display:flex; align-items:center; justify-content:center; border-radius:6px; transition:.15s; flex-shrink:0; }
+  .remove-ex:hover { background:#3a1010; }
+  #add-exercise-btn { background:none; border:1px dashed var(--border); color:var(--muted); border-radius:8px; padding:9px 16px; cursor:pointer; font-size:.84rem; transition:.15s; margin-top:4px; width:100%; font-family:'DM Sans',sans-serif; }
   #add-exercise-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .ex-header { display:grid; grid-template-columns:2fr 60px 80px 90px 32px; gap:8px; margin-bottom:6px; }
+  .ex-header span { font-size:.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
 
   /* TOAST */
   #toast {
-    position:fixed; bottom:24px; right:24px; background:var(--accent); color:#000;
-    padding:12px 20px; border-radius:10px; font-weight:600; font-size:.9rem;
-    transform:translateY(80px); opacity:0; transition:.3s; z-index:999;
+    position:fixed; bottom:24px; right:24px; padding:12px 20px; border-radius:10px;
+    font-weight:600; font-size:.88rem; transform:translateY(80px); opacity:0; transition:.3s; z-index:999;
+    display:flex; align-items:center; gap:8px; max-width:320px; box-shadow: 0 8px 32px rgba(0,0,0,.4);
   }
   #toast.show { transform:translateY(0); opacity:1; }
 
   /* LOADING */
-  #loading { position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:200; }
+  #loading { position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:200; flex-direction:column; gap:16px; }
   .spinner { width:32px; height:32px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .7s linear infinite; }
+  .loading-logo { font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; color:var(--accent); }
   @keyframes spin { to { transform:rotate(360deg); } }
 
   /* EMPTY */
@@ -171,23 +242,87 @@
   .empty p { font-size:.9rem; }
 
   /* BACK BTN */
-  .back-btn { display:flex; align-items:center; gap:6px; color:var(--muted); cursor:pointer; font-size:.9rem; margin-bottom:20px; transition:.15s; border:none; background:none; }
+  .back-btn { display:inline-flex; align-items:center; gap:6px; color:var(--muted); cursor:pointer; font-size:.88rem; margin-bottom:20px; transition:.15s; border:none; background:none; }
   .back-btn:hover { color:var(--accent); }
 
   /* DIVIDER */
   .divider { height:1px; background:var(--border); margin:20px 0; }
 
-  @media(max-width:768px){
-    .sidebar { display:none; }
-    .main { margin-left:0; padding:20px 16px; }
+  /* PROGRESS CHART */
+  .mini-chart { display:flex; align-items:flex-end; gap:4px; height:48px; }
+  .mini-bar { flex:1; background:var(--surface2); border-radius:3px 3px 0 0; transition:.3s; min-width:8px; }
+  .mini-bar.filled { background:var(--accent); }
+
+  /* INFO ROWS */
+  .info-row { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); font-size:.88rem; }
+  .info-row:last-child { border-bottom:none; }
+  .info-row-label { color:var(--muted); }
+  .info-row-val { font-weight:500; }
+
+  /* SECTION HEADER */
+  .section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+  .section-title { font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; }
+
+  /* TAGS */
+  .tag-list { display:flex; flex-wrap:wrap; gap:6px; }
+  .tag { padding:4px 10px; border-radius:6px; font-size:.76rem; background:var(--surface2); border:1px solid var(--border); color:var(--muted); }
+
+  /* MOBILE */
+  @media(max-width:900px){
+    .sidebar { width:200px; }
+    .main { margin-left:200px; padding:24px 20px; }
+    .grid-4 { grid-template-columns:1fr 1fr; }
     .grid-3 { grid-template-columns:1fr 1fr; }
-    .ex-row { grid-template-columns:1fr 1fr; }
+  }
+  @media(max-width:640px){
+    .sidebar { display:none; }
+    .main { margin-left:0; padding:16px; }
+    .grid-3 { grid-template-columns:1fr 1fr; }
+    .grid-4 { grid-template-columns:1fr 1fr; }
+    .ex-row { grid-template-columns:1fr 1fr 1fr 32px; }
+    .ex-header { grid-template-columns:1fr 1fr 1fr 32px; }
+    .ex-row input:nth-child(1) { grid-column:1/-2; }
+    .mobile-menu { display:flex !important; }
+    .page-header { flex-direction:column; }
+    .page-header > div:last-child { display:flex; flex-wrap:wrap; gap:8px; }
+  }
+  .mobile-menu {
+    display:none; position:fixed; bottom:0; left:0; right:0; z-index:50;
+    background:var(--surface); border-top:1px solid var(--border); padding:8px 16px 12px;
+    justify-content:space-around;
+  }
+  .mob-nav { display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--muted); font-size:.7rem; cursor:pointer; padding:6px 16px; border-radius:8px; transition:.15s; border:none; background:none; }
+  .mob-nav.active { color:var(--accent); }
+  .mob-nav svg { margin-bottom:1px; }
+
+  /* ANAMNESE SECTION */
+  .anamnese-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+  /* PLAN BADGE */
+  .plan-banner { background:linear-gradient(135deg,#0d1a00,#1a3000); border:1px solid #2a4a00; border-radius:10px; padding:12px 16px; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; }
+  .plan-banner-text { font-size:.82rem; color:var(--accent); font-weight:500; }
+  .plan-banner-label { font-size:.72rem; color:var(--muted); }
+
+  /* COPY PLAN SECTION */
+  .copy-plan-section { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-top:12px; }
+  .copy-plan-title { font-size:.82rem; font-weight:600; margin-bottom:8px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+
+  /* PRINT AREA */
+  @media print {
+    .sidebar, .mobile-menu, .modal-overlay, #toast, #loading, .btn, .back-btn, .workout-actions { display:none !important; }
+    .main { margin:0; padding:20px; }
+    .workout-card { break-inside:avoid; border:1px solid #ccc !important; }
+    body { background:white; color:black; }
+    .exercise-table th, .exercise-table td { color:black !important; border-color:#ddd !important; }
   }
 </style>
 </head>
 <body>
 
-<div id="loading"><div class="spinner"></div></div>
+<div id="loading">
+  <div class="loading-logo">FilSil</div>
+  <div class="spinner"></div>
+</div>
 
 <!-- AUTH -->
 <div id="auth-screen" style="display:none">
@@ -198,16 +333,17 @@
       <button class="auth-tab active" onclick="switchTab('login')">Entrar</button>
       <button class="auth-tab" onclick="switchTab('register')">Cadastrar</button>
     </div>
-    <!-- LOGIN -->
     <div id="tab-login">
       <label>E-mail</label>
-      <input type="email" id="login-email" placeholder="seuemail@exemplo.com">
+      <input type="email" id="login-email" placeholder="seuemail@exemplo.com" onkeydown="if(event.key==='Enter')doLogin()">
       <label>Senha</label>
-      <input type="password" id="login-pass" placeholder="••••••••">
+      <input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
       <div class="err" id="login-err"></div>
       <button class="btn btn-primary btn-full" onclick="doLogin()">Entrar</button>
+      <div style="text-align:center;margin-top:16px">
+        <button style="background:none;border:none;color:var(--muted);font-size:.82rem;cursor:pointer;font-family:'DM Sans',sans-serif;" onclick="openModal('reset')">Esqueci minha senha</button>
+      </div>
     </div>
-    <!-- REGISTER -->
     <div id="tab-register" style="display:none">
       <label>Nome completo</label>
       <input type="text" id="reg-name" placeholder="João Silva">
@@ -225,15 +361,28 @@
 <div id="app">
   <div class="sidebar">
     <div class="logo">FilSil</div>
+    <div class="nav-section">Menu</div>
     <button class="nav-item active" id="nav-dashboard" onclick="showPage('dashboard')">
-      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
       Dashboard
     </button>
     <button class="nav-item" id="nav-students" onclick="showPage('students')">
-      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       Alunos
+      <span class="nav-badge" id="nav-badge-students">0</span>
+    </button>
+    <button class="nav-item" id="nav-workouts-menu" onclick="showPage('all-workouts')">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Treinos
     </button>
     <div class="sidebar-bottom">
+      <a class="support-chip" href="https://wa.me/5581991610473" target="_blank" title="Suporte via WhatsApp">
+        <div class="support-chip-icon">💬</div>
+        <div class="support-chip-text">
+          <div class="support-chip-label">Suporte WhatsApp</div>
+          <div class="support-chip-num">(81) 99161-0473</div>
+        </div>
+      </a>
       <div class="user-chip">
         <div class="avatar" id="sidebar-avatar">P</div>
         <div class="user-info">
@@ -241,11 +390,15 @@
           <div class="user-role">Personal Trainer</div>
         </div>
       </div>
-      <button class="btn btn-ghost btn-full" onclick="doLogout()">Sair</button>
+      <button class="btn btn-ghost btn-full" onclick="doLogout()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sair
+      </button>
     </div>
   </div>
 
   <div class="main">
+
     <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
       <div class="page-header">
@@ -253,22 +406,60 @@
           <div class="page-title">Dashboard</div>
           <div class="page-subtitle" id="dash-greeting">Bem-vindo de volta!</div>
         </div>
+        <button class="btn btn-primary" onclick="showPage('students');setTimeout(()=>openModal('student'),100)">+ Novo Aluno</button>
       </div>
-      <div class="grid-3" style="margin-bottom:24px">
-        <div class="stat-card"><div class="stat-label">Total de Alunos</div><div class="stat-val" id="stat-students">0</div></div>
-        <div class="stat-card"><div class="stat-label">Treinos Cadastrados</div><div class="stat-val" id="stat-workouts">0</div></div>
-        <div class="stat-card"><div class="stat-label">Alunos Ativos</div><div class="stat-val" id="stat-active">0</div></div>
-      </div>
-      <div class="card">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-          <div style="font-family:Syne,sans-serif;font-weight:700">Alunos recentes</div>
-          <button class="btn btn-ghost" onclick="showPage('students')">Ver todos</button>
+      <div class="grid-4" style="margin-bottom:24px">
+        <div class="stat-card">
+          <div class="stat-label">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            Total de Alunos
+          </div>
+          <div class="stat-val" id="stat-students">0</div>
+          <div class="stat-sub">cadastrados</div>
         </div>
-        <div class="student-list" id="dash-student-list"><div class="empty"><div class="empty-icon">🏋️</div><p>Nenhum aluno ainda.</p></div></div>
+        <div class="stat-card">
+          <div class="stat-label">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Treinos
+          </div>
+          <div class="stat-val" id="stat-workouts">0</div>
+          <div class="stat-sub">criados no total</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Esta Semana
+          </div>
+          <div class="stat-val" id="stat-week">0</div>
+          <div class="stat-sub">treinos adicionados</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Alunos Ativos
+          </div>
+          <div class="stat-val" id="stat-active">0</div>
+          <div class="stat-sub">com treino ativo</div>
+        </div>
+      </div>
+      <div class="grid-2" style="gap:20px">
+        <div class="card">
+          <div class="section-header">
+            <div class="section-title">Alunos recentes</div>
+            <button class="btn btn-ghost" style="padding:6px 12px;font-size:.8rem" onclick="showPage('students')">Ver todos →</button>
+          </div>
+          <div class="student-list" id="dash-student-list"><div class="empty"><div class="empty-icon">🏋️</div><p>Nenhum aluno ainda.<br><small>Clique em "+ Novo Aluno" para começar.</small></p></div></div>
+        </div>
+        <div class="card">
+          <div class="section-header">
+            <div class="section-title">Treinos recentes</div>
+          </div>
+          <div id="dash-workout-list"><div class="empty" style="padding:24px 0"><div class="empty-icon">📋</div><p>Nenhum treino ainda.</p></div></div>
+        </div>
       </div>
     </div>
 
-    <!-- STUDENTS -->
+    <!-- STUDENTS LIST -->
     <div class="page" id="page-students">
       <div class="page-header">
         <div>
@@ -277,35 +468,131 @@
         </div>
         <button class="btn btn-primary" onclick="openModal('student')">+ Novo Aluno</button>
       </div>
+      <div class="search-bar">
+        <div class="search-input-wrap" style="flex:1">
+          <svg class="search-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="student-search" placeholder="Buscar aluno..." style="padding-left:36px;margin-bottom:0" oninput="filterStudents()">
+        </div>
+        <div class="filter-chips">
+          <button class="filter-chip active" data-filter="all" onclick="setFilter(this,'all')">Todos</button>
+          <button class="filter-chip" data-filter="Hipertrofia" onclick="setFilter(this,'Hipertrofia')">Hipertrofia</button>
+          <button class="filter-chip" data-filter="Emagrecimento" onclick="setFilter(this,'Emagrecimento')">Emagrecimento</button>
+          <button class="filter-chip" data-filter="Força" onclick="setFilter(this,'Força')">Força</button>
+        </div>
+      </div>
       <div class="student-list" id="student-list"><div class="empty"><div class="empty-icon">👤</div><p>Nenhum aluno cadastrado.</p></div></div>
     </div>
 
     <!-- STUDENT DETAIL -->
     <div class="page" id="page-student-detail">
-      <button class="back-btn" onclick="showPage('students')">← Voltar</button>
+      <button class="back-btn" onclick="showPage('students')">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Voltar para Alunos
+      </button>
       <div class="page-header">
-        <div>
-          <div class="page-title" id="detail-name">—</div>
-          <div class="page-subtitle" id="detail-meta">—</div>
+        <div style="display:flex;align-items:center;gap:16px">
+          <div class="student-av" style="width:52px;height:52px;font-size:1.3rem" id="detail-avatar">M</div>
+          <div>
+            <div class="page-title" id="detail-name">—</div>
+            <div class="page-subtitle" id="detail-meta">—</div>
+          </div>
         </div>
-        <div style="display:flex;gap:10px">
-          <button class="btn btn-primary" onclick="openModal('workout')">+ Novo Treino</button>
-          <button class="btn btn-danger" onclick="confirmDeleteStudent()">Excluir aluno</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-ghost" onclick="openModal('edit-student')">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Editar
+          </button>
+          <button class="btn btn-primary" onclick="openModal('workout')">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Novo Treino
+          </button>
+          <button class="btn btn-danger" onclick="confirmDeleteStudent()">Excluir Aluno</button>
         </div>
       </div>
-      <div class="workout-list" id="workout-list"><div class="empty"><div class="empty-icon">📋</div><p>Nenhum treino cadastrado.</p></div></div>
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchDetailTab('treinos',this)">🏋️ Treinos</button>
+        <button class="tab-btn" onclick="switchDetailTab('info',this)">📋 Informações</button>
+        <button class="tab-btn" onclick="switchDetailTab('progresso',this)">📈 Progresso</button>
+      </div>
+
+      <!-- TAB: TREINOS -->
+      <div id="tab-treinos">
+        <div class="workout-list" id="workout-list"><div class="empty"><div class="empty-icon">📋</div><p>Nenhum treino cadastrado ainda.</p></div></div>
+      </div>
+
+      <!-- TAB: INFO -->
+      <div id="tab-info" style="display:none">
+        <div class="grid-2" style="gap:16px">
+          <div class="card">
+            <div class="section-title" style="margin-bottom:14px">Dados do Aluno</div>
+            <div id="detail-info-rows"></div>
+          </div>
+          <div class="card">
+            <div class="section-title" style="margin-bottom:14px">Observações</div>
+            <div id="detail-obs" style="color:var(--muted);font-size:.88rem;line-height:1.6"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: PROGRESSO -->
+      <div id="tab-progresso" style="display:none">
+        <div class="page-header" style="margin-bottom:16px">
+          <div class="section-title">Registro de Progresso</div>
+          <button class="btn btn-primary" onclick="openModal('progress')" style="padding:8px 16px;font-size:.85rem">+ Registrar</button>
+        </div>
+        <div id="progress-list"><div class="empty"><div class="empty-icon">📊</div><p>Nenhum registro ainda.</p></div></div>
+      </div>
     </div>
-  </div>
+
+    <!-- ALL WORKOUTS -->
+    <div class="page" id="page-all-workouts">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Todos os Treinos</div>
+          <div class="page-subtitle">Visão geral de todos os treinos criados</div>
+        </div>
+      </div>
+      <div id="all-workouts-list"><div class="empty"><div class="empty-icon">📋</div><p>Nenhum treino ainda.</p></div></div>
+    </div>
+
+  </div><!-- .main -->
+</div><!-- #app -->
+
+<!-- MOBILE NAV -->
+<div class="mobile-menu" id="mobile-menu">
+  <button class="mob-nav active" id="mob-dashboard" onclick="showPage('dashboard')">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    Início
+  </button>
+  <button class="mob-nav" id="mob-students" onclick="showPage('students')">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+    Alunos
+  </button>
+  <button class="mob-nav" id="mob-workouts-menu" onclick="showPage('all-workouts')">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Treinos
+  </button>
 </div>
 
-<!-- MODAL: STUDENT -->
+<!-- ══ MODALS ══════════════════════════════════════════════════ -->
+
+<!-- MODAL: NOVO ALUNO -->
 <div class="modal-overlay" id="modal-student">
   <div class="modal">
-    <div class="modal-title">Novo Aluno</div>
-    <label>Nome completo</label>
+    <div class="modal-title">➕ Novo Aluno</div>
+    <label>Nome completo *</label>
     <input type="text" id="s-name" placeholder="Maria Souza">
-    <label>Idade</label>
-    <input type="number" id="s-age" placeholder="28" min="1" max="120">
+    <div class="form-row" style="margin-bottom:16px">
+      <div>
+        <label>Idade</label>
+        <input type="number" id="s-age" placeholder="28" min="1" max="120" style="margin-bottom:0">
+      </div>
+      <div>
+        <label>Telefone / WhatsApp</label>
+        <input type="text" id="s-phone" placeholder="(81) 99999-9999" style="margin-bottom:0">
+      </div>
+    </div>
     <label>Objetivo</label>
     <select id="s-goal">
       <option value="">Selecione...</option>
@@ -314,42 +601,242 @@
       <option>Condicionamento</option>
       <option>Força</option>
       <option>Reabilitação</option>
+      <option>Flexibilidade</option>
       <option>Outro</option>
     </select>
-    <label>Observações</label>
-    <textarea id="s-obs" placeholder="Lesões, restrições, histórico..."></textarea>
+    <div class="form-row" style="margin-bottom:16px">
+      <div>
+        <label>Peso atual (kg)</label>
+        <input type="number" id="s-weight" placeholder="70.5" step="0.1" style="margin-bottom:0">
+      </div>
+      <div>
+        <label>Altura (cm)</label>
+        <input type="number" id="s-height" placeholder="170" style="margin-bottom:0">
+      </div>
+    </div>
+    <label>Nível de experiência</label>
+    <select id="s-level">
+      <option value="">Selecione...</option>
+      <option>Iniciante</option>
+      <option>Intermediário</option>
+      <option>Avançado</option>
+    </select>
+    <label>Observações / Restrições</label>
+    <textarea id="s-obs" placeholder="Lesões, restrições médicas, histórico..."></textarea>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('student')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveStudent()">Salvar aluno</button>
+      <button class="btn btn-primary" onclick="saveStudent()">Salvar Aluno</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EDITAR ALUNO -->
+<div class="modal-overlay" id="modal-edit-student">
+  <div class="modal">
+    <div class="modal-title">✏️ Editar Aluno</div>
+    <label>Nome completo *</label>
+    <input type="text" id="es-name" placeholder="Maria Souza">
+    <div class="form-row" style="margin-bottom:16px">
+      <div>
+        <label>Idade</label>
+        <input type="number" id="es-age" placeholder="28" min="1" max="120" style="margin-bottom:0">
+      </div>
+      <div>
+        <label>Telefone / WhatsApp</label>
+        <input type="text" id="es-phone" placeholder="(81) 99999-9999" style="margin-bottom:0">
+      </div>
+    </div>
+    <label>Objetivo</label>
+    <select id="es-goal">
+      <option value="">Selecione...</option>
+      <option>Hipertrofia</option>
+      <option>Emagrecimento</option>
+      <option>Condicionamento</option>
+      <option>Força</option>
+      <option>Reabilitação</option>
+      <option>Flexibilidade</option>
+      <option>Outro</option>
+    </select>
+    <div class="form-row" style="margin-bottom:16px">
+      <div>
+        <label>Peso atual (kg)</label>
+        <input type="number" id="es-weight" placeholder="70.5" step="0.1" style="margin-bottom:0">
+      </div>
+      <div>
+        <label>Altura (cm)</label>
+        <input type="number" id="es-height" placeholder="170" style="margin-bottom:0">
+      </div>
+    </div>
+    <label>Nível de experiência</label>
+    <select id="es-level">
+      <option value="">Selecione...</option>
+      <option>Iniciante</option>
+      <option>Intermediário</option>
+      <option>Avançado</option>
+    </select>
+    <label>Observações / Restrições</label>
+    <textarea id="es-obs" placeholder="Lesões, restrições médicas, histórico..."></textarea>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('edit-student')">Cancelar</button>
+      <button class="btn btn-primary" onclick="updateStudent()">Atualizar</button>
     </div>
   </div>
 </div>
 
 <!-- MODAL: WORKOUT -->
 <div class="modal-overlay" id="modal-workout">
-  <div class="modal" style="max-width:640px">
-    <div class="modal-title">Novo Treino</div>
-    <label>Nome do treino</label>
-    <input type="text" id="w-name" placeholder="Ex: Treino A - Peito e Tríceps">
-    <label>Observações do treino</label>
-    <textarea id="w-obs" placeholder="Instruções gerais, aquecimento, etc." style="min-height:60px"></textarea>
-    <div class="divider"></div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-      <div style="font-weight:600;font-size:.9rem">Exercícios</div>
+  <div class="modal" style="max-width:660px">
+    <div class="modal-title">🏋️ Novo Treino</div>
+    <label>Nome do treino *</label>
+    <input type="text" id="w-name" placeholder="Ex: Treino A — Peito e Tríceps">
+    <div class="form-row" style="margin-bottom:16px">
+      <div>
+        <label>Dia da semana</label>
+        <select id="w-day" style="margin-bottom:0">
+          <option value="">Qualquer dia</option>
+          <option>Segunda-feira</option>
+          <option>Terça-feira</option>
+          <option>Quarta-feira</option>
+          <option>Quinta-feira</option>
+          <option>Sexta-feira</option>
+          <option>Sábado</option>
+          <option>Domingo</option>
+        </select>
+      </div>
+      <div>
+        <label>Duração estimada</label>
+        <select id="w-duration" style="margin-bottom:0">
+          <option value="">Não especificado</option>
+          <option>30 min</option>
+          <option>45 min</option>
+          <option>60 min</option>
+          <option>75 min</option>
+          <option>90 min</option>
+        </select>
+      </div>
     </div>
-    <!-- Header -->
-    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 32px;gap:8px;margin-bottom:4px">
-      <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Exercício</div>
-      <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Séries</div>
-      <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Reps</div>
-      <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Carga/Desc</div>
-      <div></div>
+    <label>Observações gerais</label>
+    <textarea id="w-obs" placeholder="Aquecimento, instruções gerais, tempo de descanso padrão..." style="min-height:60px"></textarea>
+    <div class="divider"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="font-weight:600;font-size:.9rem">Exercícios</div>
+      <button class="btn btn-ghost" style="padding:5px 12px;font-size:.78rem" onclick="addExerciseRow()">+ Adicionar</button>
+    </div>
+    <div class="ex-header">
+      <span>Exercício</span>
+      <span>Séries</span>
+      <span>Reps</span>
+      <span>Carga / Desc.</span>
+      <span></span>
     </div>
     <div id="exercise-rows"></div>
-    <button id="add-exercise-btn" onclick="addExerciseRow()">+ Adicionar exercício</button>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('workout')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveWorkout()">Salvar treino</button>
+      <button class="btn btn-primary" onclick="saveWorkout()">Salvar Treino</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EDIT WORKOUT -->
+<div class="modal-overlay" id="modal-edit-workout">
+  <div class="modal" style="max-width:660px">
+    <div class="modal-title">✏️ Editar Treino</div>
+    <input type="hidden" id="ew-id">
+    <label>Nome do treino *</label>
+    <input type="text" id="ew-name" placeholder="Ex: Treino A — Peito e Tríceps">
+    <div class="form-row" style="margin-bottom:16px">
+      <div>
+        <label>Dia da semana</label>
+        <select id="ew-day" style="margin-bottom:0">
+          <option value="">Qualquer dia</option>
+          <option>Segunda-feira</option>
+          <option>Terça-feira</option>
+          <option>Quarta-feira</option>
+          <option>Quinta-feira</option>
+          <option>Sexta-feira</option>
+          <option>Sábado</option>
+          <option>Domingo</option>
+        </select>
+      </div>
+      <div>
+        <label>Duração estimada</label>
+        <select id="ew-duration" style="margin-bottom:0">
+          <option value="">Não especificado</option>
+          <option>30 min</option>
+          <option>45 min</option>
+          <option>60 min</option>
+          <option>75 min</option>
+          <option>90 min</option>
+        </select>
+      </div>
+    </div>
+    <label>Observações gerais</label>
+    <textarea id="ew-obs" style="min-height:60px"></textarea>
+    <div class="divider"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="font-weight:600;font-size:.9rem">Exercícios</div>
+      <button class="btn btn-ghost" style="padding:5px 12px;font-size:.78rem" onclick="addExerciseRowTo('edit-exercise-rows')">+ Adicionar</button>
+    </div>
+    <div class="ex-header">
+      <span>Exercício</span>
+      <span>Séries</span>
+      <span>Reps</span>
+      <span>Carga / Desc.</span>
+      <span></span>
+    </div>
+    <div id="edit-exercise-rows"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('edit-workout')">Cancelar</button>
+      <button class="btn btn-primary" onclick="updateWorkout()">Atualizar Treino</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: PROGRESS -->
+<div class="modal-overlay" id="modal-progress">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-title">📈 Registrar Progresso</div>
+    <div class="form-row" style="margin-bottom:16px">
+      <div>
+        <label>Data</label>
+        <input type="date" id="p-date" style="margin-bottom:0">
+      </div>
+      <div>
+        <label>Peso (kg)</label>
+        <input type="number" id="p-weight" placeholder="70.5" step="0.1" style="margin-bottom:0">
+      </div>
+    </div>
+    <div class="form-row" style="margin-bottom:16px">
+      <div>
+        <label>% Gordura (se souber)</label>
+        <input type="number" id="p-fat" placeholder="18.5" step="0.1" style="margin-bottom:0">
+      </div>
+      <div>
+        <label>Circunferência abdominal (cm)</label>
+        <input type="number" id="p-waist" placeholder="85" step="0.5" style="margin-bottom:0">
+      </div>
+    </div>
+    <label>Observações</label>
+    <textarea id="p-obs" placeholder="Como o aluno se sentiu, evolução notada..." style="min-height:70px"></textarea>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('progress')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveProgress()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: RESET PASSWORD -->
+<div class="modal-overlay" id="modal-reset">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-title">🔑 Recuperar Senha</div>
+    <p style="color:var(--muted);font-size:.88rem;margin-bottom:16px">Digite seu e-mail e enviaremos as instruções de recuperação.</p>
+    <label>E-mail</label>
+    <input type="email" id="reset-email" placeholder="seuemail@exemplo.com">
+    <div class="err" id="reset-err"></div>
+    <div class="success" id="reset-ok">E-mail enviado! Verifique sua caixa de entrada.</div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('reset')">Fechar</button>
+      <button class="btn btn-primary" onclick="doReset()">Enviar</button>
     </div>
   </div>
 </div>
@@ -357,8 +844,8 @@
 <!-- MODAL: CONFIRM DELETE -->
 <div class="modal-overlay" id="modal-confirm">
   <div class="modal" style="max-width:380px">
-    <div class="modal-title">Confirmar exclusão</div>
-    <p style="color:var(--muted);font-size:.9rem;margin-bottom:24px" id="confirm-msg">Tem certeza?</p>
+    <div class="modal-title">⚠️ Confirmar exclusão</div>
+    <p style="color:var(--muted);font-size:.88rem;margin-bottom:24px" id="confirm-msg">Tem certeza?</p>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('confirm')">Cancelar</button>
       <button class="btn btn-danger" id="confirm-action-btn">Excluir</button>
@@ -370,8 +857,14 @@
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, collection, doc, addDoc, getDocs, getDoc, deleteDoc, query, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import {
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail
+} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import {
+  getFirestore, collection, doc, addDoc, getDocs, getDoc, deleteDoc,
+  updateDoc, query, orderBy, serverTimestamp, where
+} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBQ2lLtKow3dbTdaJiOWyULBiLO24tt_AQ",
@@ -389,45 +882,75 @@ const db = getFirestore(app);
 
 let currentUser = null;
 let currentStudentId = null;
+let allStudentsCache = [];
+let currentFilter = 'all';
 
-// ── AUTH STATE ──────────────────────────────────────────────
+// ── AUTH STATE ───────────────────────────────────────────────
 onAuthStateChanged(auth, user => {
   hide('loading');
   if (user) {
     currentUser = user;
     show('app');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (mobileMenu) mobileMenu.style.display = 'flex';
     hide('auth-screen');
     const name = user.displayName || user.email;
     document.getElementById('sidebar-name').textContent = name;
     document.getElementById('sidebar-avatar').textContent = name[0].toUpperCase();
-    document.getElementById('dash-greeting').textContent = `Bem-vindo, ${name.split(' ')[0]}!`;
+    document.getElementById('dash-greeting').textContent = `Olá, ${name.split(' ')[0]}! Bom treino 💪`;
     loadDashboard();
   } else {
     currentUser = null;
     hide('app');
     show('auth-screen');
+    document.getElementById('mobile-menu').style.display = 'none';
   }
 });
 
-// ── AUTH ACTIONS ────────────────────────────────────────────
+// ── AUTH ─────────────────────────────────────────────────────
 window.doLogin = async () => {
   const email = v('login-email'), pass = v('login-pass');
   hideErr('login-err');
-  try { await signInWithEmailAndPassword(auth, email, pass); }
-  catch(e) { showErr('login-err', friendlyError(e)); }
+  if (!email || !pass) return showErr('login-err','Preencha todos os campos.');
+  try {
+    document.querySelector('#tab-login .btn-primary').textContent = 'Entrando...';
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch(e) {
+    document.querySelector('#tab-login .btn-primary').textContent = 'Entrar';
+    showErr('login-err', friendlyError(e));
+  }
 };
 
 window.doRegister = async () => {
   const name = v('reg-name'), email = v('reg-email'), pass = v('reg-pass');
   hideErr('reg-err');
-  if (!name) return showErr('reg-err','Nome obrigatório');
+  if (!name) return showErr('reg-err','Nome obrigatório.');
+  if (!email) return showErr('reg-err','E-mail obrigatório.');
+  if (pass.length < 6) return showErr('reg-err','Senha deve ter no mínimo 6 caracteres.');
   try {
+    document.querySelector('#tab-register .btn-primary').textContent = 'Criando...';
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
     await updateProfile(cred.user, { displayName: name });
-  } catch(e) { showErr('reg-err', friendlyError(e)); }
+  } catch(e) {
+    document.querySelector('#tab-register .btn-primary').textContent = 'Criar conta';
+    showErr('reg-err', friendlyError(e));
+  }
 };
 
-window.doLogout = async () => { await signOut(auth); };
+window.doLogout = async () => {
+  if(confirm('Deseja sair da sua conta?')) await signOut(auth);
+};
+
+window.doReset = async () => {
+  const email = v('reset-email');
+  hideErr('reset-err');
+  document.getElementById('reset-ok').style.display = 'none';
+  if (!email) return showErr('reset-err','Digite seu e-mail.');
+  try {
+    await sendPasswordResetEmail(auth, email);
+    document.getElementById('reset-ok').style.display = 'block';
+  } catch(e) { showErr('reset-err', friendlyError(e)); }
+};
 
 window.switchTab = (tab) => {
   document.getElementById('tab-login').style.display = tab === 'login' ? '' : 'none';
@@ -435,53 +958,120 @@ window.switchTab = (tab) => {
   document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active', (tab==='login'&&i===0)||(tab==='register'&&i===1)));
 };
 
-// ── NAVIGATION ──────────────────────────────────────────────
+// ── NAVIGATION ───────────────────────────────────────────────
 window.showPage = (page) => {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.mob-nav').forEach(n => n.classList.remove('active'));
   document.getElementById('page-' + page)?.classList.add('active');
   document.getElementById('nav-' + page)?.classList.add('active');
+  const mobId = page === 'all-workouts' ? 'mob-workouts-menu' : 'mob-' + page;
+  document.getElementById(mobId)?.classList.add('active');
+  const navId = page === 'all-workouts' ? 'nav-workouts-menu' : 'nav-' + page;
+  document.getElementById(navId)?.classList.add('active');
   if (page === 'dashboard') loadDashboard();
   if (page === 'students') loadStudents();
+  if (page === 'all-workouts') loadAllWorkouts();
 };
 
-// ── DASHBOARD ───────────────────────────────────────────────
+// ── DASHBOARD ────────────────────────────────────────────────
 async function loadDashboard() {
   if (!currentUser) return;
   const snap = await getDocs(collection(db, 'trainers', currentUser.uid, 'students'));
   const students = snap.docs;
+  allStudentsCache = students.map(s => ({id:s.id,...s.data()}));
   document.getElementById('stat-students').textContent = students.length;
+  document.getElementById('nav-badge-students').textContent = students.length;
 
-  let totalWorkouts = 0;
+  let totalWorkouts = 0, weekWorkouts = 0;
+  const oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
   for (const s of students) {
     const ws = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', s.id, 'workouts'));
     totalWorkouts += ws.size;
+    ws.docs.forEach(w => {
+      const ts = w.data().createdAt?.toDate?.();
+      if (ts && ts > oneWeekAgo) weekWorkouts++;
+    });
   }
   document.getElementById('stat-workouts').textContent = totalWorkouts;
+  document.getElementById('stat-week').textContent = weekWorkouts;
   document.getElementById('stat-active').textContent = students.length;
 
+  // Recent students
   const list = document.getElementById('dash-student-list');
-  if (students.length === 0) { list.innerHTML = '<div class="empty"><div class="empty-icon">🏋️</div><p>Nenhum aluno ainda.</p></div>'; return; }
-  list.innerHTML = students.slice(0,5).map(s => studentCardHTML(s.id, s.data())).join('');
+  if (students.length === 0) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">🏋️</div><p>Nenhum aluno ainda.<br><small>Clique em "+ Novo Aluno" para começar.</small></p></div>';
+  } else {
+    list.innerHTML = students.slice(0,4).map(s => studentCardHTML(s.id, s.data())).join('');
+  }
+
+  // Recent workouts
+  const wEl = document.getElementById('dash-workout-list');
+  const recentWorkouts = [];
+  for (const s of students.slice(0,5)) {
+    const ws = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', s.id, 'workouts'));
+    ws.docs.forEach(w => recentWorkouts.push({sid:s.id, sname:s.data().name, wid:w.id, ...w.data()}));
+  }
+  recentWorkouts.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+  if (recentWorkouts.length === 0) {
+    wEl.innerHTML = '<div class="empty" style="padding:24px 0"><div class="empty-icon">📋</div><p>Nenhum treino ainda.</p></div>';
+  } else {
+    wEl.innerHTML = recentWorkouts.slice(0,5).map(w => `
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="openStudent('${w.sid}')">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.88rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${w.name}</div>
+          <div style="font-size:.75rem;color:var(--muted)">${w.sname}</div>
+        </div>
+        <div style="font-size:.75rem;color:var(--muted)">${w.createdAt?.toDate ? w.createdAt.toDate().toLocaleDateString('pt-BR') : ''}</div>
+      </div>`).join('');
+  }
 }
 
-// ── STUDENTS ────────────────────────────────────────────────
+// ── STUDENTS ─────────────────────────────────────────────────
 async function loadStudents() {
   const list = document.getElementById('student-list');
-  list.innerHTML = '<div style="color:var(--muted);padding:20px">Carregando...</div>';
+  list.innerHTML = '<div style="color:var(--muted);padding:20px;font-size:.88rem">Carregando...</div>';
   const snap = await getDocs(collection(db, 'trainers', currentUser.uid, 'students'));
-  if (snap.empty) { list.innerHTML = '<div class="empty"><div class="empty-icon">👤</div><p>Nenhum aluno cadastrado.</p></div>'; return; }
-  list.innerHTML = snap.docs.map(s => studentCardHTML(s.id, s.data())).join('');
+  allStudentsCache = snap.docs.map(s => ({id:s.id,...s.data()}));
+  document.getElementById('nav-badge-students').textContent = allStudentsCache.length;
+  renderStudentList();
 }
 
+function renderStudentList() {
+  const list = document.getElementById('student-list');
+  const searchVal = document.getElementById('student-search')?.value?.toLowerCase() || '';
+  let filtered = allStudentsCache.filter(s => {
+    const matchSearch = s.name?.toLowerCase().includes(searchVal) || s.goal?.toLowerCase().includes(searchVal);
+    const matchFilter = currentFilter === 'all' || s.goal === currentFilter;
+    return matchSearch && matchFilter;
+  });
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">👤</div><p>Nenhum aluno encontrado.</p></div>';
+    return;
+  }
+  list.innerHTML = filtered.map(s => studentCardHTML(s.id, s)).join('');
+}
+
+window.filterStudents = renderStudentList;
+window.setFilter = (el, filter) => {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderStudentList();
+};
+
 function studentCardHTML(id, d) {
+  const goalBadge = d.goal ? `<span class="badge badge-green">${d.goal}</span>` : '';
+  const levelBadge = d.level ? `<span class="badge">${d.level}</span>` : '';
+  const phone = d.phone ? `<a href="https://wa.me/55${d.phone.replace(/\D/g,'')}" target="_blank" onclick="event.stopPropagation()" style="color:var(--accent);font-size:.8rem;text-decoration:none" title="WhatsApp">💬</a>` : '';
   return `<div class="student-card" onclick="openStudent('${id}')">
     <div class="student-av">${(d.name||'?')[0].toUpperCase()}</div>
     <div class="student-info">
       <div class="student-name">${d.name}</div>
-      <div class="student-meta">${d.age ? d.age + ' anos · ' : ''}${d.goal || '—'}</div>
+      <div class="student-meta">${[d.age ? d.age + ' anos' : '', d.weight ? d.weight + ' kg' : '', d.level].filter(Boolean).join(' · ')}</div>
     </div>
-    <span class="badge badge-green">Ativo</span>
+    <div class="student-actions">${goalBadge} ${levelBadge} ${phone}</div>
   </div>`;
 }
 
@@ -490,104 +1080,210 @@ window.openStudent = async (sid) => {
   const snap = await getDoc(doc(db, 'trainers', currentUser.uid, 'students', sid));
   const d = snap.data();
   document.getElementById('detail-name').textContent = d.name;
-  document.getElementById('detail-meta').textContent = [d.age ? d.age + ' anos' : '', d.goal, d.obs].filter(Boolean).join(' · ');
+  document.getElementById('detail-avatar').textContent = (d.name||'?')[0].toUpperCase();
+  const metaParts = [d.age ? d.age + ' anos' : '', d.weight ? d.weight + ' kg' : '', d.goal, d.level].filter(Boolean);
+  document.getElementById('detail-meta').textContent = metaParts.join(' · ');
+
+  // Info rows
+  const infoRows = [
+    ['Nome', d.name],
+    ['Idade', d.age ? d.age + ' anos' : '—'],
+    ['Telefone', d.phone || '—'],
+    ['Peso', d.weight ? d.weight + ' kg' : '—'],
+    ['Altura', d.height ? d.height + ' cm' : '—'],
+    ['IMC', (d.weight && d.height) ? (d.weight / ((d.height/100)**2)).toFixed(1) : '—'],
+    ['Objetivo', d.goal || '—'],
+    ['Nível', d.level || '—'],
+  ].map(([l,v]) => `<div class="info-row"><span class="info-row-label">${l}</span><span class="info-row-val">${v}</span></div>`).join('');
+  document.getElementById('detail-info-rows').innerHTML = infoRows;
+  document.getElementById('detail-obs').textContent = d.obs || 'Sem observações registradas.';
+
+  // Pre-fill edit form
+  setVal('es-name', d.name);
+  setVal('es-age', d.age);
+  setVal('es-phone', d.phone);
+  setVal('es-weight', d.weight);
+  setVal('es-height', d.height);
+  setVal('es-goal', d.goal);
+  setVal('es-level', d.level);
+  setVal('es-obs', d.obs);
+
+  switchDetailTab('treinos', document.querySelector('.tab-btn.active') || document.querySelector('.tab-btn'));
   loadWorkouts(sid);
+  loadProgress(sid);
   showPage('student-detail');
   document.getElementById('nav-students').classList.add('active');
 };
 
 window.saveStudent = async () => {
   const name = v('s-name');
-  if (!name) return toast('Nome obrigatório','err');
+  if (!name) return toast('Nome é obrigatório!','err');
   await addDoc(collection(db, 'trainers', currentUser.uid, 'students'), {
-    name, age: v('s-age'), goal: v('s-goal'), obs: v('s-obs'), createdAt: serverTimestamp()
+    name, age: v('s-age'), phone: v('s-phone'), goal: v('s-goal'),
+    obs: v('s-obs'), weight: v('s-weight'), height: v('s-height'), level: v('s-level'),
+    createdAt: serverTimestamp()
   });
   closeModal('student');
-  clearFields(['s-name','s-age','s-goal','s-obs']);
-  toast('Aluno salvo!');
+  clearFields(['s-name','s-age','s-phone','s-goal','s-obs','s-weight','s-height','s-level']);
+  toast('Aluno salvo com sucesso! 🎉');
   loadStudents();
 };
 
+window.updateStudent = async () => {
+  const name = v('es-name');
+  if (!name) return toast('Nome é obrigatório!','err');
+  await updateDoc(doc(db, 'trainers', currentUser.uid, 'students', currentStudentId), {
+    name, age: v('es-age'), phone: v('es-phone'), goal: v('es-goal'),
+    obs: v('es-obs'), weight: v('es-weight'), height: v('es-height'), level: v('es-level'),
+  });
+  closeModal('edit-student');
+  toast('Aluno atualizado!');
+  openStudent(currentStudentId);
+};
+
 window.confirmDeleteStudent = () => {
-  document.getElementById('confirm-msg').textContent = 'Isso excluirá o aluno e todos os treinos. Deseja continuar?';
+  document.getElementById('confirm-msg').textContent = 'Isso excluirá o aluno e todos os treinos e registros de progresso. Esta ação não pode ser desfeita.';
   document.getElementById('confirm-action-btn').onclick = deleteStudent;
   openModal('confirm');
 };
 
 async function deleteStudent() {
   const sid = currentStudentId;
+  // delete workouts
   const ws = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', sid, 'workouts'));
   for (const w of ws.docs) await deleteDoc(w.ref);
+  // delete progress
+  const ps = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', sid, 'progress'));
+  for (const p of ps.docs) await deleteDoc(p.ref);
   await deleteDoc(doc(db, 'trainers', currentUser.uid, 'students', sid));
   closeModal('confirm');
-  toast('Aluno excluído');
+  toast('Aluno excluído.');
   showPage('students');
 }
 
-// ── WORKOUTS ────────────────────────────────────────────────
+// ── WORKOUTS ─────────────────────────────────────────────────
 async function loadWorkouts(sid) {
   const list = document.getElementById('workout-list');
-  list.innerHTML = '<div style="color:var(--muted);padding:20px">Carregando...</div>';
+  list.innerHTML = '<div style="color:var(--muted);padding:20px;font-size:.88rem">Carregando...</div>';
   const snap = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', sid, 'workouts'));
-  if (snap.empty) { list.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><p>Nenhum treino cadastrado.</p></div>'; return; }
+  if (snap.empty) { list.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><p>Nenhum treino cadastrado ainda.<br><small>Clique em "+ Novo Treino" para criar.</small></p></div>'; return; }
   list.innerHTML = snap.docs.map(w => workoutCardHTML(w.id, w.data())).join('');
 }
 
 function workoutCardHTML(id, d) {
   const rows = (d.exercises || []).map(e =>
-    `<tr><td>${e.name}</td><td>${e.sets||'—'}</td><td>${e.reps||'—'}</td><td>${e.load||'—'}</td></tr>`
+    `<tr>
+      <td><strong>${e.name||'—'}</strong></td>
+      <td><span class="ex-chip">${e.sets||'—'}</span></td>
+      <td><span class="ex-chip">${e.reps||'—'}</span></td>
+      <td>${e.load||'—'}</td>
+    </tr>`
   ).join('');
   const date = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleDateString('pt-BR') : '';
+  const dayBadge = d.day ? `<span class="badge">${d.day}</span>` : '';
+  const durBadge = d.duration ? `<span class="badge">${d.duration}</span>` : '';
   return `<div class="workout-card">
     <div class="workout-header">
-      <div class="workout-title">${d.name}</div>
-      <div style="display:flex;align-items:center;gap:12px">
+      <div>
+        <div class="workout-title">${d.name}</div>
+        <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">${dayBadge}${durBadge}</div>
+      </div>
+      <div class="workout-actions">
         <span class="workout-date">${date}</span>
-        <button class="btn btn-danger" style="padding:6px 12px;font-size:.8rem" onclick="confirmDeleteWorkout('${id}')">Excluir</button>
+        <button class="btn btn-ghost" style="padding:5px 10px;font-size:.78rem" onclick="openEditWorkout('${id}')">✏️ Editar</button>
+        <button class="btn btn-ghost" style="padding:5px 10px;font-size:.78rem" onclick="copyWorkoutToClipboard('${id}')">📋 Copiar</button>
+        <button class="btn btn-danger" style="padding:5px 10px;font-size:.78rem" onclick="confirmDeleteWorkout('${id}')">Excluir</button>
       </div>
     </div>
-    ${d.obs ? `<div style="font-size:.83rem;color:var(--muted);margin-bottom:8px">${d.obs}</div>` : ''}
-    ${rows ? `<table class="exercise-table"><thead><tr><th>Exercício</th><th>Séries</th><th>Reps</th><th>Carga/Desc</th></tr></thead><tbody>${rows}</tbody></table>` : '<div style="color:var(--muted);font-size:.85rem">Sem exercícios.</div>'}
+    ${d.obs ? `<div style="font-size:.83rem;color:var(--muted);margin:8px 0;background:var(--bg);border-radius:6px;padding:8px 12px;">${d.obs}</div>` : ''}
+    ${rows ? `<table class="exercise-table"><thead><tr><th>Exercício</th><th>Séries</th><th>Reps</th><th>Carga / Desc.</th></tr></thead><tbody>${rows}</tbody></table>` : '<div style="color:var(--muted);font-size:.85rem;padding:8px 0">Nenhum exercício adicionado.</div>'}
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-ghost" style="padding:6px 12px;font-size:.78rem" onclick="shareWorkoutWhatsApp('${id}')">📲 Enviar por WhatsApp</button>
+      <button class="btn btn-ghost" style="padding:6px 12px;font-size:.78rem" onclick="printWorkout('${id}')">🖨️ Imprimir</button>
+    </div>
   </div>`;
 }
 
-window.addExerciseRow = () => {
-  const container = document.getElementById('exercise-rows');
+window.addExerciseRow = () => addExerciseRowTo('exercise-rows');
+window.addExerciseRowTo = (containerId) => {
+  const container = document.getElementById(containerId);
   const idx = Date.now();
   const row = document.createElement('div');
-  row.className = 'ex-row';
-  row.id = 'ex-' + idx;
+  row.className = 'ex-row'; row.id = 'ex-' + idx;
   row.innerHTML = `
-    <input type="text" placeholder="Supino reto" style="margin-bottom:0" class="ex-name">
-    <input type="text" placeholder="4" style="margin-bottom:0" class="ex-sets">
-    <input type="text" placeholder="10-12" style="margin-bottom:0" class="ex-reps">
-    <input type="text" placeholder="60kg/60s" style="margin-bottom:0" class="ex-load">
+    <input type="text" placeholder="Supino reto" class="ex-name">
+    <input type="text" placeholder="4" class="ex-sets">
+    <input type="text" placeholder="10-12" class="ex-reps">
+    <input type="text" placeholder="60kg" class="ex-load">
     <button class="remove-ex" onclick="document.getElementById('ex-${idx}').remove()">✕</button>`;
   container.appendChild(row);
+  row.querySelector('.ex-name').focus();
 };
+
+function getExercisesFrom(containerId) {
+  return Array.from(document.querySelectorAll(`#${containerId} .ex-row`)).map(r => ({
+    name: r.querySelector('.ex-name')?.value?.trim() || '',
+    sets: r.querySelector('.ex-sets')?.value?.trim() || '',
+    reps: r.querySelector('.ex-reps')?.value?.trim() || '',
+    load: r.querySelector('.ex-load')?.value?.trim() || '',
+  })).filter(e => e.name);
+}
 
 window.saveWorkout = async () => {
   const name = v('w-name');
-  if (!name) return toast('Nome do treino obrigatório','err');
-  const rows = document.querySelectorAll('#exercise-rows .ex-row');
-  const exercises = Array.from(rows).map(r => ({
-    name: r.querySelector('.ex-name').value.trim(),
-    sets: r.querySelector('.ex-sets').value.trim(),
-    reps: r.querySelector('.ex-reps').value.trim(),
-    load: r.querySelector('.ex-load').value.trim(),
-  })).filter(e => e.name);
+  if (!name) return toast('Nome do treino é obrigatório!','err');
+  const exercises = getExercisesFrom('exercise-rows');
   await addDoc(collection(db, 'trainers', currentUser.uid, 'students', currentStudentId, 'workouts'), {
-    name, obs: v('w-obs'), exercises, createdAt: serverTimestamp()
+    name, obs: v('w-obs'), day: v('w-day'), duration: v('w-duration'),
+    exercises, createdAt: serverTimestamp()
   });
   closeModal('workout');
-  clearFields(['w-name','w-obs']);
+  clearFields(['w-name','w-obs','w-day','w-duration']);
   document.getElementById('exercise-rows').innerHTML = '';
-  toast('Treino salvo!');
+  toast('Treino salvo! 💪');
+  loadWorkouts(currentStudentId);
+};
+
+window.openEditWorkout = async (wid) => {
+  const snap = await getDoc(doc(db, 'trainers', currentUser.uid, 'students', currentStudentId, 'workouts', wid));
+  const d = snap.data();
+  document.getElementById('ew-id').value = wid;
+  setVal('ew-name', d.name);
+  setVal('ew-obs', d.obs);
+  setVal('ew-day', d.day);
+  setVal('ew-duration', d.duration);
+  const container = document.getElementById('edit-exercise-rows');
+  container.innerHTML = '';
+  (d.exercises || []).forEach(e => {
+    const idx = Date.now() + Math.random();
+    const row = document.createElement('div');
+    row.className = 'ex-row'; row.id = 'ex-' + idx;
+    row.innerHTML = `
+      <input type="text" placeholder="Exercício" class="ex-name" value="${e.name||''}">
+      <input type="text" placeholder="4" class="ex-sets" value="${e.sets||''}">
+      <input type="text" placeholder="10-12" class="ex-reps" value="${e.reps||''}">
+      <input type="text" placeholder="60kg" class="ex-load" value="${e.load||''}">
+      <button class="remove-ex" onclick="document.getElementById('ex-${idx}').remove()">✕</button>`;
+    container.appendChild(row);
+  });
+  openModal('edit-workout');
+};
+
+window.updateWorkout = async () => {
+  const wid = v('ew-id') || document.getElementById('ew-id').value;
+  const name = v('ew-name');
+  if (!name) return toast('Nome do treino é obrigatório!','err');
+  const exercises = getExercisesFrom('edit-exercise-rows');
+  await updateDoc(doc(db, 'trainers', currentUser.uid, 'students', currentStudentId, 'workouts', wid), {
+    name, obs: v('ew-obs'), day: v('ew-day'), duration: v('ew-duration'), exercises
+  });
+  closeModal('edit-workout');
+  toast('Treino atualizado!');
   loadWorkouts(currentStudentId);
 };
 
 window.confirmDeleteWorkout = (wid) => {
-  document.getElementById('confirm-msg').textContent = 'Excluir este treino permanentemente?';
+  document.getElementById('confirm-msg').textContent = 'Excluir este treino permanentemente? Esta ação não pode ser desfeita.';
   document.getElementById('confirm-action-btn').onclick = () => deleteWorkout(wid);
   openModal('confirm');
 };
@@ -595,27 +1291,149 @@ window.confirmDeleteWorkout = (wid) => {
 async function deleteWorkout(wid) {
   await deleteDoc(doc(db, 'trainers', currentUser.uid, 'students', currentStudentId, 'workouts', wid));
   closeModal('confirm');
-  toast('Treino excluído');
+  toast('Treino excluído.');
   loadWorkouts(currentStudentId);
 }
 
-// ── MODALS ──────────────────────────────────────────────────
+// ── COPY / SHARE ─────────────────────────────────────────────
+window.copyWorkoutToClipboard = async (wid) => {
+  const snap = await getDoc(doc(db, 'trainers', currentUser.uid, 'students', currentStudentId, 'workouts', wid));
+  const d = snap.data();
+  let text = `🏋️ *${d.name}*\n`;
+  if (d.day) text += `📅 ${d.day}\n`;
+  if (d.duration) text += `⏱️ ${d.duration}\n`;
+  if (d.obs) text += `\n📝 ${d.obs}\n`;
+  text += `\n`;
+  (d.exercises||[]).forEach((e,i) => {
+    text += `${i+1}. ${e.name} — ${e.sets||'—'} x ${e.reps||'—'}${e.load ? ` (${e.load})` : ''}\n`;
+  });
+  text += `\n💬 Dúvidas? (81) 99161-0473`;
+  try { await navigator.clipboard.writeText(text); toast('Treino copiado para a área de transferência! 📋'); }
+  catch(e) { toast('Não foi possível copiar.','err'); }
+};
+
+window.shareWorkoutWhatsApp = async (wid) => {
+  const sSnap = await getDoc(doc(db, 'trainers', currentUser.uid, 'students', currentStudentId));
+  const s = sSnap.data();
+  const snap = await getDoc(doc(db, 'trainers', currentUser.uid, 'students', currentStudentId, 'workouts', wid));
+  const d = snap.data();
+  let text = `Olá ${s.name?.split(' ')[0] || ''}! 🏋️\n\n*${d.name}*\n`;
+  if (d.day) text += `📅 ${d.day}\n`;
+  if (d.duration) text += `⏱️ Duração: ${d.duration}\n`;
+  if (d.obs) text += `\n📝 ${d.obs}\n`;
+  text += `\n*Exercícios:*\n`;
+  (d.exercises||[]).forEach((e,i) => {
+    text += `${i+1}. ${e.name} — ${e.sets||'—'} x ${e.reps||'—'}${e.load ? ` (${e.load})` : ''}\n`;
+  });
+  text += `\nQualquer dúvida, me chame! 💪\n(81) 99161-0473`;
+  const phone = s.phone ? '55' + s.phone.replace(/\D/g,'') : '';
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+  window.open(url, '_blank');
+};
+
+window.printWorkout = (wid) => {
+  // just use browser print
+  window.print();
+};
+
+// ── PROGRESS ─────────────────────────────────────────────────
+async function loadProgress(sid) {
+  const list = document.getElementById('progress-list');
+  if (!list) return;
+  const snap = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', sid, 'progress'));
+  if (snap.empty) { list.innerHTML = '<div class="empty"><div class="empty-icon">📊</div><p>Nenhum registro ainda.<br><small>Registre o progresso do aluno ao longo do tempo.</small></p></div>'; return; }
+  const entries = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b) => b.date > a.date ? 1 : -1);
+  list.innerHTML = entries.map(e => `
+    <div class="history-entry">
+      <div class="history-dot"></div>
+      <div class="history-date">${e.date || '—'}</div>
+      <div class="history-desc">
+        ${e.weight ? `<strong>${e.weight} kg</strong>` : ''}
+        ${e.fat ? ` · ${e.fat}% gordura` : ''}
+        ${e.waist ? ` · ${e.waist}cm abd.` : ''}
+        ${e.obs ? `<div style="color:var(--muted);font-size:.8rem;margin-top:2px">${e.obs}</div>` : ''}
+      </div>
+      <button class="btn btn-danger" style="padding:4px 10px;font-size:.75rem" onclick="deleteProgress('${e.id}')">✕</button>
+    </div>`).join('');
+}
+
+window.saveProgress = async () => {
+  const date = v('p-date'), weight = v('p-weight');
+  if (!date) return toast('Data é obrigatória!','err');
+  await addDoc(collection(db, 'trainers', currentUser.uid, 'students', currentStudentId, 'progress'), {
+    date, weight, fat: v('p-fat'), waist: v('p-waist'), obs: v('p-obs'), createdAt: serverTimestamp()
+  });
+  closeModal('progress');
+  clearFields(['p-date','p-weight','p-fat','p-waist','p-obs']);
+  toast('Progresso registrado!');
+  loadProgress(currentStudentId);
+};
+
+window.deleteProgress = async (pid) => {
+  await deleteDoc(doc(db, 'trainers', currentUser.uid, 'students', currentStudentId, 'progress', pid));
+  toast('Registro excluído.');
+  loadProgress(currentStudentId);
+};
+
+// ── ALL WORKOUTS ──────────────────────────────────────────────
+async function loadAllWorkouts() {
+  const container = document.getElementById('all-workouts-list');
+  container.innerHTML = '<div style="color:var(--muted);padding:20px;font-size:.88rem">Carregando...</div>';
+  const studentsSnap = await getDocs(collection(db, 'trainers', currentUser.uid, 'students'));
+  const all = [];
+  for (const s of studentsSnap.docs) {
+    const ws = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', s.id, 'workouts'));
+    ws.docs.forEach(w => all.push({sid:s.id, sname:s.data().name, wid:w.id, ...w.data()}));
+  }
+  all.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+  if (all.length === 0) { container.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><p>Nenhum treino criado ainda.</p></div>'; return; }
+  container.innerHTML = all.map(w => `
+    <div class="workout-card" style="margin-bottom:12px">
+      <div class="workout-header">
+        <div>
+          <div class="workout-title">${w.name}</div>
+          <div style="color:var(--muted);font-size:.8rem;margin-top:3px">
+            👤 <span style="cursor:pointer;color:var(--accent)" onclick="openStudent('${w.sid}')">${w.sname}</span>
+            ${w.day ? ` · ${w.day}` : ''}
+          </div>
+        </div>
+        <div style="font-size:.75rem;color:var(--muted)">${w.createdAt?.toDate ? w.createdAt.toDate().toLocaleDateString('pt-BR') : ''}</div>
+      </div>
+      ${(w.exercises||[]).length > 0 ? `<div style="color:var(--muted);font-size:.83rem;margin-top:8px">${(w.exercises).map(e=>e.name).filter(Boolean).join(' · ')}</div>` : ''}
+    </div>`).join('');
+}
+
+// ── TABS ─────────────────────────────────────────────────────
+window.switchDetailTab = (tab, btn) => {
+  ['treinos','info','progresso'].forEach(t => {
+    const el = document.getElementById('tab-' + t);
+    if (el) el.style.display = t === tab ? '' : 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+};
+
+// ── MODALS ────────────────────────────────────────────────────
 window.openModal = (id) => {
   if (id === 'workout') {
     document.getElementById('exercise-rows').innerHTML = '';
     addExerciseRow();
   }
-  document.getElementById('modal-' + id).classList.add('open');
+  if (id === 'progress') {
+    document.getElementById('p-date').valueAsDate = new Date();
+  }
+  document.getElementById('modal-' + id)?.classList.add('open');
 };
-window.closeModal = (id) => document.getElementById('modal-' + id).classList.remove('open');
+window.closeModal = (id) => document.getElementById('modal-' + id)?.classList.remove('open');
 document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); }));
 
-// ── HELPERS ─────────────────────────────────────────────────
+// ── HELPERS ───────────────────────────────────────────────────
 function v(id) { return document.getElementById(id)?.value?.trim() || ''; }
 function show(id) { document.getElementById(id).style.display = ''; }
 function hide(id) { document.getElementById(id).style.display = 'none'; }
+function setVal(id, val) { const el = document.getElementById(id); if(el) el.value = val || ''; }
 function showErr(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.style.display = 'block'; }
-function hideErr(id) { document.getElementById(id).style.display = 'none'; }
+function hideErr(id) { const el = document.getElementById(id); if(el) el.style.display = 'none'; }
 function clearFields(ids) { ids.forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; }); }
 
 function toast(msg, type='ok') {
@@ -624,7 +1442,7 @@ function toast(msg, type='ok') {
   t.style.background = type === 'err' ? 'var(--danger)' : 'var(--accent)';
   t.style.color = type === 'err' ? '#fff' : '#000';
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
 
 function friendlyError(e) {
@@ -635,6 +1453,8 @@ function friendlyError(e) {
     'auth/email-already-in-use': 'E-mail já cadastrado.',
     'auth/weak-password': 'Senha muito fraca (mín. 6 caracteres).',
     'auth/invalid-credential': 'E-mail ou senha incorretos.',
+    'auth/network-request-failed': 'Erro de conexão. Verifique sua internet.',
+    'auth/too-many-requests': 'Muitas tentativas. Tente novamente mais tarde.',
   };
   return map[e.code] || e.message;
 }
