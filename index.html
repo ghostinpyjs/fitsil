@@ -1,3 +1,4 @@
+cat > /home/claude/filsil.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -73,7 +74,7 @@
   .sidebar {
     width:252px; background:var(--surface); border-right:1px solid var(--border);
     position:fixed; top:0; left:0; height:100vh; display:flex; flex-direction:column; padding:24px 14px;
-    overflow-y:auto;
+    overflow-y:auto; z-index:40;
   }
   .logo { font-family:'Syne',sans-serif; font-size:1.5rem; font-weight:800; color:var(--accent); padding:0 10px; margin-bottom:28px; letter-spacing:-.02em; }
   .nav-section { font-size:.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:.1em; padding:0 10px; margin:12px 0 6px; }
@@ -90,8 +91,9 @@
   .sidebar-bottom { margin-top:auto; padding-top:16px; border-top:1px solid var(--border); }
   .user-chip {
     display:flex; align-items:center; gap:10px; padding:10px 12px;
-    border-radius:8px; background:var(--surface2); margin-bottom:8px;
+    border-radius:8px; background:var(--surface2); margin-bottom:8px; cursor:pointer; transition:.15s;
   }
+  .user-chip:hover { border:1px solid var(--border); }
   .avatar { width:34px; height:34px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; color:#000; font-size:.85rem; flex-shrink:0; }
   .user-info { overflow:hidden; flex:1; }
   .user-name { font-size:.85rem; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -147,6 +149,7 @@
   .badge-green { background:#0d1a00; color:var(--accent); border:1px solid #1a3000; }
   .badge-yellow { background:#1a1200; color:var(--warn); border:1px solid #2a2000; }
   .badge-red { background:#1a0505; color:var(--danger); border:1px solid #2a1010; }
+  .badge-admin { background:#1a0a2a; color:#c084fc; border:1px solid #3a1a5a; }
 
   /* SEARCH BAR */
   .search-bar { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
@@ -163,11 +166,10 @@
     background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:20px 24px;
     transition:.15s;
   }
-  .workout-card:hover { border-color:var(--border); }
   .workout-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px; gap:12px; }
   .workout-title { font-weight:700; font-size:.98rem; font-family:'Syne',sans-serif; }
-  .workout-date { font-size:.75rem; color:var(--muted); margin-top:2px; }
-  .workout-actions { display:flex; gap:8px; flex-shrink:0; }
+  .workout-date { font-size:.75rem; color:var(--muted); }
+  .workout-actions { display:flex; gap:8px; flex-shrink:0; flex-wrap:wrap; }
   .exercise-table { width:100%; border-collapse:collapse; margin-top:12px; }
   .exercise-table th { text-align:left; font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; padding:0 10px 8px 0; border-bottom:1px solid var(--border); }
   .exercise-table td { padding:9px 10px 9px 0; font-size:.87rem; border-bottom:1px solid #1a1a1a; vertical-align:middle; }
@@ -175,7 +177,7 @@
   .exercise-table td:first-child { font-weight:500; }
   .ex-chip { display:inline-block; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:2px 8px; font-size:.78rem; }
 
-  /* PROGRESS / HISTORY SECTION */
+  /* PROGRESS */
   .history-entry {
     display:flex; align-items:center; gap:12px; padding:12px 16px;
     border:1px solid var(--border); border-radius:8px; margin-bottom:8px; background:var(--surface);
@@ -183,7 +185,6 @@
   .history-dot { width:10px; height:10px; border-radius:50%; background:var(--accent); flex-shrink:0; }
   .history-date { font-size:.78rem; color:var(--muted); width:80px; flex-shrink:0; }
   .history-desc { font-size:.85rem; flex:1; }
-  .history-weight { font-size:.85rem; color:var(--accent); font-weight:600; }
 
   /* TABS */
   .tabs { display:flex; gap:0; margin-bottom:20px; border-bottom:1px solid var(--border); }
@@ -248,11 +249,6 @@
   /* DIVIDER */
   .divider { height:1px; background:var(--border); margin:20px 0; }
 
-  /* PROGRESS CHART */
-  .mini-chart { display:flex; align-items:flex-end; gap:4px; height:48px; }
-  .mini-bar { flex:1; background:var(--surface2); border-radius:3px 3px 0 0; transition:.3s; min-width:8px; }
-  .mini-bar.filled { background:var(--accent); }
-
   /* INFO ROWS */
   .info-row { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); font-size:.88rem; }
   .info-row:last-child { border-bottom:none; }
@@ -263,9 +259,21 @@
   .section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
   .section-title { font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; }
 
-  /* TAGS */
-  .tag-list { display:flex; flex-wrap:wrap; gap:6px; }
-  .tag { padding:4px 10px; border-radius:6px; font-size:.76rem; background:var(--surface2); border:1px solid var(--border); color:var(--muted); }
+  /* PERFIL / SETTINGS */
+  .profile-hero { display:flex; align-items:center; gap:20px; padding:24px; background:var(--surface2); border-radius:12px; border:1px solid var(--border); margin-bottom:20px; }
+  .profile-avatar-big { width:72px; height:72px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:800; color:#000; font-size:1.8rem; flex-shrink:0; border:3px solid var(--accent-dim); }
+  .profile-info h2 { font-family:'Syne',sans-serif; font-size:1.3rem; font-weight:800; }
+  .profile-info p { color:var(--muted); font-size:.85rem; margin-top:2px; }
+  .settings-section { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px 24px; margin-bottom:16px; }
+  .settings-section-title { font-weight:600; font-size:.9rem; margin-bottom:16px; color:var(--accent); text-transform:uppercase; letter-spacing:.05em; font-size:.75rem; }
+  .settings-row { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); }
+  .settings-row:last-child { border-bottom:none; }
+  .settings-row-label { font-size:.88rem; }
+  .settings-row-sub { font-size:.75rem; color:var(--muted); margin-top:2px; }
+  .admin-banner { background:linear-gradient(135deg,#1a0a2a,#2a1040); border:1px solid #5a2a9a; border-radius:10px; padding:14px 18px; display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+  .admin-star { font-size:1.4rem; }
+  .admin-banner-text { font-size:.88rem; font-weight:600; color:#c084fc; }
+  .admin-banner-sub { font-size:.75rem; color:#9060c0; margin-top:2px; }
 
   /* MOBILE */
   @media(max-width:900px){
@@ -276,7 +284,7 @@
   }
   @media(max-width:640px){
     .sidebar { display:none; }
-    .main { margin-left:0; padding:16px; }
+    .main { margin-left:0; padding:16px 16px 80px; }
     .grid-3 { grid-template-columns:1fr 1fr; }
     .grid-4 { grid-template-columns:1fr 1fr; }
     .ex-row { grid-template-columns:1fr 1fr 1fr 32px; }
@@ -291,23 +299,10 @@
     background:var(--surface); border-top:1px solid var(--border); padding:8px 16px 12px;
     justify-content:space-around;
   }
-  .mob-nav { display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--muted); font-size:.7rem; cursor:pointer; padding:6px 16px; border-radius:8px; transition:.15s; border:none; background:none; }
+  .mob-nav { display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--muted); font-size:.7rem; cursor:pointer; padding:6px 12px; border-radius:8px; transition:.15s; border:none; background:none; }
   .mob-nav.active { color:var(--accent); }
   .mob-nav svg { margin-bottom:1px; }
 
-  /* ANAMNESE SECTION */
-  .anamnese-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-
-  /* PLAN BADGE */
-  .plan-banner { background:linear-gradient(135deg,#0d1a00,#1a3000); border:1px solid #2a4a00; border-radius:10px; padding:12px 16px; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; }
-  .plan-banner-text { font-size:.82rem; color:var(--accent); font-weight:500; }
-  .plan-banner-label { font-size:.72rem; color:var(--muted); }
-
-  /* COPY PLAN SECTION */
-  .copy-plan-section { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-top:12px; }
-  .copy-plan-title { font-size:.82rem; font-weight:600; margin-bottom:8px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
-
-  /* PRINT AREA */
   @media print {
     .sidebar, .mobile-menu, .modal-overlay, #toast, #loading, .btn, .back-btn, .workout-actions { display:none !important; }
     .main { margin:0; padding:20px; }
@@ -339,7 +334,7 @@
       <label>Senha</label>
       <input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
       <div class="err" id="login-err"></div>
-      <button class="btn btn-primary btn-full" onclick="doLogin()">Entrar</button>
+      <button class="btn btn-primary btn-full" id="login-btn" onclick="doLogin()">Entrar</button>
       <div style="text-align:center;margin-top:16px">
         <button style="background:none;border:none;color:var(--muted);font-size:.82rem;cursor:pointer;font-family:'DM Sans',sans-serif;" onclick="openModal('reset')">Esqueci minha senha</button>
       </div>
@@ -352,7 +347,7 @@
       <label>Senha</label>
       <input type="password" id="reg-pass" placeholder="mínimo 6 caracteres">
       <div class="err" id="reg-err"></div>
-      <button class="btn btn-primary btn-full" onclick="doRegister()">Criar conta</button>
+      <button class="btn btn-primary btn-full" id="reg-btn" onclick="doRegister()">Criar conta</button>
     </div>
   </div>
 </div>
@@ -371,8 +366,8 @@
       Alunos
       <span class="nav-badge" id="nav-badge-students">0</span>
     </button>
-    <button class="nav-item" id="nav-workouts-menu" onclick="showPage('all-workouts')">
-      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+    <button class="nav-item" id="nav-all-workouts" onclick="showPage('all-workouts')">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
       Treinos
     </button>
     <div class="sidebar-bottom">
@@ -383,12 +378,13 @@
           <div class="support-chip-num">(81) 99161-0473</div>
         </div>
       </a>
-      <div class="user-chip">
+      <div class="user-chip" onclick="showPage('profile')" title="Ver perfil">
         <div class="avatar" id="sidebar-avatar">P</div>
         <div class="user-info">
           <div class="user-name" id="sidebar-name">Personal</div>
-          <div class="user-role">Personal Trainer</div>
+          <div class="user-role" id="sidebar-role">Personal Trainer</div>
         </div>
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--muted)"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
       <button class="btn btn-ghost btn-full" onclick="doLogout()">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -410,34 +406,22 @@
       </div>
       <div class="grid-4" style="margin-bottom:24px">
         <div class="stat-card">
-          <div class="stat-label">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-            Total de Alunos
-          </div>
+          <div class="stat-label"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Total de Alunos</div>
           <div class="stat-val" id="stat-students">0</div>
           <div class="stat-sub">cadastrados</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            Treinos
-          </div>
+          <div class="stat-label"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Treinos</div>
           <div class="stat-val" id="stat-workouts">0</div>
           <div class="stat-sub">criados no total</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            Esta Semana
-          </div>
+          <div class="stat-label"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Esta Semana</div>
           <div class="stat-val" id="stat-week">0</div>
           <div class="stat-sub">treinos adicionados</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            Alunos Ativos
-          </div>
+          <div class="stat-label"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Alunos Ativos</div>
           <div class="stat-val" id="stat-active">0</div>
           <div class="stat-sub">com treino ativo</div>
         </div>
@@ -448,12 +432,10 @@
             <div class="section-title">Alunos recentes</div>
             <button class="btn btn-ghost" style="padding:6px 12px;font-size:.8rem" onclick="showPage('students')">Ver todos →</button>
           </div>
-          <div class="student-list" id="dash-student-list"><div class="empty"><div class="empty-icon">🏋️</div><p>Nenhum aluno ainda.<br><small>Clique em "+ Novo Aluno" para começar.</small></p></div></div>
+          <div class="student-list" id="dash-student-list"><div class="empty"><div class="empty-icon">🏋️</div><p>Nenhum aluno ainda.</p></div></div>
         </div>
         <div class="card">
-          <div class="section-header">
-            <div class="section-title">Treinos recentes</div>
-          </div>
+          <div class="section-header"><div class="section-title">Treinos recentes</div></div>
           <div id="dash-workout-list"><div class="empty" style="padding:24px 0"><div class="empty-icon">📋</div><p>Nenhum treino ainda.</p></div></div>
         </div>
       </div>
@@ -498,30 +480,19 @@
           </div>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn btn-ghost" onclick="openModal('edit-student')">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-            Editar
-          </button>
-          <button class="btn btn-primary" onclick="openModal('workout')">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Novo Treino
-          </button>
-          <button class="btn btn-danger" onclick="confirmDeleteStudent()">Excluir Aluno</button>
+          <button class="btn btn-ghost" onclick="openModal('edit-student')">✏️ Editar</button>
+          <button class="btn btn-primary" onclick="openModal('workout')">+ Novo Treino</button>
+          <button class="btn btn-danger" onclick="confirmDeleteStudent()">Excluir</button>
         </div>
       </div>
-
       <div class="tabs">
         <button class="tab-btn active" onclick="switchDetailTab('treinos',this)">🏋️ Treinos</button>
         <button class="tab-btn" onclick="switchDetailTab('info',this)">📋 Informações</button>
         <button class="tab-btn" onclick="switchDetailTab('progresso',this)">📈 Progresso</button>
       </div>
-
-      <!-- TAB: TREINOS -->
       <div id="tab-treinos">
         <div class="workout-list" id="workout-list"><div class="empty"><div class="empty-icon">📋</div><p>Nenhum treino cadastrado ainda.</p></div></div>
       </div>
-
-      <!-- TAB: INFO -->
       <div id="tab-info" style="display:none">
         <div class="grid-2" style="gap:16px">
           <div class="card">
@@ -534,8 +505,6 @@
           </div>
         </div>
       </div>
-
-      <!-- TAB: PROGRESSO -->
       <div id="tab-progresso" style="display:none">
         <div class="page-header" style="margin-bottom:16px">
           <div class="section-title">Registro de Progresso</div>
@@ -556,11 +525,98 @@
       <div id="all-workouts-list"><div class="empty"><div class="empty-icon">📋</div><p>Nenhum treino ainda.</p></div></div>
     </div>
 
+    <!-- PROFILE PAGE -->
+    <div class="page" id="page-profile">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Meu Perfil</div>
+          <div class="page-subtitle">Gerencie suas informações e configurações</div>
+        </div>
+      </div>
+
+      <div class="profile-hero">
+        <div class="profile-avatar-big" id="profile-avatar-big">P</div>
+        <div class="profile-info">
+          <h2 id="profile-name-display">Personal Trainer</h2>
+          <p id="profile-email-display">email@exemplo.com</p>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <span class="badge badge-green" id="profile-badge-role">Personal Trainer</span>
+            <span class="badge badge-admin" id="profile-badge-admin" style="display:none">⭐ Admin</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="admin-panel" style="display:none">
+        <div class="admin-banner">
+          <div class="admin-star">⭐</div>
+          <div>
+            <div class="admin-banner-text">Conta Administrador</div>
+            <div class="admin-banner-sub">Você tem acesso total à plataforma FilSil</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="gap:16px;margin-bottom:16px">
+        <div class="settings-section">
+          <div class="settings-section-title">Informações Pessoais</div>
+          <label>Nome completo</label>
+          <input type="text" id="profile-name-input" placeholder="Seu nome">
+          <label>E-mail</label>
+          <input type="email" id="profile-email-input" placeholder="Seu e-mail" readonly style="opacity:.6;cursor:not-allowed">
+          <div class="err" id="profile-err"></div>
+          <div class="success" id="profile-ok">Perfil atualizado com sucesso!</div>
+          <button class="btn btn-primary btn-full" onclick="saveProfile()">Salvar alterações</button>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">Alterar Senha</div>
+          <label>Senha atual</label>
+          <input type="password" id="old-pass" placeholder="••••••••">
+          <label>Nova senha</label>
+          <input type="password" id="new-pass" placeholder="mínimo 6 caracteres">
+          <label>Confirmar nova senha</label>
+          <input type="password" id="confirm-pass" placeholder="••••••••">
+          <div class="err" id="pass-err"></div>
+          <div class="success" id="pass-ok">Senha alterada com sucesso!</div>
+          <button class="btn btn-ghost btn-full" onclick="changePassword()">Alterar senha</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Estatísticas da Conta</div>
+        <div class="grid-3" style="gap:12px">
+          <div class="stat-card" style="padding:16px">
+            <div class="stat-label">Alunos</div>
+            <div class="stat-val" id="profile-stat-students">0</div>
+          </div>
+          <div class="stat-card" style="padding:16px">
+            <div class="stat-label">Treinos criados</div>
+            <div class="stat-val" id="profile-stat-workouts">0</div>
+          </div>
+          <div class="stat-card" style="padding:16px">
+            <div class="stat-label">Conta criada</div>
+            <div class="stat-val" style="font-size:1rem;margin-top:8px" id="profile-stat-created">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section" style="border-color:#3a1010">
+        <div class="settings-section-title" style="color:var(--danger)">Zona de Perigo</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <div>
+            <div style="font-size:.88rem">Sair da conta</div>
+            <div style="font-size:.78rem;color:var(--muted)">Você precisará fazer login novamente</div>
+          </div>
+          <button class="btn btn-danger" onclick="doLogout()">Sair</button>
+        </div>
+      </div>
+    </div>
+
   </div><!-- .main -->
 </div><!-- #app -->
 
 <!-- MOBILE NAV -->
-<div class="mobile-menu" id="mobile-menu">
+<div class="mobile-menu" id="mobile-menu" style="display:none">
   <button class="mob-nav active" id="mob-dashboard" onclick="showPage('dashboard')">
     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
     Início
@@ -569,58 +625,34 @@
     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
     Alunos
   </button>
-  <button class="mob-nav" id="mob-workouts-menu" onclick="showPage('all-workouts')">
+  <button class="mob-nav" id="mob-all-workouts" onclick="showPage('all-workouts')">
     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
     Treinos
   </button>
+  <button class="mob-nav" id="mob-profile" onclick="showPage('profile')">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Perfil
+  </button>
 </div>
 
-<!-- ══ MODALS ══════════════════════════════════════════════════ -->
-
-<!-- MODAL: NOVO ALUNO -->
+<!-- MODALS -->
 <div class="modal-overlay" id="modal-student">
   <div class="modal">
     <div class="modal-title">➕ Novo Aluno</div>
     <label>Nome completo *</label>
     <input type="text" id="s-name" placeholder="Maria Souza">
     <div class="form-row" style="margin-bottom:16px">
-      <div>
-        <label>Idade</label>
-        <input type="number" id="s-age" placeholder="28" min="1" max="120" style="margin-bottom:0">
-      </div>
-      <div>
-        <label>Telefone / WhatsApp</label>
-        <input type="text" id="s-phone" placeholder="(81) 99999-9999" style="margin-bottom:0">
-      </div>
+      <div><label>Idade</label><input type="number" id="s-age" placeholder="28" min="1" max="120" style="margin-bottom:0"></div>
+      <div><label>Telefone / WhatsApp</label><input type="text" id="s-phone" placeholder="(81) 99999-9999" style="margin-bottom:0"></div>
     </div>
     <label>Objetivo</label>
-    <select id="s-goal">
-      <option value="">Selecione...</option>
-      <option>Hipertrofia</option>
-      <option>Emagrecimento</option>
-      <option>Condicionamento</option>
-      <option>Força</option>
-      <option>Reabilitação</option>
-      <option>Flexibilidade</option>
-      <option>Outro</option>
-    </select>
+    <select id="s-goal"><option value="">Selecione...</option><option>Hipertrofia</option><option>Emagrecimento</option><option>Condicionamento</option><option>Força</option><option>Reabilitação</option><option>Flexibilidade</option><option>Outro</option></select>
     <div class="form-row" style="margin-bottom:16px">
-      <div>
-        <label>Peso atual (kg)</label>
-        <input type="number" id="s-weight" placeholder="70.5" step="0.1" style="margin-bottom:0">
-      </div>
-      <div>
-        <label>Altura (cm)</label>
-        <input type="number" id="s-height" placeholder="170" style="margin-bottom:0">
-      </div>
+      <div><label>Peso atual (kg)</label><input type="number" id="s-weight" placeholder="70.5" step="0.1" style="margin-bottom:0"></div>
+      <div><label>Altura (cm)</label><input type="number" id="s-height" placeholder="170" style="margin-bottom:0"></div>
     </div>
     <label>Nível de experiência</label>
-    <select id="s-level">
-      <option value="">Selecione...</option>
-      <option>Iniciante</option>
-      <option>Intermediário</option>
-      <option>Avançado</option>
-    </select>
+    <select id="s-level"><option value="">Selecione...</option><option>Iniciante</option><option>Intermediário</option><option>Avançado</option></select>
     <label>Observações / Restrições</label>
     <textarea id="s-obs" placeholder="Lesões, restrições médicas, histórico..."></textarea>
     <div class="modal-footer">
@@ -630,50 +662,23 @@
   </div>
 </div>
 
-<!-- MODAL: EDITAR ALUNO -->
 <div class="modal-overlay" id="modal-edit-student">
   <div class="modal">
     <div class="modal-title">✏️ Editar Aluno</div>
     <label>Nome completo *</label>
     <input type="text" id="es-name" placeholder="Maria Souza">
     <div class="form-row" style="margin-bottom:16px">
-      <div>
-        <label>Idade</label>
-        <input type="number" id="es-age" placeholder="28" min="1" max="120" style="margin-bottom:0">
-      </div>
-      <div>
-        <label>Telefone / WhatsApp</label>
-        <input type="text" id="es-phone" placeholder="(81) 99999-9999" style="margin-bottom:0">
-      </div>
+      <div><label>Idade</label><input type="number" id="es-age" placeholder="28" style="margin-bottom:0"></div>
+      <div><label>Telefone / WhatsApp</label><input type="text" id="es-phone" placeholder="(81) 99999-9999" style="margin-bottom:0"></div>
     </div>
     <label>Objetivo</label>
-    <select id="es-goal">
-      <option value="">Selecione...</option>
-      <option>Hipertrofia</option>
-      <option>Emagrecimento</option>
-      <option>Condicionamento</option>
-      <option>Força</option>
-      <option>Reabilitação</option>
-      <option>Flexibilidade</option>
-      <option>Outro</option>
-    </select>
+    <select id="es-goal"><option value="">Selecione...</option><option>Hipertrofia</option><option>Emagrecimento</option><option>Condicionamento</option><option>Força</option><option>Reabilitação</option><option>Flexibilidade</option><option>Outro</option></select>
     <div class="form-row" style="margin-bottom:16px">
-      <div>
-        <label>Peso atual (kg)</label>
-        <input type="number" id="es-weight" placeholder="70.5" step="0.1" style="margin-bottom:0">
-      </div>
-      <div>
-        <label>Altura (cm)</label>
-        <input type="number" id="es-height" placeholder="170" style="margin-bottom:0">
-      </div>
+      <div><label>Peso atual (kg)</label><input type="number" id="es-weight" placeholder="70.5" step="0.1" style="margin-bottom:0"></div>
+      <div><label>Altura (cm)</label><input type="number" id="es-height" placeholder="170" style="margin-bottom:0"></div>
     </div>
     <label>Nível de experiência</label>
-    <select id="es-level">
-      <option value="">Selecione...</option>
-      <option>Iniciante</option>
-      <option>Intermediário</option>
-      <option>Avançado</option>
-    </select>
+    <select id="es-level"><option value="">Selecione...</option><option>Iniciante</option><option>Intermediário</option><option>Avançado</option></select>
     <label>Observações / Restrições</label>
     <textarea id="es-obs" placeholder="Lesões, restrições médicas, histórico..."></textarea>
     <div class="modal-footer">
@@ -683,37 +688,14 @@
   </div>
 </div>
 
-<!-- MODAL: WORKOUT -->
 <div class="modal-overlay" id="modal-workout">
   <div class="modal" style="max-width:660px">
     <div class="modal-title">🏋️ Novo Treino</div>
     <label>Nome do treino *</label>
     <input type="text" id="w-name" placeholder="Ex: Treino A — Peito e Tríceps">
     <div class="form-row" style="margin-bottom:16px">
-      <div>
-        <label>Dia da semana</label>
-        <select id="w-day" style="margin-bottom:0">
-          <option value="">Qualquer dia</option>
-          <option>Segunda-feira</option>
-          <option>Terça-feira</option>
-          <option>Quarta-feira</option>
-          <option>Quinta-feira</option>
-          <option>Sexta-feira</option>
-          <option>Sábado</option>
-          <option>Domingo</option>
-        </select>
-      </div>
-      <div>
-        <label>Duração estimada</label>
-        <select id="w-duration" style="margin-bottom:0">
-          <option value="">Não especificado</option>
-          <option>30 min</option>
-          <option>45 min</option>
-          <option>60 min</option>
-          <option>75 min</option>
-          <option>90 min</option>
-        </select>
-      </div>
+      <div><label>Dia da semana</label><select id="w-day" style="margin-bottom:0"><option value="">Qualquer dia</option><option>Segunda-feira</option><option>Terça-feira</option><option>Quarta-feira</option><option>Quinta-feira</option><option>Sexta-feira</option><option>Sábado</option><option>Domingo</option></select></div>
+      <div><label>Duração estimada</label><select id="w-duration" style="margin-bottom:0"><option value="">Não especificado</option><option>30 min</option><option>45 min</option><option>60 min</option><option>75 min</option><option>90 min</option></select></div>
     </div>
     <label>Observações gerais</label>
     <textarea id="w-obs" placeholder="Aquecimento, instruções gerais, tempo de descanso padrão..." style="min-height:60px"></textarea>
@@ -722,13 +704,7 @@
       <div style="font-weight:600;font-size:.9rem">Exercícios</div>
       <button class="btn btn-ghost" style="padding:5px 12px;font-size:.78rem" onclick="addExerciseRow()">+ Adicionar</button>
     </div>
-    <div class="ex-header">
-      <span>Exercício</span>
-      <span>Séries</span>
-      <span>Reps</span>
-      <span>Carga / Desc.</span>
-      <span></span>
-    </div>
+    <div class="ex-header"><span>Exercício</span><span>Séries</span><span>Reps</span><span>Carga / Desc.</span><span></span></div>
     <div id="exercise-rows"></div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('workout')">Cancelar</button>
@@ -737,7 +713,6 @@
   </div>
 </div>
 
-<!-- MODAL: EDIT WORKOUT -->
 <div class="modal-overlay" id="modal-edit-workout">
   <div class="modal" style="max-width:660px">
     <div class="modal-title">✏️ Editar Treino</div>
@@ -745,30 +720,8 @@
     <label>Nome do treino *</label>
     <input type="text" id="ew-name" placeholder="Ex: Treino A — Peito e Tríceps">
     <div class="form-row" style="margin-bottom:16px">
-      <div>
-        <label>Dia da semana</label>
-        <select id="ew-day" style="margin-bottom:0">
-          <option value="">Qualquer dia</option>
-          <option>Segunda-feira</option>
-          <option>Terça-feira</option>
-          <option>Quarta-feira</option>
-          <option>Quinta-feira</option>
-          <option>Sexta-feira</option>
-          <option>Sábado</option>
-          <option>Domingo</option>
-        </select>
-      </div>
-      <div>
-        <label>Duração estimada</label>
-        <select id="ew-duration" style="margin-bottom:0">
-          <option value="">Não especificado</option>
-          <option>30 min</option>
-          <option>45 min</option>
-          <option>60 min</option>
-          <option>75 min</option>
-          <option>90 min</option>
-        </select>
-      </div>
+      <div><label>Dia da semana</label><select id="ew-day" style="margin-bottom:0"><option value="">Qualquer dia</option><option>Segunda-feira</option><option>Terça-feira</option><option>Quarta-feira</option><option>Quinta-feira</option><option>Sexta-feira</option><option>Sábado</option><option>Domingo</option></select></div>
+      <div><label>Duração estimada</label><select id="ew-duration" style="margin-bottom:0"><option value="">Não especificado</option><option>30 min</option><option>45 min</option><option>60 min</option><option>75 min</option><option>90 min</option></select></div>
     </div>
     <label>Observações gerais</label>
     <textarea id="ew-obs" style="min-height:60px"></textarea>
@@ -777,13 +730,7 @@
       <div style="font-weight:600;font-size:.9rem">Exercícios</div>
       <button class="btn btn-ghost" style="padding:5px 12px;font-size:.78rem" onclick="addExerciseRowTo('edit-exercise-rows')">+ Adicionar</button>
     </div>
-    <div class="ex-header">
-      <span>Exercício</span>
-      <span>Séries</span>
-      <span>Reps</span>
-      <span>Carga / Desc.</span>
-      <span></span>
-    </div>
+    <div class="ex-header"><span>Exercício</span><span>Séries</span><span>Reps</span><span>Carga / Desc.</span><span></span></div>
     <div id="edit-exercise-rows"></div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('edit-workout')">Cancelar</button>
@@ -792,29 +739,16 @@
   </div>
 </div>
 
-<!-- MODAL: PROGRESS -->
 <div class="modal-overlay" id="modal-progress">
   <div class="modal" style="max-width:440px">
     <div class="modal-title">📈 Registrar Progresso</div>
     <div class="form-row" style="margin-bottom:16px">
-      <div>
-        <label>Data</label>
-        <input type="date" id="p-date" style="margin-bottom:0">
-      </div>
-      <div>
-        <label>Peso (kg)</label>
-        <input type="number" id="p-weight" placeholder="70.5" step="0.1" style="margin-bottom:0">
-      </div>
+      <div><label>Data</label><input type="date" id="p-date" style="margin-bottom:0"></div>
+      <div><label>Peso (kg)</label><input type="number" id="p-weight" placeholder="70.5" step="0.1" style="margin-bottom:0"></div>
     </div>
     <div class="form-row" style="margin-bottom:16px">
-      <div>
-        <label>% Gordura (se souber)</label>
-        <input type="number" id="p-fat" placeholder="18.5" step="0.1" style="margin-bottom:0">
-      </div>
-      <div>
-        <label>Circunferência abdominal (cm)</label>
-        <input type="number" id="p-waist" placeholder="85" step="0.5" style="margin-bottom:0">
-      </div>
+      <div><label>% Gordura</label><input type="number" id="p-fat" placeholder="18.5" step="0.1" style="margin-bottom:0"></div>
+      <div><label>Circunf. abdominal (cm)</label><input type="number" id="p-waist" placeholder="85" step="0.5" style="margin-bottom:0"></div>
     </div>
     <label>Observações</label>
     <textarea id="p-obs" placeholder="Como o aluno se sentiu, evolução notada..." style="min-height:70px"></textarea>
@@ -825,11 +759,10 @@
   </div>
 </div>
 
-<!-- MODAL: RESET PASSWORD -->
 <div class="modal-overlay" id="modal-reset">
   <div class="modal" style="max-width:400px">
     <div class="modal-title">🔑 Recuperar Senha</div>
-    <p style="color:var(--muted);font-size:.88rem;margin-bottom:16px">Digite seu e-mail e enviaremos as instruções de recuperação.</p>
+    <p style="color:var(--muted);font-size:.88rem;margin-bottom:16px">Digite seu e-mail para receber as instruções de recuperação.</p>
     <label>E-mail</label>
     <input type="email" id="reset-email" placeholder="seuemail@exemplo.com">
     <div class="err" id="reset-err"></div>
@@ -841,7 +774,6 @@
   </div>
 </div>
 
-<!-- MODAL: CONFIRM DELETE -->
 <div class="modal-overlay" id="modal-confirm">
   <div class="modal" style="max-width:380px">
     <div class="modal-title">⚠️ Confirmar exclusão</div>
@@ -859,12 +791,15 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail
+  signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail,
+  EmailAuthProvider, reauthenticateWithCredential, updatePassword
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import {
   getFirestore, collection, doc, addDoc, getDocs, getDoc, deleteDoc,
-  updateDoc, query, orderBy, serverTimestamp, where
+  updateDoc, query, orderBy, serverTimestamp, setDoc
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const ADMIN_EMAIL = 'bernardorodrigues161118@gmail.com';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBQ2lLtKow3dbTdaJiOWyULBiLO24tt_AQ",
@@ -884,25 +819,47 @@ let currentUser = null;
 let currentStudentId = null;
 let allStudentsCache = [];
 let currentFilter = 'all';
+let isAdmin = false;
 
 // ── AUTH STATE ───────────────────────────────────────────────
-onAuthStateChanged(auth, user => {
-  hide('loading');
+onAuthStateChanged(auth, async (user) => {
+  document.getElementById('loading').style.display = 'none';
   if (user) {
     currentUser = user;
-    show('app');
-    const mobileMenu = document.getElementById('mobile-menu');
-    if (mobileMenu) mobileMenu.style.display = 'flex';
-    hide('auth-screen');
-    const name = user.displayName || user.email;
+    isAdmin = user.email === ADMIN_EMAIL;
+
+    document.getElementById('app').style.display = '';
+    document.getElementById('mobile-menu').style.display = 'flex';
+    document.getElementById('auth-screen').style.display = 'none';
+
+    const name = user.displayName || user.email.split('@')[0];
     document.getElementById('sidebar-name').textContent = name;
     document.getElementById('sidebar-avatar').textContent = name[0].toUpperCase();
+    document.getElementById('sidebar-role').textContent = isAdmin ? '⭐ Administrador' : 'Personal Trainer';
     document.getElementById('dash-greeting').textContent = `Olá, ${name.split(' ')[0]}! Bom treino 💪`;
+
+    // Ensure trainer doc exists in Firestore
+    try {
+      const trainerRef = doc(db, 'trainers', user.uid);
+      const trainerSnap = await getDoc(trainerRef);
+      if (!trainerSnap.exists()) {
+        await setDoc(trainerRef, {
+          name: user.displayName || '',
+          email: user.email,
+          createdAt: serverTimestamp(),
+          isAdmin: isAdmin
+        });
+      } else if (isAdmin && !trainerSnap.data().isAdmin) {
+        await updateDoc(trainerRef, { isAdmin: true });
+      }
+    } catch(e) { console.warn('Trainer doc init:', e); }
+
     loadDashboard();
   } else {
     currentUser = null;
-    hide('app');
-    show('auth-screen');
+    isAdmin = false;
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('auth-screen').style.display = '';
     document.getElementById('mobile-menu').style.display = 'none';
   }
 });
@@ -910,29 +867,33 @@ onAuthStateChanged(auth, user => {
 // ── AUTH ─────────────────────────────────────────────────────
 window.doLogin = async () => {
   const email = v('login-email'), pass = v('login-pass');
-  hideErr('login-err');
+  hideEl('login-err');
   if (!email || !pass) return showErr('login-err','Preencha todos os campos.');
+  const btn = document.getElementById('login-btn');
+  btn.textContent = 'Entrando...'; btn.disabled = true;
   try {
-    document.querySelector('#tab-login .btn-primary').textContent = 'Entrando...';
     await signInWithEmailAndPassword(auth, email, pass);
   } catch(e) {
-    document.querySelector('#tab-login .btn-primary').textContent = 'Entrar';
+    btn.textContent = 'Entrar'; btn.disabled = false;
     showErr('login-err', friendlyError(e));
   }
 };
 
 window.doRegister = async () => {
   const name = v('reg-name'), email = v('reg-email'), pass = v('reg-pass');
-  hideErr('reg-err');
+  hideEl('reg-err');
   if (!name) return showErr('reg-err','Nome obrigatório.');
   if (!email) return showErr('reg-err','E-mail obrigatório.');
   if (pass.length < 6) return showErr('reg-err','Senha deve ter no mínimo 6 caracteres.');
+  const btn = document.getElementById('reg-btn');
+  btn.textContent = 'Criando...'; btn.disabled = true;
   try {
-    document.querySelector('#tab-register .btn-primary').textContent = 'Criando...';
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
     await updateProfile(cred.user, { displayName: name });
+    // Force refresh so displayName is available
+    await cred.user.reload();
   } catch(e) {
-    document.querySelector('#tab-register .btn-primary').textContent = 'Criar conta';
+    btn.textContent = 'Criar conta'; btn.disabled = false;
     showErr('reg-err', friendlyError(e));
   }
 };
@@ -943,7 +904,7 @@ window.doLogout = async () => {
 
 window.doReset = async () => {
   const email = v('reset-email');
-  hideErr('reset-err');
+  hideEl('reset-err');
   document.getElementById('reset-ok').style.display = 'none';
   if (!email) return showErr('reset-err','Digite seu e-mail.');
   try {
@@ -961,71 +922,155 @@ window.switchTab = (tab) => {
 // ── NAVIGATION ───────────────────────────────────────────────
 window.showPage = (page) => {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.querySelectorAll('.mob-nav').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-' + page)?.classList.add('active');
-  document.getElementById('nav-' + page)?.classList.add('active');
-  const mobId = page === 'all-workouts' ? 'mob-workouts-menu' : 'mob-' + page;
-  document.getElementById(mobId)?.classList.add('active');
-  const navId = page === 'all-workouts' ? 'nav-workouts-menu' : 'nav-' + page;
-  document.getElementById(navId)?.classList.add('active');
+  document.querySelectorAll('.nav-item, .mob-nav').forEach(n => n.classList.remove('active'));
+  const pageEl = document.getElementById('page-' + page);
+  if (pageEl) pageEl.classList.add('active');
+  const navEl = document.getElementById('nav-' + page);
+  if (navEl) navEl.classList.add('active');
+  const mobEl = document.getElementById('mob-' + page);
+  if (mobEl) mobEl.classList.add('active');
   if (page === 'dashboard') loadDashboard();
   if (page === 'students') loadStudents();
   if (page === 'all-workouts') loadAllWorkouts();
+  if (page === 'profile') loadProfilePage();
+};
+
+// ── PROFILE PAGE ──────────────────────────────────────────────
+async function loadProfilePage() {
+  if (!currentUser) return;
+  const name = currentUser.displayName || currentUser.email.split('@')[0];
+  document.getElementById('profile-avatar-big').textContent = name[0].toUpperCase();
+  document.getElementById('profile-name-display').textContent = name;
+  document.getElementById('profile-email-display').textContent = currentUser.email;
+  document.getElementById('profile-name-input').value = name;
+  document.getElementById('profile-email-input').value = currentUser.email;
+
+  const adminPanel = document.getElementById('admin-panel');
+  const adminBadge = document.getElementById('profile-badge-admin');
+  if (isAdmin) {
+    adminPanel.style.display = '';
+    adminBadge.style.display = '';
+  } else {
+    adminPanel.style.display = 'none';
+    adminBadge.style.display = 'none';
+  }
+
+  // Stats
+  try {
+    const snap = await getDocs(collection(db, 'trainers', currentUser.uid, 'students'));
+    document.getElementById('profile-stat-students').textContent = snap.size;
+    let totalW = 0;
+    for (const s of snap.docs) {
+      const ws = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', s.id, 'workouts'));
+      totalW += ws.size;
+    }
+    document.getElementById('profile-stat-workouts').textContent = totalW;
+  } catch(e) {}
+
+  // Creation date
+  const meta = currentUser.metadata;
+  if (meta?.creationTime) {
+    const d = new Date(meta.creationTime);
+    document.getElementById('profile-stat-created').textContent = d.toLocaleDateString('pt-BR');
+  }
+}
+
+window.saveProfile = async () => {
+  hideEl('profile-err');
+  hideEl('profile-ok');
+  const name = v('profile-name-input');
+  if (!name) return showErr('profile-err', 'Nome obrigatório.');
+  try {
+    await updateProfile(currentUser, { displayName: name });
+    await updateDoc(doc(db, 'trainers', currentUser.uid), { name });
+    document.getElementById('profile-ok').style.display = 'block';
+    document.getElementById('sidebar-name').textContent = name;
+    document.getElementById('sidebar-avatar').textContent = name[0].toUpperCase();
+    document.getElementById('profile-avatar-big').textContent = name[0].toUpperCase();
+    document.getElementById('profile-name-display').textContent = name;
+    toast('Perfil atualizado! ✅');
+  } catch(e) { showErr('profile-err', 'Erro ao salvar: ' + e.message); }
+};
+
+window.changePassword = async () => {
+  hideEl('pass-err');
+  hideEl('pass-ok');
+  const oldPass = v('old-pass');
+  const newPass = v('new-pass');
+  const confirmPass = v('confirm-pass');
+  if (!oldPass || !newPass || !confirmPass) return showErr('pass-err', 'Preencha todos os campos.');
+  if (newPass.length < 6) return showErr('pass-err', 'Nova senha deve ter mínimo 6 caracteres.');
+  if (newPass !== confirmPass) return showErr('pass-err', 'As senhas não coincidem.');
+  try {
+    const cred = EmailAuthProvider.credential(currentUser.email, oldPass);
+    await reauthenticateWithCredential(currentUser, cred);
+    await updatePassword(currentUser, newPass);
+    document.getElementById('pass-ok').style.display = 'block';
+    document.getElementById('old-pass').value = '';
+    document.getElementById('new-pass').value = '';
+    document.getElementById('confirm-pass').value = '';
+    toast('Senha alterada com sucesso! 🔒');
+  } catch(e) {
+    if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
+      showErr('pass-err', 'Senha atual incorreta.');
+    } else {
+      showErr('pass-err', 'Erro: ' + e.message);
+    }
+  }
 };
 
 // ── DASHBOARD ────────────────────────────────────────────────
 async function loadDashboard() {
   if (!currentUser) return;
-  const snap = await getDocs(collection(db, 'trainers', currentUser.uid, 'students'));
-  const students = snap.docs;
-  allStudentsCache = students.map(s => ({id:s.id,...s.data()}));
-  document.getElementById('stat-students').textContent = students.length;
-  document.getElementById('nav-badge-students').textContent = students.length;
+  try {
+    const snap = await getDocs(collection(db, 'trainers', currentUser.uid, 'students'));
+    const students = snap.docs;
+    allStudentsCache = students.map(s => ({id:s.id,...s.data()}));
+    document.getElementById('stat-students').textContent = students.length;
+    document.getElementById('nav-badge-students').textContent = students.length;
 
-  let totalWorkouts = 0, weekWorkouts = 0;
-  const oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  for (const s of students) {
-    const ws = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', s.id, 'workouts'));
-    totalWorkouts += ws.size;
-    ws.docs.forEach(w => {
-      const ts = w.data().createdAt?.toDate?.();
-      if (ts && ts > oneWeekAgo) weekWorkouts++;
-    });
-  }
-  document.getElementById('stat-workouts').textContent = totalWorkouts;
-  document.getElementById('stat-week').textContent = weekWorkouts;
-  document.getElementById('stat-active').textContent = students.length;
+    let totalWorkouts = 0, weekWorkouts = 0;
+    const oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    for (const s of students) {
+      const ws = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', s.id, 'workouts'));
+      totalWorkouts += ws.size;
+      ws.docs.forEach(w => {
+        const ts = w.data().createdAt?.toDate?.();
+        if (ts && ts > oneWeekAgo) weekWorkouts++;
+      });
+    }
+    document.getElementById('stat-workouts').textContent = totalWorkouts;
+    document.getElementById('stat-week').textContent = weekWorkouts;
+    document.getElementById('stat-active').textContent = students.length;
 
-  // Recent students
-  const list = document.getElementById('dash-student-list');
-  if (students.length === 0) {
-    list.innerHTML = '<div class="empty"><div class="empty-icon">🏋️</div><p>Nenhum aluno ainda.<br><small>Clique em "+ Novo Aluno" para começar.</small></p></div>';
-  } else {
-    list.innerHTML = students.slice(0,4).map(s => studentCardHTML(s.id, s.data())).join('');
-  }
+    const list = document.getElementById('dash-student-list');
+    if (students.length === 0) {
+      list.innerHTML = '<div class="empty"><div class="empty-icon">🏋️</div><p>Nenhum aluno ainda.<br><small>Clique em "+ Novo Aluno" para começar.</small></p></div>';
+    } else {
+      list.innerHTML = students.slice(0,4).map(s => studentCardHTML(s.id, s.data())).join('');
+    }
 
-  // Recent workouts
-  const wEl = document.getElementById('dash-workout-list');
-  const recentWorkouts = [];
-  for (const s of students.slice(0,5)) {
-    const ws = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', s.id, 'workouts'));
-    ws.docs.forEach(w => recentWorkouts.push({sid:s.id, sname:s.data().name, wid:w.id, ...w.data()}));
-  }
-  recentWorkouts.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
-  if (recentWorkouts.length === 0) {
-    wEl.innerHTML = '<div class="empty" style="padding:24px 0"><div class="empty-icon">📋</div><p>Nenhum treino ainda.</p></div>';
-  } else {
-    wEl.innerHTML = recentWorkouts.slice(0,5).map(w => `
-      <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="openStudent('${w.sid}')">
-        <div style="width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0"></div>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:.88rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${w.name}</div>
-          <div style="font-size:.75rem;color:var(--muted)">${w.sname}</div>
-        </div>
-        <div style="font-size:.75rem;color:var(--muted)">${w.createdAt?.toDate ? w.createdAt.toDate().toLocaleDateString('pt-BR') : ''}</div>
-      </div>`).join('');
-  }
+    const wEl = document.getElementById('dash-workout-list');
+    const recentWorkouts = [];
+    for (const s of students.slice(0,5)) {
+      const ws = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', s.id, 'workouts'));
+      ws.docs.forEach(w => recentWorkouts.push({sid:s.id, sname:s.data().name, wid:w.id, ...w.data()}));
+    }
+    recentWorkouts.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+    if (recentWorkouts.length === 0) {
+      wEl.innerHTML = '<div class="empty" style="padding:24px 0"><div class="empty-icon">📋</div><p>Nenhum treino ainda.</p></div>';
+    } else {
+      wEl.innerHTML = recentWorkouts.slice(0,5).map(w => `
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="openStudent('${w.sid}')">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0"></div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:.88rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${w.name}</div>
+            <div style="font-size:.75rem;color:var(--muted)">${w.sname}</div>
+          </div>
+          <div style="font-size:.75rem;color:var(--muted)">${w.createdAt?.toDate ? w.createdAt.toDate().toLocaleDateString('pt-BR') : ''}</div>
+        </div>`).join('');
+    }
+  } catch(e) { console.error('Dashboard error:', e); }
 }
 
 // ── STUDENTS ─────────────────────────────────────────────────
@@ -1077,42 +1122,35 @@ function studentCardHTML(id, d) {
 
 window.openStudent = async (sid) => {
   currentStudentId = sid;
-  const snap = await getDoc(doc(db, 'trainers', currentUser.uid, 'students', sid));
-  const d = snap.data();
-  document.getElementById('detail-name').textContent = d.name;
-  document.getElementById('detail-avatar').textContent = (d.name||'?')[0].toUpperCase();
-  const metaParts = [d.age ? d.age + ' anos' : '', d.weight ? d.weight + ' kg' : '', d.goal, d.level].filter(Boolean);
-  document.getElementById('detail-meta').textContent = metaParts.join(' · ');
+  try {
+    const snap = await getDoc(doc(db, 'trainers', currentUser.uid, 'students', sid));
+    if (!snap.exists()) { toast('Aluno não encontrado.','err'); return; }
+    const d = snap.data();
+    document.getElementById('detail-name').textContent = d.name;
+    document.getElementById('detail-avatar').textContent = (d.name||'?')[0].toUpperCase();
+    const metaParts = [d.age ? d.age + ' anos' : '', d.weight ? d.weight + ' kg' : '', d.goal, d.level].filter(Boolean);
+    document.getElementById('detail-meta').textContent = metaParts.join(' · ');
 
-  // Info rows
-  const infoRows = [
-    ['Nome', d.name],
-    ['Idade', d.age ? d.age + ' anos' : '—'],
-    ['Telefone', d.phone || '—'],
-    ['Peso', d.weight ? d.weight + ' kg' : '—'],
-    ['Altura', d.height ? d.height + ' cm' : '—'],
-    ['IMC', (d.weight && d.height) ? (d.weight / ((d.height/100)**2)).toFixed(1) : '—'],
-    ['Objetivo', d.goal || '—'],
-    ['Nível', d.level || '—'],
-  ].map(([l,v]) => `<div class="info-row"><span class="info-row-label">${l}</span><span class="info-row-val">${v}</span></div>`).join('');
-  document.getElementById('detail-info-rows').innerHTML = infoRows;
-  document.getElementById('detail-obs').textContent = d.obs || 'Sem observações registradas.';
+    const infoRows = [
+      ['Nome', d.name],['Idade', d.age ? d.age + ' anos' : '—'],['Telefone', d.phone || '—'],
+      ['Peso', d.weight ? d.weight + ' kg' : '—'],['Altura', d.height ? d.height + ' cm' : '—'],
+      ['IMC', (d.weight && d.height) ? (d.weight / ((d.height/100)**2)).toFixed(1) : '—'],
+      ['Objetivo', d.goal || '—'],['Nível', d.level || '—'],
+    ].map(([l,val]) => `<div class="info-row"><span class="info-row-label">${l}</span><span class="info-row-val">${val}</span></div>`).join('');
+    document.getElementById('detail-info-rows').innerHTML = infoRows;
+    document.getElementById('detail-obs').textContent = d.obs || 'Sem observações registradas.';
 
-  // Pre-fill edit form
-  setVal('es-name', d.name);
-  setVal('es-age', d.age);
-  setVal('es-phone', d.phone);
-  setVal('es-weight', d.weight);
-  setVal('es-height', d.height);
-  setVal('es-goal', d.goal);
-  setVal('es-level', d.level);
-  setVal('es-obs', d.obs);
+    setVal('es-name', d.name); setVal('es-age', d.age); setVal('es-phone', d.phone);
+    setVal('es-weight', d.weight); setVal('es-height', d.height);
+    setVal('es-goal', d.goal); setVal('es-level', d.level); setVal('es-obs', d.obs);
 
-  switchDetailTab('treinos', document.querySelector('.tab-btn.active') || document.querySelector('.tab-btn'));
-  loadWorkouts(sid);
-  loadProgress(sid);
-  showPage('student-detail');
-  document.getElementById('nav-students').classList.add('active');
+    // Reset to treinos tab
+    switchDetailTab('treinos', document.querySelectorAll('.tab-btn')[0]);
+    loadWorkouts(sid);
+    loadProgress(sid);
+    showPage('student-detail');
+    document.getElementById('nav-students').classList.add('active');
+  } catch(e) { toast('Erro ao abrir aluno: ' + e.message, 'err'); }
 };
 
 window.saveStudent = async () => {
@@ -1142,17 +1180,15 @@ window.updateStudent = async () => {
 };
 
 window.confirmDeleteStudent = () => {
-  document.getElementById('confirm-msg').textContent = 'Isso excluirá o aluno e todos os treinos e registros de progresso. Esta ação não pode ser desfeita.';
+  document.getElementById('confirm-msg').textContent = 'Isso excluirá o aluno e todos os treinos. Esta ação não pode ser desfeita.';
   document.getElementById('confirm-action-btn').onclick = deleteStudent;
   openModal('confirm');
 };
 
 async function deleteStudent() {
   const sid = currentStudentId;
-  // delete workouts
   const ws = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', sid, 'workouts'));
   for (const w of ws.docs) await deleteDoc(w.ref);
-  // delete progress
   const ps = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', sid, 'progress'));
   for (const p of ps.docs) await deleteDoc(p.ref);
   await deleteDoc(doc(db, 'trainers', currentUser.uid, 'students', sid));
@@ -1172,12 +1208,7 @@ async function loadWorkouts(sid) {
 
 function workoutCardHTML(id, d) {
   const rows = (d.exercises || []).map(e =>
-    `<tr>
-      <td><strong>${e.name||'—'}</strong></td>
-      <td><span class="ex-chip">${e.sets||'—'}</span></td>
-      <td><span class="ex-chip">${e.reps||'—'}</span></td>
-      <td>${e.load||'—'}</td>
-    </tr>`
+    `<tr><td><strong>${e.name||'—'}</strong></td><td><span class="ex-chip">${e.sets||'—'}</span></td><td><span class="ex-chip">${e.reps||'—'}</span></td><td>${e.load||'—'}</td></tr>`
   ).join('');
   const date = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleDateString('pt-BR') : '';
   const dayBadge = d.day ? `<span class="badge">${d.day}</span>` : '';
@@ -1192,22 +1223,19 @@ function workoutCardHTML(id, d) {
         <span class="workout-date">${date}</span>
         <button class="btn btn-ghost" style="padding:5px 10px;font-size:.78rem" onclick="openEditWorkout('${id}')">✏️ Editar</button>
         <button class="btn btn-ghost" style="padding:5px 10px;font-size:.78rem" onclick="copyWorkoutToClipboard('${id}')">📋 Copiar</button>
+        <button class="btn btn-ghost" style="padding:5px 10px;font-size:.78rem" onclick="shareWorkoutWhatsApp('${id}')">📲 WhatsApp</button>
         <button class="btn btn-danger" style="padding:5px 10px;font-size:.78rem" onclick="confirmDeleteWorkout('${id}')">Excluir</button>
       </div>
     </div>
     ${d.obs ? `<div style="font-size:.83rem;color:var(--muted);margin:8px 0;background:var(--bg);border-radius:6px;padding:8px 12px;">${d.obs}</div>` : ''}
     ${rows ? `<table class="exercise-table"><thead><tr><th>Exercício</th><th>Séries</th><th>Reps</th><th>Carga / Desc.</th></tr></thead><tbody>${rows}</tbody></table>` : '<div style="color:var(--muted);font-size:.85rem;padding:8px 0">Nenhum exercício adicionado.</div>'}
-    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-ghost" style="padding:6px 12px;font-size:.78rem" onclick="shareWorkoutWhatsApp('${id}')">📲 Enviar por WhatsApp</button>
-      <button class="btn btn-ghost" style="padding:6px 12px;font-size:.78rem" onclick="printWorkout('${id}')">🖨️ Imprimir</button>
-    </div>
   </div>`;
 }
 
 window.addExerciseRow = () => addExerciseRowTo('exercise-rows');
 window.addExerciseRowTo = (containerId) => {
   const container = document.getElementById(containerId);
-  const idx = Date.now();
+  const idx = Date.now() + Math.floor(Math.random()*1000);
   const row = document.createElement('div');
   row.className = 'ex-row'; row.id = 'ex-' + idx;
   row.innerHTML = `
@@ -1248,14 +1276,11 @@ window.openEditWorkout = async (wid) => {
   const snap = await getDoc(doc(db, 'trainers', currentUser.uid, 'students', currentStudentId, 'workouts', wid));
   const d = snap.data();
   document.getElementById('ew-id').value = wid;
-  setVal('ew-name', d.name);
-  setVal('ew-obs', d.obs);
-  setVal('ew-day', d.day);
-  setVal('ew-duration', d.duration);
+  setVal('ew-name', d.name); setVal('ew-obs', d.obs); setVal('ew-day', d.day); setVal('ew-duration', d.duration);
   const container = document.getElementById('edit-exercise-rows');
   container.innerHTML = '';
   (d.exercises || []).forEach(e => {
-    const idx = Date.now() + Math.random();
+    const idx = Date.now() + Math.floor(Math.random()*100000);
     const row = document.createElement('div');
     row.className = 'ex-row'; row.id = 'ex-' + idx;
     row.innerHTML = `
@@ -1270,7 +1295,7 @@ window.openEditWorkout = async (wid) => {
 };
 
 window.updateWorkout = async () => {
-  const wid = v('ew-id') || document.getElementById('ew-id').value;
+  const wid = document.getElementById('ew-id').value;
   const name = v('ew-name');
   if (!name) return toast('Nome do treino é obrigatório!','err');
   const exercises = getExercisesFrom('edit-exercise-rows');
@@ -1295,7 +1320,7 @@ async function deleteWorkout(wid) {
   loadWorkouts(currentStudentId);
 }
 
-// ── COPY / SHARE ─────────────────────────────────────────────
+// ── COPY / SHARE ──────────────────────────────────────────────
 window.copyWorkoutToClipboard = async (wid) => {
   const snap = await getDoc(doc(db, 'trainers', currentUser.uid, 'students', currentStudentId, 'workouts', wid));
   const d = snap.data();
@@ -1308,7 +1333,7 @@ window.copyWorkoutToClipboard = async (wid) => {
     text += `${i+1}. ${e.name} — ${e.sets||'—'} x ${e.reps||'—'}${e.load ? ` (${e.load})` : ''}\n`;
   });
   text += `\n💬 Dúvidas? (81) 99161-0473`;
-  try { await navigator.clipboard.writeText(text); toast('Treino copiado para a área de transferência! 📋'); }
+  try { await navigator.clipboard.writeText(text); toast('Treino copiado! 📋'); }
   catch(e) { toast('Não foi possível copiar.','err'); }
 };
 
@@ -1327,13 +1352,7 @@ window.shareWorkoutWhatsApp = async (wid) => {
   });
   text += `\nQualquer dúvida, me chame! 💪\n(81) 99161-0473`;
   const phone = s.phone ? '55' + s.phone.replace(/\D/g,'') : '';
-  const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
-  window.open(url, '_blank');
-};
-
-window.printWorkout = (wid) => {
-  // just use browser print
-  window.print();
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
 };
 
 // ── PROGRESS ─────────────────────────────────────────────────
@@ -1341,7 +1360,7 @@ async function loadProgress(sid) {
   const list = document.getElementById('progress-list');
   if (!list) return;
   const snap = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', sid, 'progress'));
-  if (snap.empty) { list.innerHTML = '<div class="empty"><div class="empty-icon">📊</div><p>Nenhum registro ainda.<br><small>Registre o progresso do aluno ao longo do tempo.</small></p></div>'; return; }
+  if (snap.empty) { list.innerHTML = '<div class="empty"><div class="empty-icon">📊</div><p>Nenhum registro ainda.</p></div>'; return; }
   const entries = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b) => b.date > a.date ? 1 : -1);
   list.innerHTML = entries.map(e => `
     <div class="history-entry">
@@ -1399,11 +1418,11 @@ async function loadAllWorkouts() {
         </div>
         <div style="font-size:.75rem;color:var(--muted)">${w.createdAt?.toDate ? w.createdAt.toDate().toLocaleDateString('pt-BR') : ''}</div>
       </div>
-      ${(w.exercises||[]).length > 0 ? `<div style="color:var(--muted);font-size:.83rem;margin-top:8px">${(w.exercises).map(e=>e.name).filter(Boolean).join(' · ')}</div>` : ''}
+      ${(w.exercises||[]).length > 0 ? `<div style="color:var(--muted);font-size:.83rem;margin-top:8px">${w.exercises.map(e=>e.name).filter(Boolean).join(' · ')}</div>` : ''}
     </div>`).join('');
 }
 
-// ── TABS ─────────────────────────────────────────────────────
+// ── TABS ──────────────────────────────────────────────────────
 window.switchDetailTab = (tab, btn) => {
   ['treinos','info','progresso'].forEach(t => {
     const el = document.getElementById('tab-' + t);
@@ -1425,15 +1444,15 @@ window.openModal = (id) => {
   document.getElementById('modal-' + id)?.classList.add('open');
 };
 window.closeModal = (id) => document.getElementById('modal-' + id)?.classList.remove('open');
-document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); }));
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); });
+});
 
 // ── HELPERS ───────────────────────────────────────────────────
 function v(id) { return document.getElementById(id)?.value?.trim() || ''; }
-function show(id) { document.getElementById(id).style.display = ''; }
-function hide(id) { document.getElementById(id).style.display = 'none'; }
 function setVal(id, val) { const el = document.getElementById(id); if(el) el.value = val || ''; }
-function showErr(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.style.display = 'block'; }
-function hideErr(id) { const el = document.getElementById(id); if(el) el.style.display = 'none'; }
+function showErr(id, msg) { const el = document.getElementById(id); if(el){ el.textContent = msg; el.style.display = 'block'; } }
+function hideEl(id) { const el = document.getElementById(id); if(el) el.style.display = 'none'; }
 function clearFields(ids) { ids.forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; }); }
 
 function toast(msg, type='ok') {
@@ -1461,3 +1480,6 @@ function friendlyError(e) {
 </script>
 </body>
 </html>
+HTMLEOF
+echo "File created successfully"
+wc -l /home/claude/filsil.html
