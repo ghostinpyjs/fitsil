@@ -11,25 +11,25 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--bg);color:var(--txt);font-family:'Outfit',sans-serif;min-height:100vh}
 /* LOADING */
-#ld{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .4s}
+#ld{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .3s}
+#ld.hide{opacity:0;pointer-events:none}
 #ld .logo{font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;color:var(--ac)}
 #ld .sp{width:28px;height:28px;border:3px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 /* AUTH */
-#auth{min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 40% 20%,#0b2010 0%,var(--bg) 65%)}
+#auth{min-height:100vh;display:none;align-items:center;justify-content:center;background:radial-gradient(ellipse at 40% 20%,#0b2010 0%,var(--bg) 65%)}
+#auth.on{display:flex}
 .abox{width:100%;max-width:390px;padding:40px 36px;background:var(--s1);border:1px solid var(--bd);border-radius:16px}
 .alogo{font-family:'Space Grotesk',sans-serif;font-size:1.9rem;font-weight:700;color:var(--ac)}
 .atag{display:inline-block;background:#0b2010;border:1px solid #1e4020;border-radius:20px;padding:3px 11px;font-size:.72rem;color:var(--ac);margin:6px 0 18px}
 .atabs{display:flex;gap:3px;background:var(--bg);border-radius:8px;padding:3px;margin-bottom:22px}
 .atab{flex:1;padding:7px;border:none;background:transparent;color:var(--mt);font-family:'Outfit',sans-serif;font-size:.88rem;border-radius:6px;cursor:pointer;transition:.2s}
 .atab.on{background:var(--ac);color:#000;font-weight:700}
-/* FORMS */
 label{display:block;font-size:.73rem;color:var(--mt);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em}
 input,textarea,select{width:100%;padding:10px 13px;background:var(--bg);border:1px solid var(--bd);border-radius:var(--r);color:var(--txt);font-family:'Outfit',sans-serif;font-size:.9rem;outline:none;transition:.2s;margin-bottom:12px}
 input:focus,textarea:focus,select:focus{border-color:var(--ac)}
 textarea{resize:vertical;min-height:72px}
 select option{background:var(--s2)}
-/* BUTTONS */
 .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 17px;border:none;border-radius:var(--r);font-family:'Outfit',sans-serif;font-size:.87rem;font-weight:500;cursor:pointer;transition:.18s}
 .p{background:var(--ac);color:#000;font-weight:700}.p:hover{background:var(--ac2)}
 .g{background:transparent;color:var(--mt);border:1px solid var(--bd)}.g:hover{border-color:var(--ac);color:var(--ac)}
@@ -37,8 +37,12 @@ select option{background:var(--s2)}
 .fw{width:100%;justify-content:center}
 .sm{padding:5px 12px;font-size:.8rem}
 .err{color:var(--red);font-size:.81rem;display:none;margin-bottom:10px}
+/* PHONE */
+.ph-info{background:#071a0b;border:1px solid #1a3a10;border-radius:8px;padding:10px 13px;font-size:.8rem;color:#7ab87a;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+#recaptcha-container{min-height:78px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
 /* APP */
 #app{display:none}
+#app.on{display:block}
 .sb{width:232px;background:var(--s1);border-right:1px solid var(--bd);position:fixed;top:0;left:0;height:100vh;display:flex;flex-direction:column;padding:20px 12px;overflow-y:auto;z-index:40}
 .slogo{font-family:'Space Grotesk',sans-serif;font-size:1.35rem;font-weight:700;color:var(--ac);padding:0 8px;margin-bottom:4px}
 .stag{font-size:.68rem;color:var(--ac);background:#0b2010;border:1px solid #1a3510;border-radius:20px;padding:2px 9px;display:inline-block;margin:0 8px 20px}
@@ -51,19 +55,16 @@ select option{background:var(--s2)}
 .av{width:30px;height:30px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-weight:700;color:#000;font-size:.82rem;flex-shrink:0}
 .un{font-size:.82rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ur{font-size:.7rem;color:var(--mt)}
-/* WA SUPPORT */
 .wa{display:flex;align-items:center;gap:9px;padding:9px 10px;background:#071a0b;border:1px solid #1a3a10;border-radius:8px;text-decoration:none;margin-bottom:7px;transition:.15s}
 .wa:hover{border-color:var(--ac)}
 .wa-t{font-size:.7rem;color:var(--mt)}
 .wa-n{font-size:.78rem;color:var(--ac);font-weight:600}
-/* MAIN */
 .mn{margin-left:232px;padding:28px 34px;min-height:100vh}
 .pg{display:none}.pg.on{display:block;animation:fi .2s ease}
 @keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;gap:14px;flex-wrap:wrap}
 .pt{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700}
 .ps{color:var(--mt);font-size:.86rem;margin-top:3px}
-/* CARDS */
 .card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:20px}
 .ct{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:.92rem;margin-bottom:12px}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -74,28 +75,23 @@ select option{background:var(--s2)}
 .sl{font-size:.72rem;color:var(--mt);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
 .sv{font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:700;color:var(--ac)}
 .ss{font-size:.73rem;color:var(--mt);margin-top:2px}
-/* ODS BANNER */
 .ods{background:linear-gradient(135deg,#0a1f0c,#0e2814);border:1px solid #1e4020;border-radius:11px;padding:16px 20px;display:flex;align-items:center;gap:14px;margin-bottom:18px}
 .ods-i{font-size:1.8rem;flex-shrink:0}
 .ods-t{font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--ac);font-size:.9rem}
 .ods-d{font-size:.79rem;color:#7ab87a;margin-top:2px}
-/* BADGES */
 .bdg{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.71rem;font-weight:600;background:var(--s2);color:var(--mt)}
 .bg{background:#0a1f0c;color:var(--ac);border:1px solid #1e4020}
 .by{background:#1a1100;color:var(--yw);border:1px solid #2e2000}
 .br{background:#1a0505;color:var(--red);border:1px solid #2e0e0e}
-/* STUDENT LIST */
 .sl-list{display:flex;flex-direction:column;gap:8px}
 .stc{background:var(--s1);border:1px solid var(--bd);border-radius:9px;padding:13px 16px;display:flex;align-items:center;gap:13px;cursor:pointer;transition:.15s}
 .stc:hover{border-color:var(--ac)}
 .stav{width:38px;height:38px;border-radius:50%;background:var(--s2);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--ac);flex-shrink:0}
 .stn{font-weight:600;font-size:.9rem}
 .stm{font-size:.76rem;color:var(--mt);margin-top:1px}
-/* TABS */
 .tabs{display:flex;gap:2px;background:var(--bg);border-radius:7px;padding:3px;margin-bottom:18px;width:fit-content}
 .tab{padding:6px 14px;border:none;background:transparent;color:var(--mt);font-family:'Outfit',sans-serif;font-size:.83rem;border-radius:5px;cursor:pointer;transition:.2s}
 .tab.on{background:var(--s2);color:var(--txt);font-weight:600}
-/* WORKOUT CARD */
 .wc{background:var(--s2);border:1px solid var(--bd);border-radius:9px;padding:14px 17px;margin-bottom:8px}
 .wh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;gap:10px}
 .wt{font-weight:600;font-size:.9rem}
@@ -103,28 +99,23 @@ table.et{width:100%;border-collapse:collapse;margin-top:8px}
 table.et th{text-align:left;font-size:.7rem;color:var(--mt);text-transform:uppercase;letter-spacing:.05em;padding:0 8px 5px 0;border-bottom:1px solid var(--bd)}
 table.et td{padding:7px 8px 7px 0;font-size:.84rem;border-bottom:1px solid #111}
 table.et tr:last-child td{border-bottom:none}
-/* EX BUILDER */
 .exr{display:grid;grid-template-columns:2fr 55px 70px 85px 28px;gap:6px;align-items:end;margin-bottom:6px}
 .exr input{margin-bottom:0;font-size:.83rem;padding:8px 9px}
 .rx{background:#1a0505;border:1px solid #2e0e0e;color:var(--red);cursor:pointer;border-radius:6px;padding:0;height:38px;width:28px;display:flex;align-items:center;justify-content:center;font-size:.85rem}
 .addex{background:none;border:1px dashed var(--bd);color:var(--mt);border-radius:7px;padding:7px 12px;cursor:pointer;font-size:.81rem;transition:.15s;width:100%;margin-top:3px;font-family:'Outfit',sans-serif}
 .addex:hover{border-color:var(--ac);color:var(--ac)}
-/* MEDIDAS */
 .mg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .mi{background:var(--s2);border:1px solid var(--bd);border-radius:8px;padding:11px}
 .ml{font-size:.7rem;color:var(--mt);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
 .mv{font-family:'Space Grotesk',sans-serif;font-size:1.15rem;font-weight:700}
 .mu{font-size:.7rem;color:var(--mt)}
 .dd{font-size:.71rem}.dd.ok{color:var(--ac)}.dd.bad{color:var(--red)}
-/* IMC BAR */
 .imcbar{height:7px;border-radius:4px;background:linear-gradient(90deg,var(--bl),var(--ac),var(--yw),var(--red));margin:8px 0;position:relative}
 .imccur{position:absolute;top:-3px;width:13px;height:13px;border-radius:50%;background:#fff;border:2px solid var(--ac);transform:translateX(-50%);transition:.5s}
-/* TIP CARD */
 .tip{background:linear-gradient(135deg,#0a1f0c,#0d1f10);border:1px solid #1e3a14;border-radius:9px;padding:13px 15px;display:flex;gap:10px}
 .tii{font-size:1.3rem;flex-shrink:0;margin-top:1px}
 .tit{font-weight:600;font-size:.85rem;color:var(--ac);margin-bottom:2px}
 .tid{font-size:.78rem;color:#7ab87a;line-height:1.45}
-/* CALENDAR */
 .cg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
 .cgh{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:5px}
 .cgh span{text-align:center;font-size:.69rem;color:var(--mt);text-transform:uppercase;padding:2px 0}
@@ -133,50 +124,39 @@ table.et tr:last-child td{border-bottom:none}
 .cd.today{border-color:var(--ac);color:var(--ac);font-weight:700}
 .cd.has::after{content:'';width:4px;height:4px;border-radius:50%;background:var(--ac);position:absolute;bottom:2px}
 .cd.om{color:#1e3020}
-/* PROGRESS GOAL BAR */
 .gb{height:5px;background:var(--s2);border-radius:3px;margin-top:4px}
 .gf{height:100%;background:var(--ac);border-radius:3px;transition:.5s}
-/* SESSION */
 .si{background:var(--s2);border:1px solid var(--bd);border-radius:8px;padding:10px 13px;display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
 .sn{font-weight:600;font-size:.86rem}
 .sm2{font-size:.74rem;color:var(--mt);margin-top:1px}
-/* MODAL */
 .mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;align-items:center;justify-content:center;padding:18px}
 .mo.on{display:flex}
 .md{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:26px;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;animation:fi .18s ease}
 .mdt{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:16px}
 .mf{display:flex;gap:9px;justify-content:flex-end;margin-top:16px;padding-top:14px;border-top:1px solid var(--bd)}
-/* TOAST */
-#toast{position:fixed;bottom:20px;right:20px;padding:10px 18px;border-radius:9px;font-weight:600;font-size:.86rem;transform:translateY(60px);opacity:0;transition:.28s;z-index:999}
+#toast{position:fixed;bottom:20px;right:20px;padding:10px 18px;border-radius:9px;font-weight:600;font-size:.86rem;transform:translateY(60px);opacity:0;transition:.28s;z-index:9999}
 #toast.on{transform:none;opacity:1}
-/* EMPTY */
 .empty{text-align:center;padding:36px 16px;color:var(--mt);font-size:.86rem}
 .empty-i{font-size:2rem;margin-bottom:8px}
-/* BACK */
 .bk{display:flex;align-items:center;gap:5px;color:var(--mt);cursor:pointer;font-size:.85rem;margin-bottom:16px;background:none;border:none}
 .bk:hover{color:var(--ac)}
-/* INFO ROW */
 .ir{display:flex;align-items:baseline;gap:8px;padding:7px 0;border-bottom:1px solid var(--bd);font-size:.85rem}
 .ir:last-child{border-bottom:none}
 .irl{font-size:.72rem;color:var(--mt);text-transform:uppercase;letter-spacing:.04em;min-width:68px;flex-shrink:0}
-/* CHART */
 .cw{position:relative;height:190px}
-/* FORM GRID */
 .fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
 .fg2>div{display:flex;flex-direction:column}
 .fg2 input,.fg2 select{margin-bottom:0}
-/* SPEC TAGS */
 .sp-tag{display:inline-block;padding:4px 10px;border-radius:20px;background:var(--s2);border:1px solid var(--bd);color:var(--txt);font-size:.78rem;margin:3px 3px 0 0;cursor:pointer;transition:.15s}
 .sp-tag.on{background:#0a1f0c;border-color:var(--ac);color:var(--ac)}
-/* PROFILE AV */
 .pav{width:70px;height:70px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:1.7rem;font-weight:700;color:#000;margin-bottom:14px;cursor:pointer;overflow:hidden}
 .pav img{width:100%;height:100%;object-fit:cover}
-/* DIVIDER */
 .dv{height:1px;background:var(--bd);margin:14px 0}
-/* RECAPTCHA */
-#recaptcha-container{min-height:78px;display:flex;align-items:center;justify-content:center}
-#recaptcha-container iframe{border-radius:8px}
-.ph-info{background:#071a0b;border:1px solid #1a3a10;border-radius:8px;padding:10px 13px;font-size:.8rem;color:#7ab87a;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+/* OTP INPUT */
+.otp-wrap{display:flex;gap:8px;justify-content:center;margin-bottom:12px}
+.otp-wrap input{width:44px;height:52px;text-align:center;font-size:1.4rem;font-family:'Space Grotesk',sans-serif;font-weight:700;padding:0;margin-bottom:0;border-radius:8px}
+/* Spinner no botão */
+.btn-spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(0,0,0,.3);border-top-color:#000;border-radius:50%;animation:spin .5s linear infinite}
 @media(max-width:860px){.sb{display:none}.mn{margin-left:0;padding:16px 14px}.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}.mg{grid-template-columns:1fr 1fr}.exr{grid-template-columns:1fr 1fr 1fr 28px}}
 </style>
 </head>
@@ -189,7 +169,7 @@ table.et tr:last-child td{border-bottom:none}
 </div>
 
 <!-- AUTH -->
-<div id="auth" style="display:none">
+<div id="auth">
   <div class="abox">
     <div class="alogo">FilSil</div>
     <div class="atag">🌿 ODS 3 — Saúde e Bem-Estar</div>
@@ -199,52 +179,68 @@ table.et tr:last-child td{border-bottom:none}
       <button class="atab" onclick="swTab('ph')">📱 Telefone</button>
       <button class="atab" onclick="swTab('up')">Cadastrar</button>
     </div>
+
     <!-- EMAIL LOGIN -->
     <div id="t-in">
       <label>E-mail</label><input id="li-em" type="email" placeholder="email@exemplo.com">
-      <label>Senha</label><input id="li-pw" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()">
+      <label>Senha</label><input id="li-pw" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
       <div class="err" id="e-in"></div>
-      <button class="btn p fw" onclick="login()">Entrar</button>
-      <div style="text-align:center;margin-top:12px"><button style="background:none;border:none;color:var(--mt);font-size:.8rem;cursor:pointer;font-family:Outfit,sans-serif" onclick="om('reset')">Esqueci a senha</button></div>
+      <button class="btn p fw" id="btn-login" onclick="doLogin()">Entrar</button>
+      <div style="text-align:center;margin-top:12px">
+        <button style="background:none;border:none;color:var(--mt);font-size:.8rem;cursor:pointer;font-family:Outfit,sans-serif" onclick="om('reset')">Esqueci a senha</button>
+      </div>
     </div>
+
     <!-- PHONE LOGIN -->
     <div id="t-ph" style="display:none">
+      <!-- Step 1: inserir número -->
       <div id="ph-step1">
         <div class="ph-info">📱 Você receberá um SMS com o código de verificação.</div>
         <label>Número de telefone</label>
         <div style="display:flex;gap:8px;margin-bottom:12px">
-          <select id="ph-cc" style="width:90px;margin-bottom:0;flex-shrink:0">
+          <select id="ph-cc" style="width:100px;margin-bottom:0;flex-shrink:0">
             <option value="+55">🇧🇷 +55</option>
             <option value="+1">🇺🇸 +1</option>
             <option value="+351">🇵🇹 +351</option>
             <option value="+34">🇪🇸 +34</option>
           </select>
-          <input id="ph-num" type="tel" placeholder="81 99161-0473" style="margin-bottom:0;flex:1">
+          <input id="ph-num" type="tel" placeholder="81 99161-0473" style="margin-bottom:0;flex:1" oninput="this.value=this.value.replace(/[^\d\s\-\(\)]/g,'')">
         </div>
-        <div id="recaptcha-container" style="margin-bottom:12px"></div>
+        <!-- reCAPTCHA invisível — div obrigatória -->
+        <div id="recaptcha-container"></div>
         <div class="err" id="e-ph"></div>
-        <button class="btn p fw" onclick="sendSMS()">📲 Enviar código SMS</button>
+        <button class="btn p fw" id="btn-sms" onclick="sendSMS()">📲 Enviar código SMS</button>
       </div>
+
+      <!-- Step 2: inserir OTP -->
       <div id="ph-step2" style="display:none">
         <div style="background:#0a1f0c;border:1px solid #1e4020;border-radius:8px;padding:11px 14px;margin-bottom:14px;font-size:.83rem;color:#7ab87a">
           ✅ Código enviado! Verifique seu SMS.
         </div>
-        <label>Código de verificação (6 dígitos)</label>
-        <input id="ph-otp" type="text" placeholder="123456" maxlength="6" style="letter-spacing:.2em;font-size:1.1rem;text-align:center" oninput="if(this.value.length===6)verifySMS()">
+        <label style="text-align:center;display:block;margin-bottom:10px">Código de verificação (6 dígitos)</label>
+        <div class="otp-wrap" id="otp-inputs">
+          <input type="tel" maxlength="1" class="otp-digit" data-idx="0" oninput="otpInput(this)" onkeydown="otpKey(event,this)">
+          <input type="tel" maxlength="1" class="otp-digit" data-idx="1" oninput="otpInput(this)" onkeydown="otpKey(event,this)">
+          <input type="tel" maxlength="1" class="otp-digit" data-idx="2" oninput="otpInput(this)" onkeydown="otpKey(event,this)">
+          <input type="tel" maxlength="1" class="otp-digit" data-idx="3" oninput="otpInput(this)" onkeydown="otpKey(event,this)">
+          <input type="tel" maxlength="1" class="otp-digit" data-idx="4" oninput="otpInput(this)" onkeydown="otpKey(event,this)">
+          <input type="tel" maxlength="1" class="otp-digit" data-idx="5" oninput="otpInput(this)" onkeydown="otpKey(event,this)">
+        </div>
         <div class="err" id="e-otp"></div>
-        <button class="btn p fw" onclick="verifySMS()">✅ Verificar e entrar</button>
+        <button class="btn p fw" id="btn-verify" onclick="verifySMS()">✅ Verificar e entrar</button>
         <div style="text-align:center;margin-top:10px">
-          <button style="background:none;border:none;color:var(--mt);font-size:.8rem;cursor:pointer;font-family:Outfit,sans-serif" onclick="resetPhoneStep()">← Trocar número</button>
+          <button style="background:none;border:none;color:var(--mt);font-size:.8rem;cursor:pointer;font-family:Outfit,sans-serif" onclick="resetPhoneFlow()">← Trocar número / Reenviar</button>
         </div>
       </div>
     </div>
+
     <!-- REGISTER -->
     <div id="t-up" style="display:none">
       <label>Nome completo</label><input id="rg-nm" type="text" placeholder="João Silva">
       <label>E-mail</label><input id="rg-em" type="email" placeholder="email@exemplo.com">
       <label>Senha</label><input id="rg-pw" type="password" placeholder="mínimo 6 caracteres">
       <div class="err" id="e-up"></div>
-      <button class="btn p fw" onclick="register()">Criar conta</button>
+      <button class="btn p fw" onclick="doRegister()">Criar conta</button>
     </div>
   </div>
 </div>
@@ -275,7 +271,6 @@ table.et tr:last-child td{border-bottom:none}
       <button class="btn g fw sm" onclick="if(confirm('Sair?'))auth.signOut()">↩ Sair</button>
     </div>
   </div>
-
   <div class="mn">
     <!-- DASHBOARD -->
     <div class="pg on" id="p-db">
@@ -453,7 +448,6 @@ table.et tr:last-child td{border-bottom:none}
 </div>
 
 <!-- MODALS -->
-<!-- Novo Aluno -->
 <div class="mo" id="m-ns"><div class="md">
   <div class="mdt">➕ Novo Aluno</div>
   <label>Nome *</label><input id="ns-nm" placeholder="Maria Souza">
@@ -478,7 +472,6 @@ table.et tr:last-child td{border-bottom:none}
   </div>
 </div></div>
 
-<!-- Editar Aluno -->
 <div class="mo" id="m-es"><div class="md">
   <div class="mdt">✏️ Editar Aluno</div>
   <label>Nome</label><input id="es-nm" placeholder="Nome">
@@ -503,7 +496,6 @@ table.et tr:last-child td{border-bottom:none}
   </div>
 </div></div>
 
-<!-- Novo Treino -->
 <div class="mo" id="m-nw"><div class="md" style="max-width:640px">
   <div class="mdt">🏋️ Novo Treino</div>
   <label>Nome do treino *</label><input id="nw-nm" placeholder="Treino A – Peito e Tríceps">
@@ -533,14 +525,12 @@ table.et tr:last-child td{border-bottom:none}
   </div>
 </div></div>
 
-<!-- Usar Template -->
 <div class="mo" id="m-ut"><div class="md">
   <div class="mdt">📋 Escolher Template</div>
   <div id="ut-list" style="display:flex;flex-direction:column;gap:7px;max-height:360px;overflow-y:auto"></div>
   <div class="mf"><button class="btn g" onclick="cm('ut')">Fechar</button></div>
 </div></div>
 
-<!-- Medidas -->
 <div class="mo" id="m-md"><div class="md">
   <div class="mdt">🌿 Registrar Medidas</div>
   <label>Data</label><input id="md-dt" type="date">
@@ -562,7 +552,6 @@ table.et tr:last-child td{border-bottom:none}
   </div>
 </div></div>
 
-<!-- Nova Sessão -->
 <div class="mo" id="m-se"><div class="md">
   <div class="mdt">📅 Nova Sessão</div>
   <label>Aluno</label><select id="se-st"><option value="">Selecione...</option></select>
@@ -580,7 +569,6 @@ table.et tr:last-child td{border-bottom:none}
   </div>
 </div></div>
 
-<!-- Novo Template -->
 <div class="mo" id="m-nt"><div class="md" style="max-width:640px">
   <div class="mdt">📋 Novo Template</div>
   <label>Nome</label><input id="nt-nm" placeholder="Full Body – Iniciante">
@@ -604,7 +592,6 @@ table.et tr:last-child td{border-bottom:none}
   </div>
 </div></div>
 
-<!-- Reset senha -->
 <div class="mo" id="m-reset"><div class="md" style="max-width:380px">
   <div class="mdt">🔑 Recuperar Senha</div>
   <p style="color:var(--mt);font-size:.85rem;margin-bottom:14px">Digite seu e-mail para receber instruções de recuperação.</p>
@@ -617,7 +604,6 @@ table.et tr:last-child td{border-bottom:none}
   </div>
 </div></div>
 
-<!-- Confirm -->
 <div class="mo" id="m-cf"><div class="md" style="max-width:360px">
   <div class="mdt">⚠️ Confirmar</div>
   <p style="color:var(--mt);font-size:.86rem;margin-bottom:20px" id="cf-msg">Tem certeza?</p>
@@ -635,167 +621,342 @@ import{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,onAuthS
 import{getFirestore,collection,doc,addDoc,getDoc,getDocs,setDoc,updateDoc,deleteDoc,serverTimestamp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const FB={apiKey:"AIzaSyBQ2lLtKow3dbTdaJiOWyULBiLO24tt_AQ",authDomain:"fitsil-65f23.firebaseapp.com",projectId:"fitsil-65f23",storageBucket:"fitsil-65f23.firebasestorage.app",messagingSenderId:"850776718438",appId:"1:850776718438:web:09eec47fa78cb9030901a7"};
-const app=initializeApp(FB);
-window.auth=getAuth(app);
-const db=getFirestore(app);
+const fbApp=initializeApp(FB);
+window.auth=getAuth(fbApp);
+const db=getFirestore(fbApp);
 
 // STATE
 let uid=null,sid=null,sdat=null,allSt=[],allSess=[],calY,calM,rCharts={},eCharts={},curFilter='all';
+let confirmResult=null,rcVerifier=null;
 
 // HELPERS
 const $=id=>document.getElementById(id);
 const v=id=>$(id)?.value?.trim()||'';
 const sv=(id,val)=>{const e=$(id);if(e)e.value=val||''};
-const show=id=>$(id).style.display='';
-const hide=id=>$(id).style.display='none';
 const fmt=iso=>iso?iso.split('-').reverse().join('/'):'';
 const E=(i,m)=>`<div class="empty"><div class="empty-i">${i}</div><p>${m}</p></div>`;
 const clr=ids=>ids.forEach(id=>{const e=$(id);if(e)e.value=''});
 function toast(msg,t='ok'){const el=$('toast');el.textContent=msg;el.style.background=t==='err'?'var(--red)':'var(--ac)';el.style.color=t==='err'?'#fff':'#000';el.classList.add('on');setTimeout(()=>el.classList.remove('on'),2800)}
 function fe(e){return({'auth/invalid-credential':'E-mail ou senha incorretos.','auth/email-already-in-use':'E-mail já cadastrado.','auth/weak-password':'Senha fraca (mín. 6 chars).','auth/invalid-email':'E-mail inválido.','auth/user-not-found':'Usuário não encontrado.','auth/wrong-password':'Senha incorreta.','auth/requires-recent-login':'Faça login novamente.','auth/network-request-failed':'Sem conexão com a internet.'})[e.code]||e.message}
+function showErr(id,msg){const el=$(id);if(!el)return;el.textContent=msg;el.style.display='block';}
 function dC(id){if(rCharts[id]){rCharts[id].destroy();delete rCharts[id]}}
+function setBtnLoading(id,loading,defaultText){const btn=$(id);if(!btn)return;btn.disabled=loading;btn.innerHTML=loading?`<span class="btn-spin"></span> Aguarde...`:defaultText;}
 
-// AUTH STATE — FIX TELA PRETA: timeout fallback
-let authResolved=false;
-const authTimeout=setTimeout(()=>{if(!authResolved){hide('ld');show('auth')}},4000);
+// ─── AUTH STATE ─────────────────────────────────────────────────────────────
+// Timeout curto: se Firebase não responder em 3s, mostra login
+let authDone=false;
+const authTimer=setTimeout(()=>{
+  if(!authDone){hideLd();showAuth();}
+},3000);
+
 onAuthStateChanged(auth,async user=>{
-  authResolved=true;clearTimeout(authTimeout);
-  hide('ld');
-  if(user){uid=user.uid;const n=user.displayName||user.email;$('sb-nm').textContent=n;$('sb-av').textContent=n[0].toUpperCase();$('greet').textContent=`Olá, ${n.split(' ')[0]}! 🌿`;show('app');hide('auth');const now=new Date();calY=now.getFullYear();calM=now.getMonth();loadDb();loadProfile();}
-  else{hide('app');show('auth');}
+  if(authDone)return; // evita dupla execução
+  authDone=true;
+  clearTimeout(authTimer);
+  hideLd();
+  if(user){
+    enterApp(user);
+  }else{
+    showAuth();
+  }
 });
 
-// AUTH ACTIONS
-window.swTab=t=>{['in','ph','up'].forEach(x=>{const el=$('t-'+x);if(el)el.style.display=x===t?'':'none';});document.querySelectorAll('.atab').forEach((el,i)=>el.classList.toggle('on',['in','ph','up'][i]===t));if(t==='ph')initRecaptcha();};
-
-// PHONE AUTH
-let recaptchaVerifier=null,confirmResult=null;
-function initRecaptcha(){
-  if(recaptchaVerifier)return;
-  try{
-    recaptchaVerifier=new RecaptchaVerifier(auth,'recaptcha-container',{
-      size:'normal',
-      theme:'dark',
-      callback:()=>{},
-      'expired-callback':()=>{recaptchaVerifier=null;$('recaptcha-container').innerHTML='';initRecaptcha();}
-    });
-    recaptchaVerifier.render();
-  }catch(e){console.warn('reCAPTCHA init:',e);}
+function hideLd(){
+  const ld=$('ld');
+  ld.classList.add('hide');
+  setTimeout(()=>ld.style.display='none',350);
 }
-window.sendSMS=async()=>{
-  const cc=$('ph-cc').value,num=v('ph-num').replace(/\D/g,'');
-  $('e-ph').style.display='none';
-  if(!num||num.length<8)return showE('e-ph','Digite um número válido.');
-  const full=cc+num;
-  if(!recaptchaVerifier)return showE('e-ph','Conclua o reCAPTCHA primeiro.');
-  const btn=$('t-ph').querySelector('.btn');btn.textContent='Enviando...';btn.disabled=true;
+function showAuth(){$('auth').classList.add('on');}
+function enterApp(user){
+  uid=user.uid;
+  const n=user.displayName||user.phoneNumber||user.email||'Personal';
+  $('sb-nm').textContent=n;
+  $('sb-av').textContent=n[0].toUpperCase();
+  $('greet').textContent=`Olá, ${n.split(' ')[0]}! 🌿`;
+  $('app').classList.add('on');
+  $('auth').classList.remove('on');
+  const now=new Date();calY=now.getFullYear();calM=now.getMonth();
+  loadDb();loadProfile();
+}
+
+// ─── EMAIL AUTH ──────────────────────────────────────────────────────────────
+window.doLogin=async()=>{
+  $('e-in').style.display='none';
+  setBtnLoading('btn-login',true,'Entrar');
   try{
-    confirmResult=await signInWithPhoneNumber(auth,full,recaptchaVerifier);
-    hide('ph-step1');show('ph-step2');
-    $('ph-otp').focus();
+    await signInWithEmailAndPassword(auth,v('li-em'),v('li-pw'));
   }catch(e){
-    btn.textContent='📲 Enviar código SMS';btn.disabled=false;
-    recaptchaVerifier.clear();recaptchaVerifier=null;
-    $('recaptcha-container').innerHTML='';
-    showE('e-ph',phErr(e));
-    setTimeout(initRecaptcha,500);
+    showErr('e-in',fe(e));
+    setBtnLoading('btn-login',false,'Entrar');
   }
 };
+
+window.doRegister=async()=>{
+  $('e-up').style.display='none';
+  const nm=v('rg-nm');
+  if(!nm)return showErr('e-up','Nome obrigatório.');
+  try{
+    const c=await createUserWithEmailAndPassword(auth,v('rg-em'),v('rg-pw'));
+    await updateProfile(c.user,{displayName:nm});
+  }catch(e){showErr('e-up',fe(e));}
+};
+
+window.resetPass=async()=>{
+  $('e-rs').style.display='none';$('rs-ok').style.display='none';
+  try{await sendPasswordResetEmail(auth,v('rs-em'));$('rs-ok').style.display='block';}
+  catch(e){showErr('e-rs',fe(e));}
+};
+
+// ─── PHONE AUTH ──────────────────────────────────────────────────────────────
+window.swTab=t=>{
+  ['in','ph','up'].forEach(x=>{
+    const el=$('t-'+x);if(el)el.style.display=x===t?'':'none';
+  });
+  document.querySelectorAll('.atab').forEach((el,i)=>
+    el.classList.toggle('on',['in','ph','up'][i]===t)
+  );
+  if(t==='ph')initRecaptcha();
+};
+
+function initRecaptcha(){
+  if(rcVerifier)return; // já inicializado
+  try{
+    rcVerifier=new RecaptchaVerifier(auth,'recaptcha-container',{
+      size:'invisible', // invisível = sem widget visual, mais rápido
+      callback:()=>{},
+      'expired-callback':()=>{destroyRecaptcha();}
+    });
+  }catch(err){
+    console.warn('reCAPTCHA init error:',err);
+    rcVerifier=null;
+  }
+}
+
+function destroyRecaptcha(){
+  try{rcVerifier?.clear();}catch(e){}
+  rcVerifier=null;
+  $('recaptcha-container').innerHTML='';
+}
+
+window.sendSMS=async()=>{
+  $('e-ph').style.display='none';
+  const cc=$('ph-cc').value;
+  const num=v('ph-num').replace(/\D/g,'');
+  if(!num||num.length<8)return showErr('e-ph','Digite um número válido (somente dígitos).');
+  const full=cc+num;
+  setBtnLoading('btn-sms',true,'📲 Enviar código SMS');
+  // garante reCAPTCHA
+  if(!rcVerifier)initRecaptcha();
+  try{
+    confirmResult=await signInWithPhoneNumber(auth,full,rcVerifier);
+    $('ph-step1').style.display='none';
+    $('ph-step2').style.display='';
+    // foca primeiro campo OTP
+    document.querySelectorAll('.otp-digit')[0]?.focus();
+  }catch(e){
+    setBtnLoading('btn-sms',false,'📲 Enviar código SMS');
+    destroyRecaptcha();
+    setTimeout(initRecaptcha,300);
+    showErr('e-ph',phErr(e));
+  }
+};
+
 window.verifySMS=async()=>{
-  const code=v('ph-otp');
   $('e-otp').style.display='none';
-  if(code.length!==6)return showE('e-otp','O código deve ter 6 dígitos.');
-  const btn=$('ph-step2').querySelector('.btn.p');btn.textContent='Verificando...';btn.disabled=true;
+  const code=[...document.querySelectorAll('.otp-digit')].map(i=>i.value).join('');
+  if(code.length!==6)return showErr('e-otp','Preencha os 6 dígitos do código.');
+  if(!confirmResult)return showErr('e-otp','Sessão expirada. Envie o SMS novamente.');
+  setBtnLoading('btn-verify',true,'✅ Verificar e entrar');
   try{
     const result=await confirmResult.confirm(code);
-    // If new user (no displayName), prompt for name
     if(!result.user.displayName){
       const name=prompt('Bem-vindo! Qual é o seu nome?')||'Personal';
       await updateProfile(result.user,{displayName:name});
     }
   }catch(e){
-    btn.textContent='✅ Verificar e entrar';btn.disabled=false;
-    showE('e-otp',phErr(e));
+    setBtnLoading('btn-verify',false,'✅ Verificar e entrar');
+    showErr('e-otp',phErr(e));
   }
 };
-window.resetPhoneStep=()=>{
-  hide('ph-step2');show('ph-step1');
-  $('ph-otp').value='';$('e-otp').style.display='none';
-  recaptchaVerifier?.clear();recaptchaVerifier=null;
-  $('recaptcha-container').innerHTML='';
-  setTimeout(initRecaptcha,200);
+
+window.resetPhoneFlow=()=>{
+  $('ph-step2').style.display='none';
+  $('ph-step1').style.display='';
+  $('e-ph').style.display='none';
+  $('e-otp').style.display='none';
+  document.querySelectorAll('.otp-digit').forEach(i=>i.value='');
+  confirmResult=null;
+  destroyRecaptcha();
+  setTimeout(initRecaptcha,300);
 };
-function showE(id,msg){const el=$(id);el.textContent=msg;el.style.display='block';}
-function phErr(e){return({'auth/invalid-phone-number':'Número de telefone inválido.','auth/too-many-requests':'Muitas tentativas. Aguarde alguns minutos.','auth/invalid-verification-code':'Código incorreto. Verifique o SMS.','auth/code-expired':'Código expirado. Envie um novo SMS.','auth/captcha-check-failed':'Falha no reCAPTCHA. Tente novamente.','auth/network-request-failed':'Sem conexão com a internet.'})[e.code]||e.message;}$('e-in').style.display='none';try{await signInWithEmailAndPassword(auth,v('li-em'),v('li-pw'));}catch(e){const el=$('e-in');el.textContent=fe(e);el.style.display='block';}};
-window.register=async()=>{$('e-up').style.display='none';const nm=v('rg-nm');if(!nm){const el=$('e-up');el.textContent='Nome obrigatório.';el.style.display='block';return;}try{const c=await createUserWithEmailAndPassword(auth,v('rg-em'),v('rg-pw'));await updateProfile(c.user,{displayName:nm});}catch(e){const el=$('e-up');el.textContent=fe(e);el.style.display='block';}};
-window.resetPass=async()=>{$('e-rs').style.display='none';$('rs-ok').style.display='none';try{await sendPasswordResetEmail(auth,v('rs-em'));$('rs-ok').style.display='block';}catch(e){const el=$('e-rs');el.textContent=fe(e);el.style.display='block';}};
 
-// NAVIGATION
-window.pg=p=>{document.querySelectorAll('.pg').forEach(el=>el.classList.remove('on'));document.querySelectorAll('.ni').forEach(el=>el.classList.remove('on'));$('p-'+p)?.classList.add('on');$('n-'+p)?.classList.add('on');if(p==='db')loadDb();if(p==='st')loadSt();if(p==='ag'){loadAg();renderCal();}if(p==='tp')loadTp();if(p==='rp')loadRp();if(p==='pf')loadProfile();};
+// OTP digit navigation
+window.otpInput=function(el){
+  const v=el.value.replace(/\D/g,'');
+  el.value=v.slice(-1);
+  if(v&&parseInt(el.dataset.idx)<5){
+    document.querySelectorAll('.otp-digit')[parseInt(el.dataset.idx)+1]?.focus();
+  }
+  // auto-verify when all filled
+  const code=[...document.querySelectorAll('.otp-digit')].map(i=>i.value).join('');
+  if(code.length===6)verifySMS();
+};
+window.otpKey=function(e,el){
+  if(e.key==='Backspace'&&!el.value&&parseInt(el.dataset.idx)>0){
+    document.querySelectorAll('.otp-digit')[parseInt(el.dataset.idx)-1]?.focus();
+  }
+};
 
-// DASHBOARD
+function phErr(e){
+  return({
+    'auth/invalid-phone-number':'Número de telefone inválido. Use o formato com DDD.',
+    'auth/too-many-requests':'Muitas tentativas. Aguarde alguns minutos.',
+    'auth/invalid-verification-code':'Código incorreto. Verifique o SMS.',
+    'auth/code-expired':'Código expirado. Envie um novo SMS.',
+    'auth/captcha-check-failed':'Falha na verificação. Tente novamente.',
+    'auth/network-request-failed':'Sem conexão com a internet.',
+    'auth/missing-phone-number':'Digite o número de telefone.',
+  })[e.code]||e.message;
+}
+
+// ─── NAVIGATION ──────────────────────────────────────────────────────────────
+window.pg=p=>{
+  document.querySelectorAll('.pg').forEach(el=>el.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(el=>el.classList.remove('on'));
+  $('p-'+p)?.classList.add('on');
+  $('n-'+p)?.classList.add('on');
+  if(p==='db')loadDb();
+  if(p==='st')loadSt();
+  if(p==='ag'){loadAg();renderCal();}
+  if(p==='tp')loadTp();
+  if(p==='rp')loadRp();
+  if(p==='pf')loadProfile();
+};
+
+// ─── DASHBOARD ───────────────────────────────────────────────────────────────
 async function loadDb(){
   if(!uid)return;
-  const[stSnap,tpSnap,seSnap]=await Promise.all([getDocs(collection(db,'trainers',uid,'students')),getDocs(collection(db,'trainers',uid,'templates')),getDocs(collection(db,'trainers',uid,'sessions'))]);
+  const[stSnap,tpSnap,seSnap]=await Promise.all([
+    getDocs(collection(db,'trainers',uid,'students')),
+    getDocs(collection(db,'trainers',uid,'templates')),
+    getDocs(collection(db,'trainers',uid,'sessions'))
+  ]);
   allSt=stSnap.docs.map(d=>({id:d.id,...d.data()}));
-  $('s-al').textContent=allSt.length;$('imp').textContent=allSt.length;$('s-tp').textContent=tpSnap.size;
+  $('s-al').textContent=allSt.length;
+  $('imp').textContent=allSt.length;
+  $('s-tp').textContent=tpSnap.size;
   const now=new Date(),mo=now.getMonth()+1,yr=now.getFullYear();
   const mo_sess=seSnap.docs.filter(s=>{const d=s.data().date||'';const[y,m]=d.split('-').map(Number);return y===yr&&m===mo});
   $('s-se').textContent=mo_sess.length;
-  let tw=0;for(const s of allSt){const ws=await getDocs(collection(db,'trainers',uid,'students',s.id,'workouts'));tw+=ws.size;}$('s-tr').textContent=tw;
+  let tw=0;
+  for(const s of allSt){const ws=await getDocs(collection(db,'trainers',uid,'students',s.id,'workouts'));tw+=ws.size;}
+  $('s-tr').textContent=tw;
   $('db-al').innerHTML=allSt.length?allSt.slice(0,5).map(s=>stCard(s)).join(''):E('🏋️','Nenhum aluno. Clique em + Novo Aluno.');
   const up=seSnap.docs.map(s=>({id:s.id,...s.data()})).filter(s=>s.date>=now.toISOString().slice(0,10)).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,5);
   $('db-se').innerHTML=up.length?up.map(sessHTML).join(''):E('📅','Nenhuma sessão agendada.');
   renderTips();
 }
 
-// ODS3 TIPS
-const TIPS=[{i:'💧',t:'Hidratação',d:'Lembre seus alunos: 35ml de água por kg de peso ao dia.'},{i:'😴',t:'Sono & Recuperação',d:'7-9h de sono. A recuperação muscular ocorre no descanso.'},{i:'🥗',t:'Alimentação',d:'1,6-2,2g proteína/kg para quem treina. Meta diária de proteína.'},{i:'❤️',t:'Saúde Cardiovascular',d:'150min de atividade moderada/semana reduz risco cardíaco.'},{i:'🧠',t:'Saúde Mental',d:'Exercício reduz ansiedade e depressão. Celebre conquistas!'},{i:'📏',t:'IMC Saudável',d:'Monitore IMC regularmente. Meta: entre 18,5 e 24,9.'}];
-function renderTips(){const g=$('tips-g');if(!g)return;const t3=TIPS.sort(()=>Math.random()-.5).slice(0,3);g.innerHTML=t3.map(t=>`<div class="tip"><div class="tii">${t.i}</div><div><div class="tit">${t.t}</div><div class="tid">${t.d}</div></div></div>`).join('');}
+const TIPS=[
+  {i:'💧',t:'Hidratação',d:'Lembre seus alunos: 35ml de água por kg de peso ao dia.'},
+  {i:'😴',t:'Sono & Recuperação',d:'7-9h de sono. A recuperação muscular ocorre no descanso.'},
+  {i:'🥗',t:'Alimentação',d:'1,6-2,2g proteína/kg para quem treina. Meta diária de proteína.'},
+  {i:'❤️',t:'Saúde Cardiovascular',d:'150min de atividade moderada/semana reduz risco cardíaco.'},
+  {i:'🧠',t:'Saúde Mental',d:'Exercício reduz ansiedade e depressão. Celebre conquistas!'},
+  {i:'📏',t:'IMC Saudável',d:'Monitore IMC regularmente. Meta: entre 18,5 e 24,9.'}
+];
+function renderTips(){const g=$('tips-g');if(!g)return;const t3=[...TIPS].sort(()=>Math.random()-.5).slice(0,3);g.innerHTML=t3.map(t=>`<div class="tip"><div class="tii">${t.i}</div><div><div class="tit">${t.t}</div><div class="tid">${t.d}</div></div></div>`).join('');}
 
-// STUDENTS
+// ─── STUDENTS ────────────────────────────────────────────────────────────────
 async function loadSt(){const snap=await getDocs(collection(db,'trainers',uid,'students'));allSt=snap.docs.map(d=>({id:d.id,...d.data()}));renderSt();}
-function stCard(d,mini=false){const imc=d._imc?`<span class="bdg ${d._imc<18.5?'by':d._imc<25?'bg':d._imc<30?'by':'br'}" style="font-size:.68rem">IMC ${parseFloat(d._imc).toFixed(1)}</span>`:'';const phone=d.phone?`<a href="https://wa.me/55${d.phone.replace(/\D/g,'')}" target="_blank" onclick="event.stopPropagation()" style="color:var(--ac);font-size:.8rem;text-decoration:none" title="WhatsApp">💬</a>`:'';return`<div class="stc" onclick="openSt('${d.id}')"><div class="stav">${(d.name||'?')[0].toUpperCase()}</div><div style="flex:1"><div class="stn">${d.name}${imc?` ${imc}`:''}</div><div class="stm">${[d.age?d.age+' anos':'',d.sex,d.goal,d.level].filter(Boolean).join(' · ')}</div></div><div style="display:flex;align-items:center;gap:7px">${d.goal?`<span class="bdg bg">${d.goal}</span>`:''} ${phone}</div></div>`;}
+function stCard(d){const imc=d._imc?`<span class="bdg ${d._imc<18.5?'by':d._imc<25?'bg':d._imc<30?'by':'br'}" style="font-size:.68rem">IMC ${parseFloat(d._imc).toFixed(1)}</span>`:'';const phone=d.phone?`<a href="https://wa.me/55${d.phone.replace(/\D/g,'')}" target="_blank" onclick="event.stopPropagation()" style="color:var(--ac);font-size:.8rem;text-decoration:none" title="WhatsApp">💬</a>`:'';return`<div class="stc" onclick="openSt('${d.id}')"><div class="stav">${(d.name||'?')[0].toUpperCase()}</div><div style="flex:1"><div class="stn">${d.name}${imc?` ${imc}`:''}</div><div class="stm">${[d.age?d.age+' anos':'',d.sex,d.goal,d.level].filter(Boolean).join(' · ')}</div></div><div style="display:flex;align-items:center;gap:7px">${d.goal?`<span class="bdg bg">${d.goal}</span>`:''} ${phone}</div></div>`;}
 window.renderSt=()=>{const q=(v('sch')||'').toLowerCase();const f=document.querySelector('#filters button.on')?.dataset?.f||'all';const r=allSt.filter(s=>(s.name||'').toLowerCase().includes(q)&&(f==='all'||s.goal===f));$('st-list').innerHTML=r.length?r.map(s=>stCard(s)).join(''):E('👤','Nenhum aluno encontrado.');};
 window.setF=(el,f)=>{document.querySelectorAll('#filters button').forEach(b=>b.classList.remove('on'));el.classList.add('on');curFilter=f;renderSt();};
 
 window.openSt=async id=>{
-  sid=id;const snap=await getDoc(doc(db,'trainers',uid,'students',id));sdat=snap.data();
-  $('sd-nm').textContent=sdat.name;$('sd-av').textContent=(sdat.name||'?')[0].toUpperCase();
+  sid=id;
+  const snap=await getDoc(doc(db,'trainers',uid,'students',id));
+  sdat=snap.data();
+  $('sd-nm').textContent=sdat.name;
+  $('sd-av').textContent=(sdat.name||'?')[0].toUpperCase();
   $('sd-mt').textContent=[sdat.age?sdat.age+' anos':'',sdat.sex,sdat.goal,sdat.level].filter(Boolean).join(' · ');
   stab('tr');loadWorkouts();pg('sd');$('n-st').classList.add('on');
 };
 
-window.saveStudent=async()=>{const nm=v('ns-nm');if(!nm)return toast('Nome obrigatório!','err');await addDoc(collection(db,'trainers',uid,'students'),{name:nm,age:v('ns-ag'),sex:$('ns-sx').value,goal:$('ns-gl').value,level:$('ns-lv').value,phone:v('ns-ph'),weight:v('ns-wt'),height:v('ns-ht'),obs:v('ns-ob'),createdAt:serverTimestamp()});cm('ns');clr(['ns-nm','ns-ag','ns-ph','ns-wt','ns-ht','ns-ob']);toast('Aluno salvo! 🎉');loadSt();loadDb();};
+window.saveStudent=async()=>{
+  const nm=v('ns-nm');if(!nm)return toast('Nome obrigatório!','err');
+  await addDoc(collection(db,'trainers',uid,'students'),{name:nm,age:v('ns-ag'),sex:$('ns-sx').value,goal:$('ns-gl').value,level:$('ns-lv').value,phone:v('ns-ph'),weight:v('ns-wt'),height:v('ns-ht'),obs:v('ns-ob'),createdAt:serverTimestamp()});
+  cm('ns');clr(['ns-nm','ns-ag','ns-ph','ns-wt','ns-ht','ns-ob']);toast('Aluno salvo! 🎉');loadSt();loadDb();
+};
+window.updStudent=async()=>{
+  await updateDoc(doc(db,'trainers',uid,'students',sid),{name:v('es-nm'),age:v('es-ag'),sex:$('es-sx').value,goal:$('es-gl').value,level:$('es-lv').value,phone:v('es-ph'),weight:v('es-wt'),height:v('es-ht'),obs:v('es-ob')});
+  cm('es');toast('Atualizado!');openSt(sid);
+};
+window.delStudent=async()=>{
+  const subs=['workouts','medidas'];
+  for(const sub of subs){const sn=await getDocs(collection(db,'trainers',uid,'students',sid,sub));for(const d of sn.docs)await deleteDoc(d.ref);}
+  await deleteDoc(doc(db,'trainers',uid,'students',sid));
+  cm('cf');toast('Aluno excluído.');pg('st');
+};
 
-window.updStudent=async()=>{await updateDoc(doc(db,'trainers',uid,'students',sid),{name:v('es-nm'),age:v('es-ag'),sex:$('es-sx').value,goal:$('es-gl').value,level:$('es-lv').value,phone:v('es-ph'),weight:v('es-wt'),height:v('es-ht'),obs:v('es-ob')});cm('es');toast('Atualizado!');openSt(sid);};
+// ─── STUDENT TABS ────────────────────────────────────────────────────────────
+window.stab=(t,btn)=>{
+  ['tr','fi','ev','od'].forEach(x=>{const el=$('st-'+x);if(el)el.style.display=x===t?'':'none';});
+  document.querySelectorAll('#p-sd .tab').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');else document.querySelector('#p-sd .tab').classList.add('on');
+  if(t==='tr')loadWorkouts();if(t==='fi')loadFicha();if(t==='ev')loadEvo();if(t==='od')loadOds();
+};
 
-window.delStudent=async()=>{const subs=['workouts','medidas'];for(const sub of subs){const sn=await getDocs(collection(db,'trainers',uid,'students',sid,sub));for(const d of sn.docs)await deleteDoc(d.ref);}await deleteDoc(doc(db,'trainers',uid,'students',sid));cm('cf');toast('Aluno excluído.');pg('st');};
+// ─── WORKOUTS ────────────────────────────────────────────────────────────────
+async function loadWorkouts(){
+  const el=$('st-tr');el.innerHTML='<div style="color:var(--mt);padding:12px">Carregando...</div>';
+  const snap=await getDocs(collection(db,'trainers',uid,'students',sid,'workouts'));
+  if(snap.empty){el.innerHTML=E('📋','Nenhum treino. Clique em + Treino.');return;}
+  el.innerHTML=snap.docs.map(w=>wCard(w.id,w.data())).join('');
+}
+function wCard(id,d){
+  const rows=(d.exercises||[]).map(e=>`<tr><td><strong>${e.name}</strong></td><td>${e.sets||'—'}</td><td>${e.reps||'—'}</td><td>${e.load||'—'}</td></tr>`).join('');
+  const dt=d.createdAt?.toDate?d.createdAt.toDate().toLocaleDateString('pt-BR'):'';
+  return`<div class="wc"><div class="wh"><div><div class="wt">${d.name}</div><div style="display:flex;gap:5px;margin-top:4px">${d.day?`<span class="bdg">${d.day}</span>`:''}${d.duration?`<span class="bdg">${d.duration}</span>`:''}</div></div><div style="display:flex;align-items:center;gap:7px"><span style="font-size:.74rem;color:var(--mt)">${dt}</span><button class="btn g sm" onclick="shareWA('${id}')">📲</button><button class="btn g sm" onclick="copyW('${id}')">📋</button><button class="btn d sm" onclick="confDel('treino',()=>delWorkout('${id}'))">✕</button></div></div>${d.obs?`<div style="font-size:.8rem;color:var(--mt);margin-bottom:7px;background:var(--bg);padding:7px 10px;border-radius:6px">${d.obs}</div>`:''}${rows?`<table class="et"><thead><tr><th>Exercício</th><th>Séries</th><th>Reps</th><th>Carga</th></tr></thead><tbody>${rows}</tbody></table>`:''}</div>`;
+}
 
-// STUDENT TABS
-window.stab=(t,btn)=>{['tr','fi','ev','od'].forEach(x=>{const el=$('st-'+x);if(el)el.style.display=x===t?'':'none';});document.querySelectorAll('#p-sd .tab').forEach(b=>b.classList.remove('on'));if(btn)btn.classList.add('on');else document.querySelector('#p-sd .tab').classList.add('on');if(t==='tr')loadWorkouts();if(t==='fi')loadFicha();if(t==='ev')loadEvo();if(t==='od')loadOds();};
-
-// WORKOUTS
-async function loadWorkouts(){const el=$('st-tr');el.innerHTML='<div style="color:var(--mt);padding:12px">Carregando...</div>';const snap=await getDocs(collection(db,'trainers',uid,'students',sid,'workouts'));if(snap.empty){el.innerHTML=E('📋','Nenhum treino. Clique em + Treino.');return;}el.innerHTML=snap.docs.map(w=>wCard(w.id,w.data())).join('');}
-function wCard(id,d){const rows=(d.exercises||[]).map(e=>`<tr><td><strong>${e.name}</strong></td><td>${e.sets||'—'}</td><td>${e.reps||'—'}</td><td>${e.load||'—'}</td></tr>`).join('');const dt=d.createdAt?.toDate?d.createdAt.toDate().toLocaleDateString('pt-BR'):'';return`<div class="wc"><div class="wh"><div><div class="wt">${d.name}</div><div style="display:flex;gap:5px;margin-top:4px">${d.day?`<span class="bdg">${d.day}</span>`:''}${d.duration?`<span class="bdg">${d.duration}</span>`:''}</div></div><div style="display:flex;align-items:center;gap:7px"><span style="font-size:.74rem;color:var(--mt)">${dt}</span><button class="btn g sm" onclick="shareWA('${id}')">📲</button><button class="btn g sm" onclick="copyW('${id}')">📋</button><button class="btn d sm" onclick="confDel('treino',()=>delWorkout('${id}'))">✕</button></div></div>${d.obs?`<div style="font-size:.8rem;color:var(--mt);margin-bottom:7px;background:var(--bg);padding:7px 10px;border-radius:6px">${d.obs}</div>`:''}${rows?`<table class="et"><thead><tr><th>Exercício</th><th>Séries</th><th>Reps</th><th>Carga</th></tr></thead><tbody>${rows}</tbody></table>`:''}</div>`;}
-
-window.saveWorkout=async()=>{const nm=v('nw-nm');if(!nm)return toast('Nome obrigatório!','err');const exs=getExs('ex-r');await addDoc(collection(db,'trainers',uid,'students',sid,'workouts'),{name:nm,obs:v('nw-ob'),day:$('nw-dy').value,duration:$('nw-du').value,exercises:exs,createdAt:serverTimestamp()});cm('nw');clr(['nw-nm','nw-ob']);$('ex-r').innerHTML='';toast('Treino salvo! 💪');loadWorkouts();};
+window.saveWorkout=async()=>{
+  const nm=v('nw-nm');if(!nm)return toast('Nome obrigatório!','err');
+  const exs=getExs('ex-r');
+  await addDoc(collection(db,'trainers',uid,'students',sid,'workouts'),{name:nm,obs:v('nw-ob'),day:$('nw-dy').value,duration:$('nw-du').value,exercises:exs,createdAt:serverTimestamp()});
+  cm('nw');clr(['nw-nm','nw-ob']);$('ex-r').innerHTML='';toast('Treino salvo! 💪');loadWorkouts();
+};
 async function delWorkout(id){await deleteDoc(doc(db,'trainers',uid,'students',sid,'workouts',id));cm('cf');toast('Treino excluído.');loadWorkouts();}
-window.copyW=async id=>{const sn=await getDoc(doc(db,'trainers',uid,'students',sid,'workouts',id));const d=sn.data();let t=`🏋️ *${d.name}*\n`;if(d.day)t+=`📅 ${d.day}\n`;if(d.duration)t+=`⏱️ ${d.duration}\n`;if(d.obs)t+=`\n📝 ${d.obs}\n`;t+='\n';(d.exercises||[]).forEach((e,i)=>{t+=`${i+1}. ${e.name} — ${e.sets||'—'}x${e.reps||'—'}${e.load?` (${e.load})`:''}\n`;});t+='\n💬 Suporte: (81) 99161-0473';try{await navigator.clipboard.writeText(t);toast('Treino copiado! 📋');}catch{toast('Erro ao copiar','err');}};
-window.shareWA=async id=>{const[sn,stSn]=await Promise.all([getDoc(doc(db,'trainers',uid,'students',sid,'workouts',id)),getDoc(doc(db,'trainers',uid,'students',sid))]);const d=sn.data(),s=stSn.data();let t=`Olá ${s.name?.split(' ')[0]||''}! 🏋️\n\n*${d.name}*\n`;if(d.day)t+=`📅 ${d.day}\n`;if(d.obs)t+=`\n📝 ${d.obs}\n`;t+='\n*Exercícios:*\n';(d.exercises||[]).forEach((e,i)=>{t+=`${i+1}. ${e.name} — ${e.sets||'—'}x${e.reps||'—'}${e.load?` (${e.load})`:''}\n`;});t+='\nDúvidas? Me chame! 💪\n(81) 99161-0473';const ph=s.phone?'55'+s.phone.replace(/\D/g,''):'';window.open(`https://wa.me/${ph}?text=${encodeURIComponent(t)}`, '_blank');};
+window.copyW=async id=>{
+  const sn=await getDoc(doc(db,'trainers',uid,'students',sid,'workouts',id));const d=sn.data();
+  let t=`🏋️ *${d.name}*\n`;if(d.day)t+=`📅 ${d.day}\n`;if(d.duration)t+=`⏱️ ${d.duration}\n`;if(d.obs)t+=`\n📝 ${d.obs}\n`;t+='\n';
+  (d.exercises||[]).forEach((e,i)=>{t+=`${i+1}. ${e.name} — ${e.sets||'—'}x${e.reps||'—'}${e.load?` (${e.load})`:''}\n`;});
+  t+='\n💬 Suporte: (81) 99161-0473';
+  try{await navigator.clipboard.writeText(t);toast('Treino copiado! 📋');}catch{toast('Erro ao copiar','err');}
+};
+window.shareWA=async id=>{
+  const[sn,stSn]=await Promise.all([getDoc(doc(db,'trainers',uid,'students',sid,'workouts',id)),getDoc(doc(db,'trainers',uid,'students',sid))]);
+  const d=sn.data(),s=stSn.data();
+  let t=`Olá ${s.name?.split(' ')[0]||''}! 🏋️\n\n*${d.name}*\n`;
+  if(d.day)t+=`📅 ${d.day}\n`;if(d.obs)t+=`\n📝 ${d.obs}\n`;t+='\n*Exercícios:*\n';
+  (d.exercises||[]).forEach((e,i)=>{t+=`${i+1}. ${e.name} — ${e.sets||'—'}x${e.reps||'—'}${e.load?` (${e.load})`:''}\n`;});
+  t+='\nDúvidas? Me chame! 💪\n(81) 99161-0473';
+  const ph=s.phone?'55'+s.phone.replace(/\D/g,''):'';
+  window.open(`https://wa.me/${ph}?text=${encodeURIComponent(t)}`,'_blank');
+};
 
-// EXERCISE BUILDER
-window.addEx=(cid='ex-r')=>{const c=$(cid);const idx=Date.now()+Math.random();const r=document.createElement('div');r.className='exr';r.id='er-'+idx;r.innerHTML=`<input type="text" class="ex-nm" placeholder="Supino reto"><input type="text" class="ex-st" placeholder="4"><input type="text" class="ex-rp" placeholder="10-12"><input type="text" class="ex-ld" placeholder="60kg"><button class="rx" onclick="document.getElementById('er-${idx}').remove()">✕</button>`;c.appendChild(r);r.querySelector('.ex-nm').focus();};
+window.addEx=(cid='ex-r')=>{
+  const c=$(cid);const idx=Date.now()+Math.random();
+  const r=document.createElement('div');r.className='exr';r.id='er-'+idx;
+  r.innerHTML=`<input type="text" class="ex-nm" placeholder="Supino reto"><input type="text" class="ex-st" placeholder="4"><input type="text" class="ex-rp" placeholder="10-12"><input type="text" class="ex-ld" placeholder="60kg"><button class="rx" onclick="document.getElementById('er-${idx}').remove()">✕</button>`;
+  c.appendChild(r);r.querySelector('.ex-nm').focus();
+};
 function getExs(cid){return Array.from(document.querySelectorAll(`#${cid} .exr`)).map(r=>({name:r.querySelector('.ex-nm')?.value.trim()||'',sets:r.querySelector('.ex-st')?.value.trim()||'',reps:r.querySelector('.ex-rp')?.value.trim()||'',load:r.querySelector('.ex-ld')?.value.trim()||''})).filter(e=>e.name);}
 
-// FICHA
+// ─── FICHA ───────────────────────────────────────────────────────────────────
 async function loadFicha(){
   const d=sdat;
-  $('st-fi').innerHTML=`<div class="g2" style="gap:16px"><div class="card"><div class="ct">Dados pessoais</div>
-    ${[['Nome',d.name],['Idade',d.age?d.age+' anos':'—'],['Sexo',d.sex||'—'],['Objetivo',d.goal||'—'],['Nível',d.level||'—'],['Telefone',d.phone||'—'],['Obs',d.obs||'—']].map(([l,v])=>`<div class="ir"><span class="irl">${l}</span><span>${v}</span></div>`).join('')}
-    <button class="btn g sm" onclick="om('es')" style="margin-top:10px">✏️ Editar</button></div>
-    <div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div class="ct" style="margin-bottom:0">Medidas</div><button class="btn p sm" onclick="om('md')">+ Registrar</button></div><div id="fi-mg"></div></div></div>
-    <div class="card" style="margin-top:14px"><div class="ct">Histórico de medidas</div><div id="fi-hist" style="overflow-x:auto"></div></div>`;
+  $('st-fi').innerHTML=`<div class="g2" style="gap:16px"><div class="card"><div class="ct">Dados pessoais</div>${[['Nome',d.name],['Idade',d.age?d.age+' anos':'—'],['Sexo',d.sex||'—'],['Objetivo',d.goal||'—'],['Nível',d.level||'—'],['Telefone',d.phone||'—'],['Obs',d.obs||'—']].map(([l,v])=>`<div class="ir"><span class="irl">${l}</span><span>${v}</span></div>`).join('')}<button class="btn g sm" onclick="om('es')" style="margin-top:10px">✏️ Editar</button></div><div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div class="ct" style="margin-bottom:0">Medidas</div><button class="btn p sm" onclick="om('md')">+ Registrar</button></div><div id="fi-mg"></div></div></div><div class="card" style="margin-top:14px"><div class="ct">Histórico de medidas</div><div id="fi-hist" style="overflow-x:auto"></div></div>`;
   await refreshMedidas();
 }
 async function refreshMedidas(){
@@ -805,15 +966,20 @@ async function refreshMedidas(){
   const mg=$('fi-mg');if(!mg)return;
   const fields=[['peso','Peso','kg'],['gord','Gordura','%'],['musc','Músculo','%'],['cintura','Cintura','cm'],['quadril','Quadril','cm'],['fc','FC repouso','bpm']];
   if(!lat){mg.innerHTML='<div style="color:var(--mt);font-size:.83rem">Nenhuma medida registrada.</div>';}
-  else{mg.innerHTML=`<div class="mg">${fields.filter(([k])=>lat[k]).map(([k,l,u])=>{const delta=prv&&prv[k]?(parseFloat(lat[k])-parseFloat(prv[k])).toFixed(1):null;const dh=delta?`<div class="dd ${parseFloat(delta)<0?'ok':'bad'}">${parseFloat(delta)>0?'+':''}${delta}</div>`:'';return`<div class="mi"><div class="ml">${l}</div><div class="mv">${lat[k]}<span class="mu"> ${u}</span></div>${dh}</div>`;}).join('')}</div>`;
+  else{
+    mg.innerHTML=`<div class="mg">${fields.filter(([k])=>lat[k]).map(([k,l,u])=>{const delta=prv&&prv[k]?(parseFloat(lat[k])-parseFloat(prv[k])).toFixed(1):null;const dh=delta?`<div class="dd ${parseFloat(delta)<0?'ok':'bad'}">${parseFloat(delta)>0?'+':''}${delta}</div>`:'';return`<div class="mi"><div class="ml">${l}</div><div class="mv">${lat[k]}<span class="mu"> ${u}</span></div>${dh}</div>`;}).join('')}</div>`;
     if(lat.peso&&lat.altura){const imc=(parseFloat(lat.peso)/Math.pow(parseFloat(lat.altura)/100,2)).toFixed(1);await updateDoc(doc(db,'trainers',uid,'students',sid),{_imc:parseFloat(imc)}).catch(()=>{});}
   }
   const hist=$('fi-hist');if(!hist)return;
   hist.innerHTML=all.length?`<table class="et"><thead><tr><th>Data</th><th>Peso</th><th>Gordura</th><th>Músculo</th><th>Cintura</th><th>FC</th></tr></thead><tbody>${all.reverse().map(m=>`<tr><td>${fmt(m.date)}</td><td>${m.peso||'—'} kg</td><td>${m.gord||'—'} %</td><td>${m.musc||'—'} %</td><td>${m.cintura||'—'} cm</td><td>${m.fc||'—'} bpm</td></tr>`).join('')}</tbody></table>`:'<div style="color:var(--mt);font-size:.83rem;padding:10px 0">Sem histórico.</div>';
 }
-window.saveMedidas=async()=>{const dt=v('md-dt')||new Date().toISOString().slice(0,10);await addDoc(collection(db,'trainers',uid,'students',sid,'medidas'),{date:dt,peso:v('md-pe'),altura:v('md-al'),gord:v('md-go'),musc:v('md-mu'),cintura:v('md-ci'),quadril:v('md-qu'),braco:v('md-br'),coxa:v('md-co'),pa:v('md-pa'),fc:v('md-fc'),createdAt:serverTimestamp()});cm('md');clr(['md-dt','md-pe','md-al','md-go','md-mu','md-ci','md-qu','md-br','md-co','md-pa','md-fc']);toast('Medidas salvas! 🌿');refreshMedidas();};
+window.saveMedidas=async()=>{
+  const dt=v('md-dt')||new Date().toISOString().slice(0,10);
+  await addDoc(collection(db,'trainers',uid,'students',sid,'medidas'),{date:dt,peso:v('md-pe'),altura:v('md-al'),gord:v('md-go'),musc:v('md-mu'),cintura:v('md-ci'),quadril:v('md-qu'),braco:v('md-br'),coxa:v('md-co'),pa:v('md-pa'),fc:v('md-fc'),createdAt:serverTimestamp()});
+  cm('md');clr(['md-dt','md-pe','md-al','md-go','md-mu','md-ci','md-qu','md-br','md-co','md-pa','md-fc']);toast('Medidas salvas! 🌿');refreshMedidas();
+};
 
-// EVOLUÇÃO CHARTS
+// ─── EVOLUÇÃO ────────────────────────────────────────────────────────────────
 async function loadEvo(){
   const snap=await getDocs(collection(db,'trainers',uid,'students',sid,'medidas'));
   const all=snap.docs.map(m=>m.data()).sort((a,b)=>a.date.localeCompare(b.date));
@@ -828,7 +994,7 @@ async function loadEvo(){
   mk('ev-fc',all.map(m=>parseFloat(m.fc)||null));
 }
 
-// ODS3 TAB
+// ─── ODS3 ────────────────────────────────────────────────────────────────────
 async function loadOds(){
   const snap=await getDocs(collection(db,'trainers',uid,'students',sid,'medidas'));
   const all=snap.docs.map(m=>m.data()).sort((a,b)=>a.date.localeCompare(b.date));
@@ -836,25 +1002,11 @@ async function loadOds(){
   let imcVal='—',imcPct=50,imcTx='',imcCl='var(--ac)';
   if(lat?.peso&&lat?.altura){const imc=parseFloat(lat.peso)/Math.pow(parseFloat(lat.altura)/100,2);imcVal=imc.toFixed(1);imcPct=Math.min(Math.max(((imc-15)/25)*100,2),98);if(imc<18.5){imcTx='⚠️ Abaixo do peso';imcCl='var(--yw)';}else if(imc<25){imcTx='✅ Peso normal';imcCl='var(--ac)';}else if(imc<30){imcTx='⚠️ Sobrepeso';imcCl='var(--yw)';}else{imcTx='❗ Obesidade';imcCl='var(--red)';}}
   const tips=getOdsTips(sdat,lat);
-  $('st-od').innerHTML=`
-  <div class="g2" style="gap:14px;margin-bottom:14px">
-    <div class="card"><div class="ct">🌿 IMC — Índice de Massa Corporal</div>
-      <div style="font-family:'Space Grotesk',sans-serif;font-size:2.4rem;font-weight:700;color:${imcCl}">${imcVal}</div>
-      <div style="color:${imcCl};font-size:.85rem;margin:3px 0 10px">${imcTx}</div>
-      <div class="imcbar"><div class="imccur" style="left:${imcPct}%"></div></div>
-      <div style="display:flex;justify-content:space-between;font-size:.68rem;color:var(--mt);margin-top:3px"><span>Baixo</span><span>Normal</span><span>Sobrepeso</span><span>Obeso</span></div>
-    </div>
-    <div class="card"><div class="ct">🎯 Metas de Saúde ODS 3</div>
-      ${[['Freq. semanal','3-5x/semana',70],['Hidratação diária','2.5L água',60],['Sono adequado','7-9h/noite',80],['Engajamento',''+sdat.goal,45]].map(([l,v,p])=>`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:3px"><span>${l}</span><span style="color:var(--ac)">${v}</span></div><div class="gb"><div class="gf" style="width:${p}%"></div></div></div>`).join('')}
-    </div>
-  </div>
-  <div class="card"><div class="ct">💡 Recomendações personalizadas ODS 3</div>
-    <div class="g3" style="gap:10px">${tips.map(t=>`<div class="tip"><div class="tii">${t.i}</div><div><div class="tit">${t.t}</div><div class="tid">${t.d}</div></div></div>`).join('')}</div>
-  </div>`;
+  $('st-od').innerHTML=`<div class="g2" style="gap:14px;margin-bottom:14px"><div class="card"><div class="ct">🌿 IMC — Índice de Massa Corporal</div><div style="font-family:'Space Grotesk',sans-serif;font-size:2.4rem;font-weight:700;color:${imcCl}">${imcVal}</div><div style="color:${imcCl};font-size:.85rem;margin:3px 0 10px">${imcTx}</div><div class="imcbar"><div class="imccur" style="left:${imcPct}%"></div></div><div style="display:flex;justify-content:space-between;font-size:.68rem;color:var(--mt);margin-top:3px"><span>Baixo</span><span>Normal</span><span>Sobrepeso</span><span>Obeso</span></div></div><div class="card"><div class="ct">🎯 Metas de Saúde ODS 3</div>${[['Freq. semanal','3-5x/semana',70],['Hidratação diária','2.5L água',60],['Sono adequado','7-9h/noite',80],['Engajamento',''+sdat.goal,45]].map(([l,v,p])=>`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:3px"><span>${l}</span><span style="color:var(--ac)">${v}</span></div><div class="gb"><div class="gf" style="width:${p}%"></div></div></div>`).join('')}</div></div><div class="card"><div class="ct">💡 Recomendações personalizadas ODS 3</div><div class="g3" style="gap:10px">${tips.map(t=>`<div class="tip"><div class="tii">${t.i}</div><div><div class="tit">${t.t}</div><div class="tid">${t.d}</div></div></div>`).join('')}</div></div>`;
 }
 function getOdsTips(d,lat){const t=[];if(d.goal==='Emagrecimento')t.push({i:'🔥',t:'Déficit calórico',d:'Combine aeróbico e musculação. Déficit de 300-500kcal/dia é sustentável.'});if(d.goal==='Hipertrofia')t.push({i:'💪',t:'Supercompensação',d:'72h de descanso/grupo. Proteína: 1,8-2,2g/kg de peso.'});if(d.level==='Iniciante')t.push({i:'🌱',t:'Progressão gradual',d:'Aumente carga 5-10%/semana. Evite overtraining.'});if(lat?.fc&&parseInt(lat.fc)>80)t.push({i:'❤️',t:'FC elevada',d:'FC em repouso >80bpm. Recomende mais cardio aeróbico.'});t.push({i:'🧘',t:'Bem-estar mental',d:'Exercício libera endorfina. Incentive consistência!'});t.push({i:'📊',t:'Monitoramento ODS 3',d:'Medidas mensais mostram impacto real na saúde do aluno.'});return t.slice(0,3);}
 
-// SESSIONS
+// ─── SESSIONS ────────────────────────────────────────────────────────────────
 async function loadAg(){
   const snap=await getDocs(collection(db,'trainers',uid,'sessions'));
   allSess=snap.docs.map(s=>({id:s.id,...s.data()}));renderSessAll();
@@ -865,20 +1017,49 @@ async function loadAg(){
 function sessHTML(s){return`<div class="si"><div><div class="sn">${s.studentName||'Aluno'}</div><div class="sm2">${fmt(s.date)}${s.time?' '+s.time:''} · ${s.type||''}${s.duration?' · '+s.duration+'min':''}</div></div><button class="btn d sm" onclick="delSess('${s.id}')">✕</button></div>`;}
 function renderSessAll(){$('sess-list').innerHTML=allSess.length?[...allSess].sort((a,b)=>a.date.localeCompare(b.date)).map(sessHTML).join(''):E('📅','Nenhuma sessão.');}
 window.calNav=dir=>{calM+=dir;if(calM>11){calM=0;calY++;}if(calM<0){calM=11;calY--;}renderCal();};
-function renderCal(){const MN=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];$('cal-t').textContent=`${MN[calM]} ${calY}`;const first=new Date(calY,calM,1).getDay(),days=new Date(calY,calM+1,0).getDate(),prev=new Date(calY,calM,0).getDate(),today=new Date().toISOString().slice(0,10);const has=d=>{const iso=`${calY}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;return allSess.some(s=>s.date===iso);};let h='';for(let i=0;i<first;i++)h+=`<div class="cd om">${prev-first+1+i}</div>`;for(let d=1;d<=days;d++){const iso=`${calY}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;h+=`<div class="cd${iso===today?' today':''}${has(d)?' has':''}" onclick="filterDay('${iso}')">${d}</div>`;}const rem=(first+days)%7?7-(first+days)%7:0;for(let d=1;d<=rem;d++)h+=`<div class="cd om">${d}</div>`;$('cal-g').innerHTML=h;}
+function renderCal(){
+  const MN=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  $('cal-t').textContent=`${MN[calM]} ${calY}`;
+  const first=new Date(calY,calM,1).getDay(),days=new Date(calY,calM+1,0).getDate(),prev=new Date(calY,calM,0).getDate(),today=new Date().toISOString().slice(0,10);
+  const has=d=>{const iso=`${calY}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;return allSess.some(s=>s.date===iso);};
+  let h='';
+  for(let i=0;i<first;i++)h+=`<div class="cd om">${prev-first+1+i}</div>`;
+  for(let d=1;d<=days;d++){const iso=`${calY}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;h+=`<div class="cd${iso===today?' today':''}${has(d)?' has':''}" onclick="filterDay('${iso}')">${d}</div>`;}
+  const rem=(first+days)%7?7-(first+days)%7:0;
+  for(let d=1;d<=rem;d++)h+=`<div class="cd om">${d}</div>`;
+  $('cal-g').innerHTML=h;
+}
 window.filterDay=iso=>{$('cal-st').textContent=`Sessões — ${fmt(iso)}`;const day=allSess.filter(s=>s.date===iso);$('sess-list').innerHTML=day.length?day.map(sessHTML).join(''):E('📅','Nenhuma sessão neste dia.');};
-window.saveSession=async()=>{const stId=$('se-st').value,dt=v('se-dt');if(!stId||!dt)return toast('Selecione aluno e data!','err');const sn=await getDoc(doc(db,'trainers',uid,'students',stId));await addDoc(collection(db,'trainers',uid,'sessions'),{studentId:stId,studentName:sn.data()?.name||'',date:dt,time:v('se-hr'),duration:v('se-du'),type:$('se-tp').value,obs:v('se-ob'),createdAt:serverTimestamp()});cm('se');clr(['se-dt','se-hr','se-du','se-ob']);toast('Sessão agendada!');loadAg();};
+window.saveSession=async()=>{
+  const stId=$('se-st').value,dt=v('se-dt');
+  if(!stId||!dt)return toast('Selecione aluno e data!','err');
+  const sn=await getDoc(doc(db,'trainers',uid,'students',stId));
+  await addDoc(collection(db,'trainers',uid,'sessions'),{studentId:stId,studentName:sn.data()?.name||'',date:dt,time:v('se-hr'),duration:v('se-du'),type:$('se-tp').value,obs:v('se-ob'),createdAt:serverTimestamp()});
+  cm('se');clr(['se-dt','se-hr','se-du','se-ob']);toast('Sessão agendada!');loadAg();
+};
 window.delSess=async id=>{await deleteDoc(doc(db,'trainers',uid,'sessions',id));toast('Sessão removida.');loadAg();};
 
-// TEMPLATES
+// ─── TEMPLATES ───────────────────────────────────────────────────────────────
 async function loadTp(){const snap=await getDocs(collection(db,'trainers',uid,'templates'));$('tp-list').innerHTML=snap.empty?E('📋','Nenhum template.'):snap.docs.map(t=>tpCard(t.id,t.data())).join('');}
 function tpCard(id,d){return`<div class="wc"><div class="wh"><div><div class="wt">${d.name}</div><div style="display:flex;gap:5px;margin-top:4px"><span class="bdg">${d.level||''}</span><span class="bdg bg">${d.focus||''}</span></div></div><button class="btn d sm" onclick="delTp('${id}')">Excluir</button></div>${d.desc?`<div style="font-size:.8rem;color:var(--mt);margin-bottom:7px">${d.desc}</div>`:''}<div style="display:flex;gap:5px;flex-wrap:wrap">${(d.exercises||[]).slice(0,5).map(e=>`<span class="bdg">${e.name}</span>`).join('')}${(d.exercises||[]).length>5?`<span class="bdg">+${d.exercises.length-5}</span>`:''}</div></div>`;}
-window.saveTemplate=async()=>{const nm=v('nt-nm');if(!nm)return toast('Nome obrigatório!','err');await addDoc(collection(db,'trainers',uid,'templates'),{name:nm,level:$('nt-lv').value,focus:$('nt-fc').value,desc:v('nt-de'),exercises:getExs('tp-ex-r'),createdAt:serverTimestamp()});cm('nt');clr(['nt-nm','nt-de']);$('tp-ex-r').innerHTML='';toast('Template salvo!');loadTp();};
+window.saveTemplate=async()=>{
+  const nm=v('nt-nm');if(!nm)return toast('Nome obrigatório!','err');
+  await addDoc(collection(db,'trainers',uid,'templates'),{name:nm,level:$('nt-lv').value,focus:$('nt-fc').value,desc:v('nt-de'),exercises:getExs('tp-ex-r'),createdAt:serverTimestamp()});
+  cm('nt');clr(['nt-nm','nt-de']);$('tp-ex-r').innerHTML='';toast('Template salvo!');loadTp();
+};
 window.delTp=async id=>{await deleteDoc(doc(db,'trainers',uid,'templates',id));toast('Template excluído.');loadTp();};
-window.openUT=async()=>{const snap=await getDocs(collection(db,'trainers',uid,'templates'));$('ut-list').innerHTML=snap.empty?E('📋','Nenhum template.'):snap.docs.map(t=>`<div class="wc" style="cursor:pointer" onclick="applyTp('${t.id}')"><div class="wt">${t.data().name}</div><div style="font-size:.78rem;color:var(--mt)">${t.data().level||''} · ${(t.data().exercises||[]).length} exercícios</div></div>`).join('');om('ut');};
-window.applyTp=async id=>{const sn=await getDoc(doc(db,'trainers',uid,'templates',id));const c=$('ex-r');c.innerHTML='';(sn.data().exercises||[]).forEach(e=>{const idx=Date.now()+Math.random();const r=document.createElement('div');r.className='exr';r.id='er-'+idx;r.innerHTML=`<input type="text" class="ex-nm" value="${e.name||''}"><input type="text" class="ex-st" value="${e.sets||''}"><input type="text" class="ex-rp" value="${e.reps||''}"><input type="text" class="ex-ld" value="${e.load||''}"><button class="rx" onclick="document.getElementById('er-${idx}').remove()">✕</button>`;c.appendChild(r);});cm('ut');toast('Template aplicado!');};
+window.openUT=async()=>{
+  const snap=await getDocs(collection(db,'trainers',uid,'templates'));
+  $('ut-list').innerHTML=snap.empty?E('📋','Nenhum template.'):snap.docs.map(t=>`<div class="wc" style="cursor:pointer" onclick="applyTp('${t.id}')"><div class="wt">${t.data().name}</div><div style="font-size:.78rem;color:var(--mt)">${t.data().level||''} · ${(t.data().exercises||[]).length} exercícios</div></div>`).join('');
+  om('ut');
+};
+window.applyTp=async id=>{
+  const sn=await getDoc(doc(db,'trainers',uid,'templates',id));const c=$('ex-r');c.innerHTML='';
+  (sn.data().exercises||[]).forEach(e=>{const idx=Date.now()+Math.random();const r=document.createElement('div');r.className='exr';r.id='er-'+idx;r.innerHTML=`<input type="text" class="ex-nm" value="${e.name||''}"><input type="text" class="ex-st" value="${e.sets||''}"><input type="text" class="ex-rp" value="${e.reps||''}"><input type="text" class="ex-ld" value="${e.load||''}"><button class="rx" onclick="document.getElementById('er-${idx}').remove()">✕</button>`;c.appendChild(r);});
+  cm('ut');toast('Template aplicado!');
+};
 
-// REPORTS
+// ─── REPORTS ─────────────────────────────────────────────────────────────────
 async function loadRp(){
   const[stSnap,seSnap]=await Promise.all([getDocs(collection(db,'trainers',uid,'students')),getDocs(collection(db,'trainers',uid,'sessions'))]);
   const gc={};stSnap.docs.forEach(s=>{const g=s.data().goal||'Outro';gc[g]=(gc[g]||0)+1;});
@@ -886,21 +1067,60 @@ async function loadRp(){
   const mc=Array(12).fill(0);seSnap.docs.forEach(s=>{const d=s.data().date;if(d){const m=parseInt(d.split('-')[1])-1;mc[m]++;}});
   dC('ch-m');rCharts['ch-m']=new Chart($('ch-m'),{type:'bar',data:{labels:['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],datasets:[{data:mc,backgroundColor:'#4ade80',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#6b8f72'},grid:{display:false}},y:{ticks:{color:'#6b8f72'},grid:{color:'#1e3020'}}}}});
   let imcL=[],grdL=[];const rows=[];
-  for(const s of stSnap.docs){const ms=await getDocs(collection(db,'trainers',uid,'students',s.id,'medidas'));const ws=await getDocs(collection(db,'trainers',uid,'students',s.id,'workouts'));const all=ms.docs.map(m=>m.data()).sort((a,b)=>a.date.localeCompare(b.date));const lat=all[all.length-1];if(lat?.peso&&lat?.altura)imcL.push(parseFloat(lat.peso)/Math.pow(parseFloat(lat.altura)/100,2));if(lat?.gord)grdL.push(parseFloat(lat.gord));rows.push({name:s.data().name,goal:s.data().goal||'—',count:ws.size});}
+  for(const s of stSnap.docs){
+    const ms=await getDocs(collection(db,'trainers',uid,'students',s.id,'medidas'));
+    const ws=await getDocs(collection(db,'trainers',uid,'students',s.id,'workouts'));
+    const all=ms.docs.map(m=>m.data()).sort((a,b)=>a.date.localeCompare(b.date));
+    const lat=all[all.length-1];
+    if(lat?.peso&&lat?.altura)imcL.push(parseFloat(lat.peso)/Math.pow(parseFloat(lat.altura)/100,2));
+    if(lat?.gord)grdL.push(parseFloat(lat.gord));
+    rows.push({name:s.data().name,goal:s.data().goal||'—',count:ws.size});
+  }
   const ib=[0,0,0,0];imcL.forEach(i=>{if(i<18.5)ib[0]++;else if(i<25)ib[1]++;else if(i<30)ib[2]++;else ib[3]++;});
   dC('ch-imc');rCharts['ch-imc']=new Chart($('ch-imc'),{type:'bar',data:{labels:['<18.5','18.5–24.9','25–29.9','≥30'],datasets:[{data:ib,backgroundColor:['#60a5fa','#4ade80','#fbbf24','#f87171'],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#6b8f72'},grid:{display:false}},y:{ticks:{color:'#6b8f72',stepSize:1},grid:{color:'#1e3020'}}}}});
   const gb=[0,0,0,0];grdL.forEach(g=>{if(g<10)gb[0]++;else if(g<20)gb[1]++;else if(g<30)gb[2]++;else gb[3]++;});
   dC('ch-grd');rCharts['ch-grd']=new Chart($('ch-grd'),{type:'bar',data:{labels:['<10%','10–20%','20–30%','>30%'],datasets:[{data:gb,backgroundColor:['#4ade80','#4ade80','#fbbf24','#f87171'],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#6b8f72'},grid:{display:false}},y:{ticks:{color:'#6b8f72',stepSize:1},grid:{color:'#1e3020'}}}}});
-  rows.sort((a,b)=>b.count-a.count);$('rp-tbl').innerHTML=rows.length?`<table class="et"><thead><tr><th>Aluno</th><th>Objetivo</th><th>Treinos</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.name}</td><td>${r.goal}</td><td style="color:var(--ac);font-weight:700">${r.count}</td></tr>`).join('')}</tbody></table>`:E('📊','Sem dados.');
+  rows.sort((a,b)=>b.count-a.count);
+  $('rp-tbl').innerHTML=rows.length?`<table class="et"><thead><tr><th>Aluno</th><th>Objetivo</th><th>Treinos</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.name}</td><td>${r.goal}</td><td style="color:var(--ac);font-weight:700">${r.count}</td></tr>`).join('')}</tbody></table>`:E('📊','Sem dados.');
 }
 
-// PROFILE
-async function loadProfile(){if(!auth.currentUser)return;$('pf-em').value=auth.currentUser.email||'';const snap=await getDoc(doc(db,'trainers',uid,'profile','data'));if(snap.exists()){const d=snap.data();sv('pf-nm',d.name||auth.currentUser.displayName);sv('pf-ph',d.phone);sv('pf-cr',d.cref);sv('pf-bi',d.bio);sv('pf-ci',d.city);sv('pf-ex',d.exp);sv('pf-mt',d.meta);if(d.specs)d.specs.forEach(s=>document.querySelectorAll('.sp-tag').forEach(t=>{if(t.textContent===s)t.classList.add('on');}));if(d.photoURL){$('pf-av').innerHTML=`<img src="${d.photoURL}">`;$('sb-av').innerHTML=`<img src="${d.photoURL}" style="width:30px;height:30px;border-radius:50%;object-fit:cover">`;}}else sv('pf-nm',auth.currentUser.displayName);}
-window.saveProfile=async()=>{const nm=v('pf-nm');const specs=[...document.querySelectorAll('.sp-tag.on')].map(t=>t.textContent);await setDoc(doc(db,'trainers',uid,'profile','data'),{name:nm,phone:v('pf-ph'),cref:v('pf-cr'),bio:v('pf-bi'),city:v('pf-ci'),exp:v('pf-ex'),meta:v('pf-mt'),specs,updatedAt:serverTimestamp()},{merge:true});if(nm){await updateProfile(auth.currentUser,{displayName:nm});$('sb-nm').textContent=nm;$('sb-av').querySelector('span,img')?.tagName!=='IMG'&&($('sb-av').textContent=nm[0].toUpperCase());}toast('Perfil salvo! 🌿');};
-window.changePass=async()=>{const p=v('pf-pw');if(!p||p.length<6)return toast('Mínimo 6 caracteres!','err');try{await updatePassword(auth.currentUser,p);toast('Senha atualizada!');$('pf-pw').value='';}catch(e){toast(fe(e),'err');}};
-window.uploadPhoto=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=async ev=>{const url=ev.target.result;$('pf-av').innerHTML=`<img src="${url}">`;$('sb-av').innerHTML=`<img src="${url}" style="width:30px;height:30px;border-radius:50%;object-fit:cover">`;await setDoc(doc(db,'trainers',uid,'profile','data'),{photoURL:url},{merge:true});toast('Foto atualizada!');};r.readAsDataURL(f);};
+// ─── PROFILE ─────────────────────────────────────────────────────────────────
+async function loadProfile(){
+  if(!auth.currentUser)return;
+  $('pf-em').value=auth.currentUser.email||auth.currentUser.phoneNumber||'';
+  const snap=await getDoc(doc(db,'trainers',uid,'profile','data'));
+  if(snap.exists()){
+    const d=snap.data();
+    sv('pf-nm',d.name||auth.currentUser.displayName);
+    sv('pf-ph',d.phone);sv('pf-cr',d.cref);sv('pf-bi',d.bio);sv('pf-ci',d.city);sv('pf-ex',d.exp);sv('pf-mt',d.meta);
+    if(d.specs)d.specs.forEach(s=>document.querySelectorAll('.sp-tag').forEach(t=>{if(t.textContent===s)t.classList.add('on');}));
+    if(d.photoURL){$('pf-av').innerHTML=`<img src="${d.photoURL}">`;$('sb-av').innerHTML=`<img src="${d.photoURL}" style="width:30px;height:30px;border-radius:50%;object-fit:cover">`;}
+  }else sv('pf-nm',auth.currentUser.displayName);
+}
+window.saveProfile=async()=>{
+  const nm=v('pf-nm');const specs=[...document.querySelectorAll('.sp-tag.on')].map(t=>t.textContent);
+  await setDoc(doc(db,'trainers',uid,'profile','data'),{name:nm,phone:v('pf-ph'),cref:v('pf-cr'),bio:v('pf-bi'),city:v('pf-ci'),exp:v('pf-ex'),meta:v('pf-mt'),specs,updatedAt:serverTimestamp()},{merge:true});
+  if(nm){await updateProfile(auth.currentUser,{displayName:nm});$('sb-nm').textContent=nm;$('sb-av').querySelector('span,img')?.tagName!=='IMG'&&($('sb-av').textContent=nm[0].toUpperCase());}
+  toast('Perfil salvo! 🌿');
+};
+window.changePass=async()=>{
+  const p=v('pf-pw');if(!p||p.length<6)return toast('Mínimo 6 caracteres!','err');
+  try{await updatePassword(auth.currentUser,p);toast('Senha atualizada!');$('pf-pw').value='';}catch(e){toast(fe(e),'err');}
+};
+window.uploadPhoto=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=async ev=>{
+    const url=ev.target.result;
+    $('pf-av').innerHTML=`<img src="${url}">`;
+    $('sb-av').innerHTML=`<img src="${url}" style="width:30px;height:30px;border-radius:50%;object-fit:cover">`;
+    await setDoc(doc(db,'trainers',uid,'profile','data'),{photoURL:url},{merge:true});
+    toast('Foto atualizada!');
+  };
+  r.readAsDataURL(f);
+};
 
-// MODALS
+// ─── MODALS ──────────────────────────────────────────────────────────────────
 window.om=id=>{
   if(id==='nw'){$('ex-r').innerHTML='';addEx('ex-r');}
   if(id==='nt'){$('tp-ex-r').innerHTML='';addEx('tp-ex-r');}
