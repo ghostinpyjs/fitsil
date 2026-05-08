@@ -700,6 +700,31 @@ let uid = null, currentSid = null, currentSData = null;
 let calYear, calMonth, allSessions = [];
 let evoCharts = {}, reportCharts = {};
 
+/* ── HELPERS (definidos antes de qualquer uso) ── */
+function $(id){return document.getElementById(id);}
+function v(id){return document.getElementById(id)?.value?.trim()||'';}
+function show(id){document.getElementById(id).style.display='';}
+function hide(id){document.getElementById(id).style.display='none';}
+function showErr(id,msg){const el=$(id);el.textContent=msg;el.style.display='block';}
+function hideErr(id){$(id).style.display='none';}
+function clearFields(ids){ids.forEach(id=>{const el=$(id);if(el)el.value='';});}
+function fmtDate(iso){if(!iso)return'';const[y,m,d]=iso.split('-');return`${d}/${m}/${y}`;}
+function emptyHTML(icon,msg){return`<div class="empty"><div class="empty-icon">${icon}</div><p>${msg}</p></div>`;}
+function toast(msg,type='ok'){
+  const t=$('toast');
+  t.textContent=msg;t.style.background=type==='err'?'var(--danger)':'var(--accent)';
+  t.style.color=type==='err'?'#fff':'#000';
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
+}
+function fe(e){
+  const map={'auth/invalid-email':'E-mail inválido.','auth/user-not-found':'Usuário não encontrado.',
+    'auth/wrong-password':'Senha incorreta.','auth/email-already-in-use':'E-mail já cadastrado.',
+    'auth/weak-password':'Senha muito fraca.','auth/invalid-credential':'E-mail ou senha incorretos.',
+    'auth/requires-recent-login':'Faça login novamente para alterar a senha.'};
+  return map[e.code]||e.message;
+}
+function destroyChart(id){if(reportCharts[id]){reportCharts[id].destroy();delete reportCharts[id];}}
+
 /* ── AUTH STATE ── */
 onAuthStateChanged(auth, async user => {
   hide('loading');
@@ -1296,9 +1321,7 @@ async function loadReports(){
     ${rows.map(r=>`<tr><td>${r.name}</td><td>${r.goal}</td><td><strong style="color:var(--accent)">${r.count}</strong></td></tr>`).join('')}
   </tbody></table>`:'<div style="color:var(--muted);padding:10px 0;font-size:.83rem">Sem dados.</div>';
 }
-function destroyChart(id){
-  if(reportCharts[id]){reportCharts[id].destroy();delete reportCharts[id];}
-}
+
 
 /* ── PROFILE ── */
 async function loadProfile(){
@@ -1390,29 +1413,7 @@ window.openModal=id=>{
 window.closeModal=id=>document.getElementById('modal-'+id)?.classList.remove('open');
 document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
 
-/* ── HELPERS ── */
-function $(id){return document.getElementById(id);}
-function v(id){return document.getElementById(id)?.value?.trim()||'';}
-function show(id){document.getElementById(id).style.display='';}
-function hide(id){document.getElementById(id).style.display='none';}
-function showErr(id,msg){const el=$(id);el.textContent=msg;el.style.display='block';}
-function hideErr(id){$(id).style.display='none';}
-function clearFields(ids){ids.forEach(id=>{const el=$(id);if(el)el.value='';});}
-function fmtDate(iso){if(!iso)return'';const[y,m,d]=iso.split('-');return`${d}/${m}/${y}`;}
-function emptyHTML(icon,msg){return`<div class="empty"><div class="empty-icon">${icon}</div><p>${msg}</p></div>`;}
-function toast(msg,type='ok'){
-  const t=$('toast');
-  t.textContent=msg;t.style.background=type==='err'?'var(--danger)':'var(--accent)';
-  t.style.color=type==='err'?'#fff':'#000';
-  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
-}
-function fe(e){
-  const map={'auth/invalid-email':'E-mail inválido.','auth/user-not-found':'Usuário não encontrado.',
-    'auth/wrong-password':'Senha incorreta.','auth/email-already-in-use':'E-mail já cadastrado.',
-    'auth/weak-password':'Senha muito fraca.','auth/invalid-credential':'E-mail ou senha incorretos.',
-    'auth/requires-recent-login':'Faça login novamente para alterar a senha.'};
-  return map[e.code]||e.message;
-}
+
 </script>
 </body>
 </html>
