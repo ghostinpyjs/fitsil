@@ -173,6 +173,10 @@ table.et tr:last-child td{border-bottom:none}
 .pav img{width:100%;height:100%;object-fit:cover}
 /* DIVIDER */
 .dv{height:1px;background:var(--bd);margin:14px 0}
+/* RECAPTCHA */
+#recaptcha-container{min-height:78px;display:flex;align-items:center;justify-content:center}
+#recaptcha-container iframe{border-radius:8px}
+.ph-info{background:#071a0b;border:1px solid #1a3a10;border-radius:8px;padding:10px 13px;font-size:.8rem;color:#7ab87a;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 @media(max-width:860px){.sb{display:none}.mn{margin-left:0;padding:16px 14px}.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}.mg{grid-template-columns:1fr 1fr}.exr{grid-template-columns:1fr 1fr 1fr 28px}}
 </style>
 </head>
@@ -191,9 +195,11 @@ table.et tr:last-child td{border-bottom:none}
     <div class="atag">🌿 ODS 3 — Saúde e Bem-Estar</div>
     <div style="color:var(--mt);font-size:.85rem;margin-bottom:22px">Plataforma para personal trainers comprometidos com a saúde coletiva.</div>
     <div class="atabs">
-      <button class="atab on" onclick="swTab('in')">Entrar</button>
+      <button class="atab on" onclick="swTab('in')">E-mail</button>
+      <button class="atab" onclick="swTab('ph')">📱 Telefone</button>
       <button class="atab" onclick="swTab('up')">Cadastrar</button>
     </div>
+    <!-- EMAIL LOGIN -->
     <div id="t-in">
       <label>E-mail</label><input id="li-em" type="email" placeholder="email@exemplo.com">
       <label>Senha</label><input id="li-pw" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()">
@@ -201,6 +207,38 @@ table.et tr:last-child td{border-bottom:none}
       <button class="btn p fw" onclick="login()">Entrar</button>
       <div style="text-align:center;margin-top:12px"><button style="background:none;border:none;color:var(--mt);font-size:.8rem;cursor:pointer;font-family:Outfit,sans-serif" onclick="om('reset')">Esqueci a senha</button></div>
     </div>
+    <!-- PHONE LOGIN -->
+    <div id="t-ph" style="display:none">
+      <div id="ph-step1">
+        <div class="ph-info">📱 Você receberá um SMS com o código de verificação.</div>
+        <label>Número de telefone</label>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <select id="ph-cc" style="width:90px;margin-bottom:0;flex-shrink:0">
+            <option value="+55">🇧🇷 +55</option>
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+351">🇵🇹 +351</option>
+            <option value="+34">🇪🇸 +34</option>
+          </select>
+          <input id="ph-num" type="tel" placeholder="81 99161-0473" style="margin-bottom:0;flex:1">
+        </div>
+        <div id="recaptcha-container" style="margin-bottom:12px"></div>
+        <div class="err" id="e-ph"></div>
+        <button class="btn p fw" onclick="sendSMS()">📲 Enviar código SMS</button>
+      </div>
+      <div id="ph-step2" style="display:none">
+        <div style="background:#0a1f0c;border:1px solid #1e4020;border-radius:8px;padding:11px 14px;margin-bottom:14px;font-size:.83rem;color:#7ab87a">
+          ✅ Código enviado! Verifique seu SMS.
+        </div>
+        <label>Código de verificação (6 dígitos)</label>
+        <input id="ph-otp" type="text" placeholder="123456" maxlength="6" style="letter-spacing:.2em;font-size:1.1rem;text-align:center" oninput="if(this.value.length===6)verifySMS()">
+        <div class="err" id="e-otp"></div>
+        <button class="btn p fw" onclick="verifySMS()">✅ Verificar e entrar</button>
+        <div style="text-align:center;margin-top:10px">
+          <button style="background:none;border:none;color:var(--mt);font-size:.8rem;cursor:pointer;font-family:Outfit,sans-serif" onclick="resetPhoneStep()">← Trocar número</button>
+        </div>
+      </div>
+    </div>
+    <!-- REGISTER -->
     <div id="t-up" style="display:none">
       <label>Nome completo</label><input id="rg-nm" type="text" placeholder="João Silva">
       <label>E-mail</label><input id="rg-em" type="email" placeholder="email@exemplo.com">
@@ -593,7 +631,7 @@ table.et tr:last-child td{border-bottom:none}
 
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,onAuthStateChanged,updateProfile,updatePassword,sendPasswordResetEmail}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,onAuthStateChanged,updateProfile,updatePassword,sendPasswordResetEmail,RecaptchaVerifier,signInWithPhoneNumber}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import{getFirestore,collection,doc,addDoc,getDoc,getDocs,setDoc,updateDoc,deleteDoc,serverTimestamp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const FB={apiKey:"AIzaSyBQ2lLtKow3dbTdaJiOWyULBiLO24tt_AQ",authDomain:"fitsil-65f23.firebaseapp.com",projectId:"fitsil-65f23",storageBucket:"fitsil-65f23.firebasestorage.app",messagingSenderId:"850776718438",appId:"1:850776718438:web:09eec47fa78cb9030901a7"};
@@ -628,8 +666,67 @@ onAuthStateChanged(auth,async user=>{
 });
 
 // AUTH ACTIONS
-window.swTab=t=>{hide('t-in');hide('t-up');show('t-'+t);document.querySelectorAll('.atab').forEach((el,i)=>el.classList.toggle('on',(t==='in'&&i===0)||(t==='up'&&i===1)));};
-window.login=async()=>{$('e-in').style.display='none';try{await signInWithEmailAndPassword(auth,v('li-em'),v('li-pw'));}catch(e){const el=$('e-in');el.textContent=fe(e);el.style.display='block';}};
+window.swTab=t=>{['in','ph','up'].forEach(x=>{const el=$('t-'+x);if(el)el.style.display=x===t?'':'none';});document.querySelectorAll('.atab').forEach((el,i)=>el.classList.toggle('on',['in','ph','up'][i]===t));if(t==='ph')initRecaptcha();};
+
+// PHONE AUTH
+let recaptchaVerifier=null,confirmResult=null;
+function initRecaptcha(){
+  if(recaptchaVerifier)return;
+  try{
+    recaptchaVerifier=new RecaptchaVerifier(auth,'recaptcha-container',{
+      size:'normal',
+      theme:'dark',
+      callback:()=>{},
+      'expired-callback':()=>{recaptchaVerifier=null;$('recaptcha-container').innerHTML='';initRecaptcha();}
+    });
+    recaptchaVerifier.render();
+  }catch(e){console.warn('reCAPTCHA init:',e);}
+}
+window.sendSMS=async()=>{
+  const cc=$('ph-cc').value,num=v('ph-num').replace(/\D/g,'');
+  $('e-ph').style.display='none';
+  if(!num||num.length<8)return showE('e-ph','Digite um número válido.');
+  const full=cc+num;
+  if(!recaptchaVerifier)return showE('e-ph','Conclua o reCAPTCHA primeiro.');
+  const btn=$('t-ph').querySelector('.btn');btn.textContent='Enviando...';btn.disabled=true;
+  try{
+    confirmResult=await signInWithPhoneNumber(auth,full,recaptchaVerifier);
+    hide('ph-step1');show('ph-step2');
+    $('ph-otp').focus();
+  }catch(e){
+    btn.textContent='📲 Enviar código SMS';btn.disabled=false;
+    recaptchaVerifier.clear();recaptchaVerifier=null;
+    $('recaptcha-container').innerHTML='';
+    showE('e-ph',phErr(e));
+    setTimeout(initRecaptcha,500);
+  }
+};
+window.verifySMS=async()=>{
+  const code=v('ph-otp');
+  $('e-otp').style.display='none';
+  if(code.length!==6)return showE('e-otp','O código deve ter 6 dígitos.');
+  const btn=$('ph-step2').querySelector('.btn.p');btn.textContent='Verificando...';btn.disabled=true;
+  try{
+    const result=await confirmResult.confirm(code);
+    // If new user (no displayName), prompt for name
+    if(!result.user.displayName){
+      const name=prompt('Bem-vindo! Qual é o seu nome?')||'Personal';
+      await updateProfile(result.user,{displayName:name});
+    }
+  }catch(e){
+    btn.textContent='✅ Verificar e entrar';btn.disabled=false;
+    showE('e-otp',phErr(e));
+  }
+};
+window.resetPhoneStep=()=>{
+  hide('ph-step2');show('ph-step1');
+  $('ph-otp').value='';$('e-otp').style.display='none';
+  recaptchaVerifier?.clear();recaptchaVerifier=null;
+  $('recaptcha-container').innerHTML='';
+  setTimeout(initRecaptcha,200);
+};
+function showE(id,msg){const el=$(id);el.textContent=msg;el.style.display='block';}
+function phErr(e){return({'auth/invalid-phone-number':'Número de telefone inválido.','auth/too-many-requests':'Muitas tentativas. Aguarde alguns minutos.','auth/invalid-verification-code':'Código incorreto. Verifique o SMS.','auth/code-expired':'Código expirado. Envie um novo SMS.','auth/captcha-check-failed':'Falha no reCAPTCHA. Tente novamente.','auth/network-request-failed':'Sem conexão com a internet.'})[e.code]||e.message;}$('e-in').style.display='none';try{await signInWithEmailAndPassword(auth,v('li-em'),v('li-pw'));}catch(e){const el=$('e-in');el.textContent=fe(e);el.style.display='block';}};
 window.register=async()=>{$('e-up').style.display='none';const nm=v('rg-nm');if(!nm){const el=$('e-up');el.textContent='Nome obrigatório.';el.style.display='block';return;}try{const c=await createUserWithEmailAndPassword(auth,v('rg-em'),v('rg-pw'));await updateProfile(c.user,{displayName:nm});}catch(e){const el=$('e-up');el.textContent=fe(e);el.style.display='block';}};
 window.resetPass=async()=>{$('e-rs').style.display='none';$('rs-ok').style.display='none';try{await sendPasswordResetEmail(auth,v('rs-em'));$('rs-ok').style.display='block';}catch(e){const el=$('e-rs');el.textContent=fe(e);el.style.display='block';}};
 
