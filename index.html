@@ -1,1485 +1,1418 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FilSil — Gestão de Treinos</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<title>FilSil — Saúde & Bem-Estar</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-  :root {
-    --bg: #0d0d0d;
-    --surface: #161616;
-    --surface2: #1f1f1f;
-    --border: #2a2a2a;
-    --accent: #c8f04a;
-    --accent-dim: #9ab835;
-    --text: #f0f0f0;
-    --muted: #888;
-    --danger: #ff4d4d;
-    --warn: #f0a030;
-    --info: #4ab8f0;
-    --radius: 10px;
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+/* ── TOKENS ── */
+:root {
+  --bg:#0d0f0a; --surface:#131510; --surface2:#1b1e14;
+  --border:#252a1c; --accent:#7ec832; --accent2:#b5e04a;
+  --text:#eef2e6; --muted:#7a8a6a; --danger:#e05555;
+  --warn:#e8a020; --info:#4a9de0; --ods3:#4caf50;
+  --radius:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
 
-  /* AUTH */
-  #auth-screen {
-    min-height:100vh; display:flex; align-items:center; justify-content:center;
-    background: radial-gradient(ellipse at 60% 40%, #1a2500 0%, #0d0d0d 70%);
-  }
-  .auth-box {
-    width:100%; max-width:420px; padding:48px 40px;
-    background:var(--surface); border:1px solid var(--border); border-radius:16px;
-    box-shadow: 0 24px 80px rgba(0,0,0,.5);
-  }
-  .auth-logo { font-family:'Syne',sans-serif; font-size:2.2rem; font-weight:800; color:var(--accent); margin-bottom:4px; letter-spacing:-.02em; }
-  .auth-sub { color:var(--muted); font-size:.9rem; margin-bottom:32px; }
-  .auth-tabs { display:flex; gap:4px; margin-bottom:28px; background:var(--bg); border-radius:8px; padding:4px; }
-  .auth-tab {
-    flex:1; padding:8px; border:none; background:transparent; color:var(--muted);
-    font-family:'DM Sans',sans-serif; font-size:.9rem; border-radius:6px; cursor:pointer; transition:.2s;
-  }
-  .auth-tab.active { background:var(--accent); color:#000; font-weight:600; }
-  label { display:block; font-size:.78rem; color:var(--muted); margin-bottom:6px; letter-spacing:.05em; text-transform:uppercase; }
-  input[type=text], input[type=email], input[type=password], input[type=number], input[type=date], textarea, select {
-    width:100%; padding:12px 14px; background:var(--bg); border:1px solid var(--border);
-    border-radius:var(--radius); color:var(--text); font-family:'DM Sans',sans-serif; font-size:.95rem;
-    outline:none; transition:.2s; margin-bottom:16px;
-  }
-  input:focus, textarea:focus, select:focus { border-color:var(--accent); box-shadow: 0 0 0 3px rgba(200,240,74,.07); }
-  textarea { resize:vertical; min-height:90px; }
-  select option { background:var(--surface2); }
-  .btn {
-    display:inline-flex; align-items:center; gap:8px; padding:11px 20px;
-    border:none; border-radius:var(--radius); font-family:'DM Sans',sans-serif;
-    font-size:.9rem; font-weight:500; cursor:pointer; transition:.18s; text-decoration:none;
-    white-space:nowrap;
-  }
-  .btn-primary { background:var(--accent); color:#000; font-weight:700; }
-  .btn-primary:hover { background:#d9ff52; transform:translateY(-1px); }
-  .btn-ghost { background:transparent; color:var(--muted); border:1px solid var(--border); }
-  .btn-ghost:hover { border-color:var(--accent); color:var(--accent); }
-  .btn-danger { background:#2a0a0a; color:var(--danger); border:1px solid #3a1010; }
-  .btn-danger:hover { background:#3a1010; }
-  .btn-warn { background:#2a1a00; color:var(--warn); border:1px solid #3a2500; }
-  .btn-warn:hover { background:#3a2500; }
-  .btn-full { width:100%; justify-content:center; }
-  .err { color:var(--danger); font-size:.85rem; margin-top:-8px; margin-bottom:12px; display:none; background:#1a0505; border:1px solid #3a1010; padding:8px 12px; border-radius:6px; }
-  .success { color:var(--accent); font-size:.85rem; margin-top:-8px; margin-bottom:12px; display:none; background:#0d1a00; border:1px solid #2a3a10; padding:8px 12px; border-radius:6px; }
+/* ── AUTH ── */
+#auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 50% 30%,#0e2010 0%,#0d0f0a 65%);}
+.auth-box{width:100%;max-width:400px;padding:48px 40px;background:var(--surface);
+  border:1px solid var(--border);border-radius:18px;}
+.auth-logo{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--accent);margin-bottom:4px;}
+.auth-ods{display:inline-flex;align-items:center;gap:6px;background:#0e2010;border:1px solid #1e4020;
+  border-radius:20px;padding:4px 12px;font-size:.75rem;color:var(--ods3);margin-bottom:20px;}
+.auth-sub{color:var(--muted);font-size:.88rem;margin-bottom:28px;}
+.auth-tabs{display:flex;gap:4px;margin-bottom:24px;background:var(--bg);border-radius:8px;padding:4px;}
+.auth-tab{flex:1;padding:8px;border:none;background:transparent;color:var(--muted);
+  font-family:'DM Sans',sans-serif;font-size:.9rem;border-radius:6px;cursor:pointer;transition:.2s;}
+.auth-tab.active{background:var(--accent);color:#000;font-weight:700;}
 
-  /* APP LAYOUT */
-  #app { display:none; min-height:100vh; }
-  .sidebar {
-    width:252px; background:var(--surface); border-right:1px solid var(--border);
-    position:fixed; top:0; left:0; height:100vh; display:flex; flex-direction:column; padding:24px 14px;
-    overflow-y:auto; z-index:40;
-  }
-  .logo { font-family:'Syne',sans-serif; font-size:1.5rem; font-weight:800; color:var(--accent); padding:0 10px; margin-bottom:28px; letter-spacing:-.02em; }
-  .nav-section { font-size:.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:.1em; padding:0 10px; margin:12px 0 6px; }
-  .nav-item {
-    display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px;
-    color:var(--muted); cursor:pointer; transition:.15s; font-size:.88rem; margin-bottom:2px;
-    border:none; background:transparent; width:100%; text-align:left;
-  }
-  .nav-item:hover { background:var(--surface2); color:var(--text); }
-  .nav-item.active { background:var(--accent); color:#000; font-weight:600; }
-  .nav-item svg { flex-shrink:0; }
-  .nav-badge { margin-left:auto; background:var(--surface2); color:var(--muted); border-radius:20px; padding:1px 7px; font-size:.72rem; font-weight:600; }
-  .nav-item.active .nav-badge { background:rgba(0,0,0,.2); color:#000; }
-  .sidebar-bottom { margin-top:auto; padding-top:16px; border-top:1px solid var(--border); }
-  .user-chip {
-    display:flex; align-items:center; gap:10px; padding:10px 12px;
-    border-radius:8px; background:var(--surface2); margin-bottom:8px; cursor:pointer; transition:.15s;
-  }
-  .user-chip:hover { border:1px solid var(--border); }
-  .avatar { width:34px; height:34px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; color:#000; font-size:.85rem; flex-shrink:0; }
-  .user-info { overflow:hidden; flex:1; }
-  .user-name { font-size:.85rem; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .user-role { font-size:.72rem; color:var(--muted); }
-  .support-chip {
-    display:flex; align-items:center; gap:8px; padding:10px 12px;
-    border-radius:8px; background:#0d1a00; border:1px solid #1a3000; margin-bottom:8px;
-    text-decoration:none; transition:.15s;
-  }
-  .support-chip:hover { border-color:var(--accent); }
-  .support-chip-icon { font-size:1rem; }
-  .support-chip-text { font-size:.78rem; }
-  .support-chip-label { color:var(--muted); font-size:.7rem; }
-  .support-chip-num { color:var(--accent); font-weight:600; }
+/* ── FORMS ── */
+label{display:block;font-size:.78rem;color:var(--muted);margin-bottom:5px;
+  letter-spacing:.05em;text-transform:uppercase;}
+input[type=text],input[type=email],input[type=password],input[type=number],
+input[type=date],input[type=time],input[type=tel],textarea,select{
+  width:100%;padding:11px 14px;background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--radius);color:var(--text);font-family:'DM Sans',sans-serif;
+  font-size:.93rem;outline:none;transition:.2s;margin-bottom:14px;}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);}
+select option{background:var(--bg);}
+textarea{resize:vertical;min-height:80px;}
 
-  .main { margin-left:252px; padding:32px 40px; min-height:100vh; }
-  .page { display:none; }
-  .page.active { display:block; animation: fadeUp .25s ease; }
-  @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-  .page-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:28px; gap:16px; flex-wrap:wrap; }
-  .page-title { font-family:'Syne',sans-serif; font-size:1.7rem; font-weight:800; letter-spacing:-.02em; }
-  .page-subtitle { color:var(--muted); font-size:.88rem; margin-top:4px; }
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border:none;
+  border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.88rem;
+  font-weight:500;cursor:pointer;transition:.18s;}
+.btn-primary{background:var(--accent);color:#000;font-weight:700;}
+.btn-primary:hover{background:var(--accent2);}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+.btn-danger{background:#200a0a;color:var(--danger);border:1px solid #3a1010;}
+.btn-danger:hover{background:#2e0e0e;}
+.btn-full{width:100%;justify-content:center;}
+.btn-sm{padding:6px 13px;font-size:.82rem;}
+.err{color:var(--danger);font-size:.83rem;margin-top:-8px;margin-bottom:10px;display:none;}
 
-  /* CARDS */
-  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; }
-  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-  .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
-  .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
-  .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px 24px; transition:.2s; }
-  .stat-card:hover { border-color:var(--accent); }
-  .stat-label { font-size:.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
-  .stat-val { font-family:'Syne',sans-serif; font-size:2.2rem; font-weight:800; color:var(--accent); line-height:1; }
-  .stat-sub { font-size:.78rem; color:var(--muted); margin-top:4px; }
+/* ── LAYOUT ── */
+#app{display:none;min-height:100vh;}
+.sidebar{width:240px;background:var(--surface);border-right:1px solid var(--border);
+  position:fixed;top:0;left:0;height:100vh;display:flex;flex-direction:column;
+  padding:22px 14px;z-index:50;overflow-y:auto;}
+.logo{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--accent);
+  padding:0 8px;margin-bottom:6px;}
+.logo-tag{font-size:.7rem;color:var(--ods3);background:#0e2010;border:1px solid #1e4020;
+  border-radius:20px;padding:2px 9px;display:inline-block;margin-bottom:24px;margin-left:8px;}
+.nav-section{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;
+  padding:0 10px;margin:10px 0 5px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;
+  color:var(--muted);cursor:pointer;transition:.15s;font-size:.88rem;margin-bottom:2px;
+  border:none;background:transparent;width:100%;text-align:left;}
+.nav-item:hover{background:var(--surface2);color:var(--text);}
+.nav-item.active{background:var(--accent);color:#000;font-weight:600;}
+.sidebar-bottom{margin-top:auto;padding-top:14px;}
+.user-chip{display:flex;align-items:center;gap:10px;padding:10px 10px;
+  border-radius:8px;background:var(--surface2);margin-bottom:8px;}
+.s-avatar{width:32px;height:32px;border-radius:50%;background:var(--accent);
+  display:flex;align-items:center;justify-content:center;font-weight:700;
+  color:#000;font-size:.85rem;flex-shrink:0;overflow:hidden;}
+.s-avatar img{width:100%;height:100%;object-fit:cover;}
+.user-name{font-size:.84rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.user-role{font-size:.73rem;color:var(--muted);}
 
-  /* STUDENTS LIST */
-  .student-list { display:flex; flex-direction:column; gap:10px; }
-  .student-card {
-    background:var(--surface); border:1px solid var(--border); border-radius:10px;
-    padding:16px 20px; display:flex; align-items:center; gap:16px; cursor:pointer; transition:.15s;
-  }
-  .student-card:hover { border-color:var(--accent); background:var(--surface2); }
-  .student-av {
-    width:44px; height:44px; border-radius:50%; background:var(--surface2);
-    display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif;
-    font-weight:700; color:var(--accent); flex-shrink:0; font-size:1.1rem;
-    border:2px solid var(--border);
-  }
-  .student-info { flex:1; min-width:0; }
-  .student-name { font-weight:600; font-size:.95rem; }
-  .student-meta { font-size:.8rem; color:var(--muted); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .student-actions { display:flex; align-items:center; gap:8px; flex-shrink:0; }
-  .badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:20px; font-size:.72rem; font-weight:600; background:var(--surface2); color:var(--muted); }
-  .badge-green { background:#0d1a00; color:var(--accent); border:1px solid #1a3000; }
-  .badge-yellow { background:#1a1200; color:var(--warn); border:1px solid #2a2000; }
-  .badge-red { background:#1a0505; color:var(--danger); border:1px solid #2a1010; }
-  .badge-admin { background:#1a0a2a; color:#c084fc; border:1px solid #3a1a5a; }
+.main{margin-left:240px;padding:30px 36px;}
+.page{display:none;}
+.page.active{display:block;animation:fadeIn .2s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:26px;gap:16px;flex-wrap:wrap;}
+.page-title{font-family:'Syne',sans-serif;font-size:1.55rem;font-weight:800;}
+.page-subtitle{color:var(--muted);font-size:.88rem;margin-top:3px;}
 
-  /* SEARCH BAR */
-  .search-bar { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
-  .search-input-wrap { position:relative; flex:1; }
-  .search-input-wrap input { padding-left:36px; margin-bottom:0; }
-  .search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none; }
-  .filter-chips { display:flex; gap:6px; flex-wrap:wrap; }
-  .filter-chip { padding:5px 12px; border:1px solid var(--border); border-radius:20px; background:transparent; color:var(--muted); font-size:.78rem; cursor:pointer; transition:.15s; font-family:'DM Sans',sans-serif; }
-  .filter-chip.active { background:var(--accent); color:#000; border-color:var(--accent); font-weight:600; }
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;}
+.card-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;margin-bottom:14px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
+.stat-label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+.stat-val{font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;color:var(--accent);}
+.stat-sub{font-size:.75rem;color:var(--muted);margin-top:3px;}
 
-  /* WORKOUT */
-  .workout-list { display:flex; flex-direction:column; gap:12px; margin-top:8px; }
-  .workout-card {
-    background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:20px 24px;
-    transition:.15s;
-  }
-  .workout-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px; gap:12px; }
-  .workout-title { font-weight:700; font-size:.98rem; font-family:'Syne',sans-serif; }
-  .workout-date { font-size:.75rem; color:var(--muted); }
-  .workout-actions { display:flex; gap:8px; flex-shrink:0; flex-wrap:wrap; }
-  .exercise-table { width:100%; border-collapse:collapse; margin-top:12px; }
-  .exercise-table th { text-align:left; font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; padding:0 10px 8px 0; border-bottom:1px solid var(--border); }
-  .exercise-table td { padding:9px 10px 9px 0; font-size:.87rem; border-bottom:1px solid #1a1a1a; vertical-align:middle; }
-  .exercise-table tr:last-child td { border-bottom:none; }
-  .exercise-table td:first-child { font-weight:500; }
-  .ex-chip { display:inline-block; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:2px 8px; font-size:.78rem; }
+/* ── ODS3 BANNER ── */
+.ods-banner{background:linear-gradient(135deg,#0e2010,#132415);border:1px solid #1e4020;
+  border-radius:12px;padding:18px 22px;display:flex;align-items:center;gap:16px;margin-bottom:20px;}
+.ods-icon{font-size:2rem;flex-shrink:0;}
+.ods-title{font-family:'Syne',sans-serif;font-weight:700;color:var(--ods3);font-size:.95rem;}
+.ods-desc{font-size:.82rem;color:#7ab87a;margin-top:3px;}
 
-  /* PROGRESS */
-  .history-entry {
-    display:flex; align-items:center; gap:12px; padding:12px 16px;
-    border:1px solid var(--border); border-radius:8px; margin-bottom:8px; background:var(--surface);
-  }
-  .history-dot { width:10px; height:10px; border-radius:50%; background:var(--accent); flex-shrink:0; }
-  .history-date { font-size:.78rem; color:var(--muted); width:80px; flex-shrink:0; }
-  .history-desc { font-size:.85rem; flex:1; }
+/* ── HEALTH SCORE ── */
+.health-ring{position:relative;width:90px;height:90px;flex-shrink:0;}
+.health-ring svg{transform:rotate(-90deg);}
+.health-ring-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;color:var(--accent);}
+.health-label{font-size:.72rem;color:var(--muted);text-align:center;margin-top:4px;}
 
-  /* TABS */
-  .tabs { display:flex; gap:0; margin-bottom:20px; border-bottom:1px solid var(--border); }
-  .tab-btn { padding:10px 18px; border:none; background:transparent; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:.88rem; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:.15s; }
-  .tab-btn.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:600; }
+/* ── STUDENTS ── */
+.student-list{display:flex;flex-direction:column;gap:9px;}
+.student-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:14px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:.15s;}
+.student-card:hover{border-color:var(--accent);}
+.student-av{width:40px;height:40px;border-radius:50%;background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;
+  font-weight:700;color:var(--accent);flex-shrink:0;}
+.student-info{flex:1;}
+.student-name{font-weight:600;font-size:.93rem;}
+.student-meta{font-size:.78rem;color:var(--muted);margin-top:2px;}
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:.73rem;font-weight:600;
+  background:var(--surface2);color:var(--muted);}
+.badge-green{background:#0e2010;color:var(--ods3);}
+.badge-warn{background:#1e1200;color:var(--warn);}
+.badge-blue{background:#0a1520;color:var(--info);}
 
-  /* MODAL */
-  .modal-overlay {
-    display:none; position:fixed; inset:0; background:rgba(0,0,0,.75);
-    z-index:100; align-items:center; justify-content:center; padding:20px;
-    backdrop-filter:blur(2px);
-  }
-  .modal-overlay.open { display:flex; }
-  .modal {
-    background:var(--surface); border:1px solid var(--border); border-radius:16px;
-    padding:32px; width:100%; max-width:540px; max-height:90vh; overflow-y:auto;
-    box-shadow: 0 32px 100px rgba(0,0,0,.6);
-    animation: modalIn .2s ease;
-  }
-  @keyframes modalIn { from { opacity:0; transform:scale(.97) translateY(8px); } to { opacity:1; transform:scale(1) translateY(0); } }
-  .modal-title { font-family:'Syne',sans-serif; font-size:1.25rem; font-weight:800; margin-bottom:20px; }
-  .modal-footer { display:flex; gap:10px; justify-content:flex-end; margin-top:24px; padding-top:16px; border-top:1px solid var(--border); }
-  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-  .form-row > div { display:flex; flex-direction:column; }
-  .form-row input, .form-row select { margin-bottom:0; }
+/* ── SESSION LIST ── */
+.session-list{display:flex;flex-direction:column;gap:8px;}
+.session-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;
+  padding:11px 14px;display:flex;align-items:center;justify-content:space-between;}
+.session-name{font-size:.88rem;font-weight:600;}
+.session-meta{font-size:.76rem;color:var(--muted);margin-top:2px;}
 
-  /* EXERCISE BUILDER */
-  .ex-row {
-    display:grid; grid-template-columns:2fr 60px 80px 90px 32px; gap:8px; align-items:end; margin-bottom:8px;
-  }
-  .ex-row input { margin-bottom:0; font-size:.85rem; padding:10px 10px; }
-  .remove-ex { background:#2a0a0a; border:1px solid #3a1010; color:var(--danger); cursor:pointer; font-size:.9rem; padding:0; height:40px; width:32px; display:flex; align-items:center; justify-content:center; border-radius:6px; transition:.15s; flex-shrink:0; }
-  .remove-ex:hover { background:#3a1010; }
-  #add-exercise-btn { background:none; border:1px dashed var(--border); color:var(--muted); border-radius:8px; padding:9px 16px; cursor:pointer; font-size:.84rem; transition:.15s; margin-top:4px; width:100%; font-family:'DM Sans',sans-serif; }
-  #add-exercise-btn:hover { border-color:var(--accent); color:var(--accent); }
-  .ex-header { display:grid; grid-template-columns:2fr 60px 80px 90px 32px; gap:8px; margin-bottom:6px; }
-  .ex-header span { font-size:.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+/* ── WORKOUT ── */
+.workout-list{display:flex;flex-direction:column;gap:9px;margin-top:4px;}
+.workout-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:15px 18px;}
+.workout-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.workout-title{font-weight:600;font-size:.93rem;}
+.exercise-table{width:100%;border-collapse:collapse;margin-top:8px;}
+.exercise-table th{text-align:left;font-size:.72rem;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.05em;padding:0 8px 5px 0;border-bottom:1px solid var(--border);}
+.exercise-table td{padding:7px 8px 7px 0;font-size:.86rem;border-bottom:1px solid #181c12;vertical-align:middle;}
+.exercise-table tr:last-child td{border-bottom:none;}
 
-  /* TOAST */
-  #toast {
-    position:fixed; bottom:24px; right:24px; padding:12px 20px; border-radius:10px;
-    font-weight:600; font-size:.88rem; transform:translateY(80px); opacity:0; transition:.3s; z-index:999;
-    display:flex; align-items:center; gap:8px; max-width:320px; box-shadow: 0 8px 32px rgba(0,0,0,.4);
-  }
-  #toast.show { transform:translateY(0); opacity:1; }
+/* ── MEDIDAS ── */
+.measure-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+.measure-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;}
+.measure-label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+.measure-val{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;}
+.measure-unit{font-size:.72rem;color:var(--muted);}
+.delta-down{color:var(--accent);font-size:.73rem;}
+.delta-up{color:var(--danger);font-size:.73rem;}
 
-  /* LOADING */
-  #loading { position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:200; flex-direction:column; gap:16px; }
-  .spinner { width:32px; height:32px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .7s linear infinite; }
-  .loading-logo { font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; color:var(--accent); }
-  @keyframes spin { to { transform:rotate(360deg); } }
+/* ── TABS ── */
+.tabs{display:flex;gap:3px;background:var(--bg);border-radius:8px;padding:3px;
+  margin-bottom:22px;width:fit-content;}
+.tab{padding:7px 15px;border:none;background:transparent;color:var(--muted);
+  font-family:'DM Sans',sans-serif;font-size:.86rem;border-radius:6px;cursor:pointer;transition:.2s;}
+.tab.active{background:var(--surface2);color:var(--text);font-weight:600;}
 
-  /* EMPTY */
-  .empty { text-align:center; padding:48px 20px; color:var(--muted); }
-  .empty-icon { font-size:2.5rem; margin-bottom:12px; }
-  .empty p { font-size:.9rem; }
+/* ── CALENDAR ── */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.cal-header-row{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:6px;}
+.cal-day-name{text-align:center;font-size:.72rem;color:var(--muted);text-transform:uppercase;padding:3px 0;}
+.cal-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border-radius:7px;font-size:.83rem;cursor:pointer;transition:.15s;border:1px solid transparent;position:relative;}
+.cal-day:hover{background:var(--surface2);}
+.cal-day.today{border-color:var(--accent);color:var(--accent);font-weight:700;}
+.cal-day.has-session::after{content:'';width:4px;height:4px;border-radius:50%;background:var(--accent);
+  position:absolute;bottom:3px;}
+.cal-day.other-month{color:var(--border);}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.cal-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;}
 
-  /* BACK BTN */
-  .back-btn { display:inline-flex; align-items:center; gap:6px; color:var(--muted); cursor:pointer; font-size:.88rem; margin-bottom:20px; transition:.15s; border:none; background:none; }
-  .back-btn:hover { color:var(--accent); }
+/* ── TEMPLATES ── */
+.template-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:15px 18px;transition:.15s;}
+.template-card:hover{border-color:var(--accent);}
+.template-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.template-name{font-weight:600;font-size:.93rem;}
+.tag{padding:3px 9px;border-radius:20px;background:var(--surface2);color:var(--muted);font-size:.73rem;}
 
-  /* DIVIDER */
-  .divider { height:1px; background:var(--border); margin:20px 0; }
+/* ── CHARTS ── */
+.chart-wrap{position:relative;height:200px;}
 
-  /* INFO ROWS */
-  .info-row { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); font-size:.88rem; }
-  .info-row:last-child { border-bottom:none; }
-  .info-row-label { color:var(--muted); }
-  .info-row-val { font-weight:500; }
+/* ── PROFILE ── */
+.profile-avatar{width:76px;height:76px;border-radius:50%;background:var(--accent);
+  display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;
+  font-size:1.8rem;font-weight:800;color:#000;overflow:hidden;margin-bottom:16px;cursor:pointer;}
+.profile-avatar img{width:100%;height:100%;object-fit:cover;}
+.spec-tag{display:inline-block;padding:4px 11px;border-radius:20px;background:var(--surface2);
+  border:1px solid var(--border);color:var(--text);font-size:.8rem;margin:4px 4px 0 0;cursor:pointer;transition:.15s;}
+.spec-tag.selected{background:#0e2010;border-color:var(--accent);color:var(--accent);}
 
-  /* SECTION HEADER */
-  .section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
-  .section-title { font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; }
+/* ── EXERCISE BUILDER ── */
+.ex-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 30px;gap:7px;align-items:end;margin-bottom:7px;}
+.ex-row input{margin-bottom:0;}
+.remove-ex{background:none;border:none;color:var(--danger);cursor:pointer;font-size:1rem;padding:0;
+  height:40px;display:flex;align-items:center;justify-content:center;}
+.add-ex-btn{background:none;border:1px dashed var(--border);color:var(--muted);border-radius:8px;
+  padding:7px 13px;cursor:pointer;font-size:.83rem;transition:.15s;width:100%;margin-top:3px;}
+.add-ex-btn:hover{border-color:var(--accent);color:var(--accent);}
 
-  /* PERFIL / SETTINGS */
-  .profile-hero { display:flex; align-items:center; gap:20px; padding:24px; background:var(--surface2); border-radius:12px; border:1px solid var(--border); margin-bottom:20px; }
-  .profile-avatar-big { width:72px; height:72px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:800; color:#000; font-size:1.8rem; flex-shrink:0; border:3px solid var(--accent-dim); }
-  .profile-info h2 { font-family:'Syne',sans-serif; font-size:1.3rem; font-weight:800; }
-  .profile-info p { color:var(--muted); font-size:.85rem; margin-top:2px; }
-  .settings-section { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px 24px; margin-bottom:16px; }
-  .settings-section-title { font-weight:600; font-size:.9rem; margin-bottom:16px; color:var(--accent); text-transform:uppercase; letter-spacing:.05em; font-size:.75rem; }
-  .settings-row { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); }
-  .settings-row:last-child { border-bottom:none; }
-  .settings-row-label { font-size:.88rem; }
-  .settings-row-sub { font-size:.75rem; color:var(--muted); margin-top:2px; }
-  .admin-banner { background:linear-gradient(135deg,#1a0a2a,#2a1040); border:1px solid #5a2a9a; border-radius:10px; padding:14px 18px; display:flex; align-items:center; gap:12px; margin-bottom:16px; }
-  .admin-star { font-size:1.4rem; }
-  .admin-banner-text { font-size:.88rem; font-weight:600; color:#c084fc; }
-  .admin-banner-sub { font-size:.75rem; color:#9060c0; margin-top:2px; }
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);
+  z-index:100;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  padding:28px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;}
+.modal-lg{max-width:660px;}
+.modal-title{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;margin-bottom:18px;}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;}
 
-  /* MOBILE */
-  @media(max-width:900px){
-    .sidebar { width:200px; }
-    .main { margin-left:200px; padding:24px 20px; }
-    .grid-4 { grid-template-columns:1fr 1fr; }
-    .grid-3 { grid-template-columns:1fr 1fr; }
-  }
-  @media(max-width:640px){
-    .sidebar { display:none; }
-    .main { margin-left:0; padding:16px 16px 80px; }
-    .grid-3 { grid-template-columns:1fr 1fr; }
-    .grid-4 { grid-template-columns:1fr 1fr; }
-    .ex-row { grid-template-columns:1fr 1fr 1fr 32px; }
-    .ex-header { grid-template-columns:1fr 1fr 1fr 32px; }
-    .ex-row input:nth-child(1) { grid-column:1/-2; }
-    .mobile-menu { display:flex !important; }
-    .page-header { flex-direction:column; }
-    .page-header > div:last-child { display:flex; flex-wrap:wrap; gap:8px; }
-  }
-  .mobile-menu {
-    display:none; position:fixed; bottom:0; left:0; right:0; z-index:50;
-    background:var(--surface); border-top:1px solid var(--border); padding:8px 16px 12px;
-    justify-content:space-around;
-  }
-  .mob-nav { display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--muted); font-size:.7rem; cursor:pointer; padding:6px 12px; border-radius:8px; transition:.15s; border:none; background:none; }
-  .mob-nav.active { color:var(--accent); }
-  .mob-nav svg { margin-bottom:1px; }
+/* ── MISC ── */
+.divider{height:1px;background:var(--border);margin:18px 0;}
+.back-btn{display:flex;align-items:center;gap:6px;color:var(--muted);cursor:pointer;
+  font-size:.88rem;margin-bottom:18px;transition:.15s;border:none;background:none;}
+.back-btn:hover{color:var(--accent);}
+.empty{text-align:center;padding:40px 20px;color:var(--muted);}
+.empty-icon{font-size:2.2rem;margin-bottom:10px;}
+.empty p{font-size:.87rem;}
+#toast{position:fixed;bottom:22px;right:22px;background:var(--accent);color:#000;
+  padding:11px 18px;border-radius:10px;font-weight:600;font-size:.88rem;
+  transform:translateY(70px);opacity:0;transition:.3s;z-index:999;}
+#toast.show{transform:translateY(0);opacity:1;}
+#loading{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:200;}
+.spinner{width:30px;height:30px;border:3px solid var(--border);border-top-color:var(--accent);
+  border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-  @media print {
-    .sidebar, .mobile-menu, .modal-overlay, #toast, #loading, .btn, .back-btn, .workout-actions { display:none !important; }
-    .main { margin:0; padding:20px; }
-    .workout-card { break-inside:avoid; border:1px solid #ccc !important; }
-    body { background:white; color:black; }
-    .exercise-table th, .exercise-table td { color:black !important; border-color:#ddd !important; }
-  }
+/* ── HEALTH TIPS ── */
+.tip-card{background:linear-gradient(135deg,#0e2010,#101a0c);border:1px solid #1e3018;
+  border-radius:10px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;}
+.tip-icon{font-size:1.4rem;flex-shrink:0;margin-top:2px;}
+.tip-title{font-weight:600;font-size:.88rem;color:var(--ods3);margin-bottom:3px;}
+.tip-text{font-size:.81rem;color:#8aaa7a;line-height:1.5;}
+
+/* ── IMC INDICATOR ── */
+.imc-bar{height:8px;border-radius:4px;background:linear-gradient(90deg,#4a9de0,#7ec832,#e8a020,#e05555);
+  position:relative;margin:8px 0;}
+.imc-cursor{position:absolute;top:-3px;width:14px;height:14px;border-radius:50%;
+  background:#fff;border:2px solid var(--accent);transform:translateX(-50%);transition:.5s;}
+
+@media(max-width:900px){
+  .sidebar{display:none}.main{margin-left:0;padding:18px 14px}
+  .grid-3,.grid-4{grid-template-columns:1fr 1fr}
+  .measure-grid{grid-template-columns:1fr 1fr}
+  .ex-row{grid-template-columns:1fr 1fr}
+}
 </style>
 </head>
 <body>
 
-<div id="loading">
-  <div class="loading-logo">FilSil</div>
-  <div class="spinner"></div>
-</div>
+<div id="loading"><div class="spinner"></div></div>
 
-<!-- AUTH -->
+<!-- ═══ AUTH ═══ -->
 <div id="auth-screen" style="display:none">
   <div class="auth-box">
     <div class="auth-logo">FilSil</div>
-    <div class="auth-sub">Plataforma para personal trainers</div>
+    <div class="auth-ods">🌿 ODS 3 — Saúde e Bem-Estar</div>
+    <div class="auth-sub">Plataforma para personal trainers comprometidos com a saúde coletiva</div>
     <div class="auth-tabs">
       <button class="auth-tab active" onclick="switchTab('login')">Entrar</button>
       <button class="auth-tab" onclick="switchTab('register')">Cadastrar</button>
     </div>
     <div id="tab-login">
-      <label>E-mail</label>
-      <input type="email" id="login-email" placeholder="seuemail@exemplo.com" onkeydown="if(event.key==='Enter')doLogin()">
-      <label>Senha</label>
-      <input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+      <label>E-mail</label><input type="email" id="login-email" placeholder="email@exemplo.com">
+      <label>Senha</label><input type="password" id="login-pass" placeholder="••••••••">
       <div class="err" id="login-err"></div>
-      <button class="btn btn-primary btn-full" id="login-btn" onclick="doLogin()">Entrar</button>
-      <div style="text-align:center;margin-top:16px">
-        <button style="background:none;border:none;color:var(--muted);font-size:.82rem;cursor:pointer;font-family:'DM Sans',sans-serif;" onclick="openModal('reset')">Esqueci minha senha</button>
-      </div>
+      <button class="btn btn-primary btn-full" onclick="doLogin()">Entrar</button>
     </div>
     <div id="tab-register" style="display:none">
-      <label>Nome completo</label>
-      <input type="text" id="reg-name" placeholder="João Silva">
-      <label>E-mail</label>
-      <input type="email" id="reg-email" placeholder="seuemail@exemplo.com">
-      <label>Senha</label>
-      <input type="password" id="reg-pass" placeholder="mínimo 6 caracteres">
+      <label>Nome completo</label><input type="text" id="reg-name" placeholder="João Silva">
+      <label>E-mail</label><input type="email" id="reg-email" placeholder="email@exemplo.com">
+      <label>Senha</label><input type="password" id="reg-pass" placeholder="mínimo 6 caracteres">
       <div class="err" id="reg-err"></div>
-      <button class="btn btn-primary btn-full" id="reg-btn" onclick="doRegister()">Criar conta</button>
+      <button class="btn btn-primary btn-full" onclick="doRegister()">Criar conta</button>
     </div>
   </div>
 </div>
 
-<!-- APP -->
+<!-- ═══ APP ═══ -->
 <div id="app">
   <div class="sidebar">
     <div class="logo">FilSil</div>
-    <div class="nav-section">Menu</div>
+    <div class="logo-tag">🌿 ODS 3</div>
+    <div class="nav-section">Principal</div>
     <button class="nav-item active" id="nav-dashboard" onclick="showPage('dashboard')">
-      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      Dashboard
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard
     </button>
     <button class="nav-item" id="nav-students" onclick="showPage('students')">
-      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      Alunos
-      <span class="nav-badge" id="nav-badge-students">0</span>
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Alunos
     </button>
-    <button class="nav-item" id="nav-all-workouts" onclick="showPage('all-workouts')">
-      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      Treinos
+    <button class="nav-item" id="nav-agenda" onclick="showPage('agenda')">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Agenda
+    </button>
+    <div class="nav-section">Ferramentas</div>
+    <button class="nav-item" id="nav-templates" onclick="showPage('templates')">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>Templates
+    </button>
+    <button class="nav-item" id="nav-reports" onclick="showPage('reports')">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Relatórios
+    </button>
+    <div class="nav-section">Conta</div>
+    <button class="nav-item" id="nav-profile" onclick="showPage('profile')">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Perfil
     </button>
     <div class="sidebar-bottom">
-      <a class="support-chip" href="https://wa.me/5581991610473" target="_blank" title="Suporte via WhatsApp">
-        <div class="support-chip-icon">💬</div>
-        <div class="support-chip-text">
-          <div class="support-chip-label">Suporte WhatsApp</div>
-          <div class="support-chip-num">(81) 99161-0473</div>
-        </div>
-      </a>
-      <div class="user-chip" onclick="showPage('profile')" title="Ver perfil">
-        <div class="avatar" id="sidebar-avatar">P</div>
-        <div class="user-info">
-          <div class="user-name" id="sidebar-name">Personal</div>
-          <div class="user-role" id="sidebar-role">Personal Trainer</div>
-        </div>
-        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--muted)"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="user-chip">
+        <div class="s-avatar" id="sidebar-av"><span id="sidebar-av-letter">P</span></div>
+        <div><div class="user-name" id="sidebar-name">Personal</div><div class="user-role">Personal Trainer</div></div>
       </div>
-      <button class="btn btn-ghost btn-full" onclick="doLogout()">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        Sair
-      </button>
+      <button class="btn btn-ghost btn-full btn-sm" onclick="doLogout()">Sair</button>
     </div>
   </div>
 
   <div class="main">
-
     <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
       <div class="page-header">
+        <div><div class="page-title">Dashboard</div><div class="page-subtitle" id="dash-greeting">Bem-vindo!</div></div>
+      </div>
+      <div class="ods-banner">
+        <div class="ods-icon">🌿</div>
         <div>
-          <div class="page-title">Dashboard</div>
-          <div class="page-subtitle" id="dash-greeting">Bem-vindo de volta!</div>
+          <div class="ods-title">ODS 3 — Saúde e Bem-Estar</div>
+          <div class="ods-desc">Você contribui para vidas mais saudáveis. Acompanhe o impacto da sua atuação como personal trainer.</div>
         </div>
-        <button class="btn btn-primary" onclick="showPage('students');setTimeout(()=>openModal('student'),100)">+ Novo Aluno</button>
-      </div>
-      <div class="grid-4" style="margin-bottom:24px">
-        <div class="stat-card">
-          <div class="stat-label"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Total de Alunos</div>
-          <div class="stat-val" id="stat-students">0</div>
-          <div class="stat-sub">cadastrados</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Treinos</div>
-          <div class="stat-val" id="stat-workouts">0</div>
-          <div class="stat-sub">criados no total</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Esta Semana</div>
-          <div class="stat-val" id="stat-week">0</div>
-          <div class="stat-sub">treinos adicionados</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Alunos Ativos</div>
-          <div class="stat-val" id="stat-active">0</div>
-          <div class="stat-sub">com treino ativo</div>
+        <div style="margin-left:auto;text-align:center">
+          <div style="font-family:Syne,sans-serif;font-size:1.6rem;font-weight:800;color:var(--ods3)" id="impact-score">0</div>
+          <div style="font-size:.72rem;color:#7ab87a">alunos impactados</div>
         </div>
       </div>
-      <div class="grid-2" style="gap:20px">
+      <div class="grid-4" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-label">Alunos</div><div class="stat-val" id="stat-students">0</div></div>
+        <div class="stat-card"><div class="stat-label">Treinos</div><div class="stat-val" id="stat-workouts">0</div></div>
+        <div class="stat-card"><div class="stat-label">Sessões este mês</div><div class="stat-val" id="stat-sessions">0</div></div>
+        <div class="stat-card"><div class="stat-label">Templates</div><div class="stat-val" id="stat-templates">0</div></div>
+      </div>
+      <div class="grid-2" style="gap:18px;margin-bottom:18px">
         <div class="card">
-          <div class="section-header">
-            <div class="section-title">Alunos recentes</div>
-            <button class="btn btn-ghost" style="padding:6px 12px;font-size:.8rem" onclick="showPage('students')">Ver todos →</button>
-          </div>
+          <div class="card-title">Alunos recentes</div>
           <div class="student-list" id="dash-student-list"><div class="empty"><div class="empty-icon">🏋️</div><p>Nenhum aluno ainda.</p></div></div>
         </div>
         <div class="card">
-          <div class="section-header"><div class="section-title">Treinos recentes</div></div>
-          <div id="dash-workout-list"><div class="empty" style="padding:24px 0"><div class="empty-icon">📋</div><p>Nenhum treino ainda.</p></div></div>
+          <div class="card-title">Próximas sessões</div>
+          <div class="session-list" id="dash-session-list"><div class="empty"><div class="empty-icon">📅</div><p>Nenhuma sessão agendada.</p></div></div>
         </div>
+      </div>
+      <!-- ODS3 Health Tips -->
+      <div class="card">
+        <div class="card-title">💡 Dicas de Saúde — ODS 3</div>
+        <div class="grid-3" id="health-tips-grid"></div>
       </div>
     </div>
 
     <!-- STUDENTS LIST -->
     <div class="page" id="page-students">
       <div class="page-header">
-        <div>
-          <div class="page-title">Alunos</div>
-          <div class="page-subtitle">Gerencie seus alunos e treinos</div>
-        </div>
+        <div><div class="page-title">Alunos</div><div class="page-subtitle">Gerencie alunos e treinos</div></div>
         <button class="btn btn-primary" onclick="openModal('student')">+ Novo Aluno</button>
-      </div>
-      <div class="search-bar">
-        <div class="search-input-wrap" style="flex:1">
-          <svg class="search-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="student-search" placeholder="Buscar aluno..." style="padding-left:36px;margin-bottom:0" oninput="filterStudents()">
-        </div>
-        <div class="filter-chips">
-          <button class="filter-chip active" data-filter="all" onclick="setFilter(this,'all')">Todos</button>
-          <button class="filter-chip" data-filter="Hipertrofia" onclick="setFilter(this,'Hipertrofia')">Hipertrofia</button>
-          <button class="filter-chip" data-filter="Emagrecimento" onclick="setFilter(this,'Emagrecimento')">Emagrecimento</button>
-          <button class="filter-chip" data-filter="Força" onclick="setFilter(this,'Força')">Força</button>
-        </div>
       </div>
       <div class="student-list" id="student-list"><div class="empty"><div class="empty-icon">👤</div><p>Nenhum aluno cadastrado.</p></div></div>
     </div>
 
-    <!-- STUDENT DETAIL -->
+    <!-- STUDENT DETAIL (preenchida na Parte 2) -->
     <div class="page" id="page-student-detail">
-      <button class="back-btn" onclick="showPage('students')">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-        Voltar para Alunos
-      </button>
+      <button class="back-btn" onclick="showPage('students')">← Voltar</button>
       <div class="page-header">
-        <div style="display:flex;align-items:center;gap:16px">
-          <div class="student-av" style="width:52px;height:52px;font-size:1.3rem" id="detail-avatar">M</div>
-          <div>
-            <div class="page-title" id="detail-name">—</div>
-            <div class="page-subtitle" id="detail-meta">—</div>
-          </div>
-        </div>
+        <div><div class="page-title" id="detail-name">—</div><div class="page-subtitle" id="detail-meta">—</div></div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn btn-ghost" onclick="openModal('edit-student')">✏️ Editar</button>
-          <button class="btn btn-primary" onclick="openModal('workout')">+ Novo Treino</button>
-          <button class="btn btn-danger" onclick="confirmDeleteStudent()">Excluir</button>
+          <button class="btn btn-ghost btn-sm" onclick="openModal('editStudent')">✏️ Editar</button>
+          <button class="btn btn-primary" onclick="openModal('workout')">+ Treino</button>
+          <button class="btn btn-danger btn-sm" onclick="confirmDeleteStudent()">Excluir</button>
         </div>
       </div>
-      <div class="tabs">
-        <button class="tab-btn active" onclick="switchDetailTab('treinos',this)">🏋️ Treinos</button>
-        <button class="tab-btn" onclick="switchDetailTab('info',this)">📋 Informações</button>
-        <button class="tab-btn" onclick="switchDetailTab('progresso',this)">📈 Progresso</button>
+      <div class="tabs" id="student-tabs">
+        <button class="tab active" onclick="openStudentTab('treinos')">Treinos</button>
+        <button class="tab" onclick="openStudentTab('ficha')">Ficha & Medidas</button>
+        <button class="tab" onclick="openStudentTab('evolucao')">Evolução</button>
+        <button class="tab" onclick="openStudentTab('saude')">🌿 Saúde</button>
       </div>
-      <div id="tab-treinos">
-        <div class="workout-list" id="workout-list"><div class="empty"><div class="empty-icon">📋</div><p>Nenhum treino cadastrado ainda.</p></div></div>
+      <div id="stab-treinos">
+        <div class="workout-list" id="workout-list"><div class="empty"><div class="empty-icon">📋</div><p>Nenhum treino.</p></div></div>
       </div>
-      <div id="tab-info" style="display:none">
-        <div class="grid-2" style="gap:16px">
-          <div class="card">
-            <div class="section-title" style="margin-bottom:14px">Dados do Aluno</div>
-            <div id="detail-info-rows"></div>
-          </div>
-          <div class="card">
-            <div class="section-title" style="margin-bottom:14px">Observações</div>
-            <div id="detail-obs" style="color:var(--muted);font-size:.88rem;line-height:1.6"></div>
-          </div>
-        </div>
-      </div>
-      <div id="tab-progresso" style="display:none">
-        <div class="page-header" style="margin-bottom:16px">
-          <div class="section-title">Registro de Progresso</div>
-          <button class="btn btn-primary" onclick="openModal('progress')" style="padding:8px 16px;font-size:.85rem">+ Registrar</button>
-        </div>
-        <div id="progress-list"><div class="empty"><div class="empty-icon">📊</div><p>Nenhum registro ainda.</p></div></div>
-      </div>
+      <div id="stab-ficha" style="display:none"></div>
+      <div id="stab-evolucao" style="display:none"></div>
+      <div id="stab-saude" style="display:none"></div>
     </div>
 
-    <!-- ALL WORKOUTS -->
-    <div class="page" id="page-all-workouts">
+    <!-- AGENDA (Parte 3) -->
+    <div class="page" id="page-agenda">
       <div class="page-header">
-        <div>
-          <div class="page-title">Todos os Treinos</div>
-          <div class="page-subtitle">Visão geral de todos os treinos criados</div>
+        <div><div class="page-title">Agenda</div><div class="page-subtitle">Sessões e compromissos</div></div>
+        <button class="btn btn-primary" onclick="openModal('session')">+ Nova Sessão</button>
+      </div>
+      <div class="grid-2" style="gap:18px;align-items:start">
+        <div class="card">
+          <div class="cal-nav">
+            <button class="btn btn-ghost btn-sm" onclick="calNav(-1)">‹</button>
+            <div class="cal-title" id="cal-title"></div>
+            <button class="btn btn-ghost btn-sm" onclick="calNav(1)">›</button>
+          </div>
+          <div class="cal-header-row">
+            <div class="cal-day-name">Dom</div><div class="cal-day-name">Seg</div>
+            <div class="cal-day-name">Ter</div><div class="cal-day-name">Qua</div>
+            <div class="cal-day-name">Qui</div><div class="cal-day-name">Sex</div>
+            <div class="cal-day-name">Sáb</div>
+          </div>
+          <div class="cal-grid" id="cal-grid"></div>
+        </div>
+        <div class="card">
+          <div class="card-title" id="session-day-title">Sessões do mês</div>
+          <div class="session-list" id="session-list"><div class="empty"><div class="empty-icon">📅</div><p>Nenhuma sessão.</p></div></div>
         </div>
       </div>
-      <div id="all-workouts-list"><div class="empty"><div class="empty-icon">📋</div><p>Nenhum treino ainda.</p></div></div>
     </div>
 
-    <!-- PROFILE PAGE -->
+    <!-- TEMPLATES (Parte 3) -->
+    <div class="page" id="page-templates">
+      <div class="page-header">
+        <div><div class="page-title">Templates</div><div class="page-subtitle">Treinos reutilizáveis</div></div>
+        <button class="btn btn-primary" onclick="openModal('template')">+ Novo Template</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:9px" id="template-list"><div class="empty"><div class="empty-icon">📋</div><p>Nenhum template.</p></div></div>
+    </div>
+
+    <!-- REPORTS (Parte 4) -->
+    <div class="page" id="page-reports">
+      <div class="page-header"><div><div class="page-title">Relatórios</div><div class="page-subtitle">Impacto na saúde dos seus alunos</div></div></div>
+      <div class="grid-2" style="gap:18px;margin-bottom:18px">
+        <div class="card"><div class="card-title">Alunos por objetivo</div><div class="chart-wrap"><canvas id="chart-goals"></canvas></div></div>
+        <div class="card"><div class="card-title">Sessões por mês</div><div class="chart-wrap"><canvas id="chart-monthly"></canvas></div></div>
+      </div>
+      <div class="grid-2" style="gap:18px;margin-bottom:18px">
+        <div class="card"><div class="card-title">🌿 IMC médio dos alunos</div><div class="chart-wrap"><canvas id="chart-imc-report"></canvas></div></div>
+        <div class="card"><div class="card-title">🌿 % Gordura médio</div><div class="chart-wrap"><canvas id="chart-gord-report"></canvas></div></div>
+      </div>
+      <div class="card"><div class="card-title">Treinos por aluno</div><div id="report-table"></div></div>
+    </div>
+
+    <!-- PROFILE (Parte 4) -->
     <div class="page" id="page-profile">
       <div class="page-header">
-        <div>
-          <div class="page-title">Meu Perfil</div>
-          <div class="page-subtitle">Gerencie suas informações e configurações</div>
-        </div>
+        <div><div class="page-title">Perfil</div><div class="page-subtitle">Suas informações profissionais</div></div>
+        <button class="btn btn-primary" onclick="saveProfile()">Salvar alterações</button>
       </div>
-
-      <div class="profile-hero">
-        <div class="profile-avatar-big" id="profile-avatar-big">P</div>
-        <div class="profile-info">
-          <h2 id="profile-name-display">Personal Trainer</h2>
-          <p id="profile-email-display">email@exemplo.com</p>
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <span class="badge badge-green" id="profile-badge-role">Personal Trainer</span>
-            <span class="badge badge-admin" id="profile-badge-admin" style="display:none">⭐ Admin</span>
+      <div class="grid-2" style="gap:18px;align-items:start">
+        <div class="card">
+          <div class="card-title">Identidade</div>
+          <div class="profile-avatar" id="profile-av" onclick="document.getElementById('photo-input').click()">
+            <span id="profile-av-letter">P</span>
           </div>
+          <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="handlePhoto(event)">
+          <label>Nome completo</label><input type="text" id="p-name" placeholder="João Silva">
+          <label>E-mail</label><input type="email" id="p-email" disabled style="opacity:.5">
+          <label>Telefone</label><input type="tel" id="p-phone" placeholder="(81) 99999-9999">
+          <label>CREF</label><input type="text" id="p-cref" placeholder="000000-G/PE">
+          <label>Bio</label><textarea id="p-bio" placeholder="Sua experiência e método..."></textarea>
+          <div class="divider"></div>
+          <div class="card-title">Alterar senha</div>
+          <label>Nova senha</label><input type="password" id="p-newpass" placeholder="mínimo 6 caracteres">
+          <button class="btn btn-ghost btn-full btn-sm" onclick="changePassword()">Atualizar senha</button>
         </div>
-      </div>
-
-      <div id="admin-panel" style="display:none">
-        <div class="admin-banner">
-          <div class="admin-star">⭐</div>
-          <div>
-            <div class="admin-banner-text">Conta Administrador</div>
-            <div class="admin-banner-sub">Você tem acesso total à plataforma FilSil</div>
+        <div class="card">
+          <div class="card-title">Especialidades</div>
+          <div id="spec-tags" style="margin-bottom:16px">
+            <span class="spec-tag" onclick="toggleSpec(this)">Hipertrofia</span>
+            <span class="spec-tag" onclick="toggleSpec(this)">Emagrecimento</span>
+            <span class="spec-tag" onclick="toggleSpec(this)">Funcional</span>
+            <span class="spec-tag" onclick="toggleSpec(this)">Musculação</span>
+            <span class="spec-tag" onclick="toggleSpec(this)">CrossFit</span>
+            <span class="spec-tag" onclick="toggleSpec(this)">Reabilitação</span>
+            <span class="spec-tag" onclick="toggleSpec(this)">Idosos</span>
+            <span class="spec-tag" onclick="toggleSpec(this)">Gestantes</span>
+            <span class="spec-tag" onclick="toggleSpec(this)">Atletas</span>
+            <span class="spec-tag" onclick="toggleSpec(this)">Iniciantes</span>
+            <span class="spec-tag" onclick="toggleSpec(this)">Online</span>
+            <span class="spec-tag" onclick="toggleSpec(this)">Corrida</span>
           </div>
-        </div>
-      </div>
-
-      <div class="grid-2" style="gap:16px;margin-bottom:16px">
-        <div class="settings-section">
-          <div class="settings-section-title">Informações Pessoais</div>
-          <label>Nome completo</label>
-          <input type="text" id="profile-name-input" placeholder="Seu nome">
-          <label>E-mail</label>
-          <input type="email" id="profile-email-input" placeholder="Seu e-mail" readonly style="opacity:.6;cursor:not-allowed">
-          <div class="err" id="profile-err"></div>
-          <div class="success" id="profile-ok">Perfil atualizado com sucesso!</div>
-          <button class="btn btn-primary btn-full" onclick="saveProfile()">Salvar alterações</button>
-        </div>
-
-        <div class="settings-section">
-          <div class="settings-section-title">Alterar Senha</div>
-          <label>Senha atual</label>
-          <input type="password" id="old-pass" placeholder="••••••••">
-          <label>Nova senha</label>
-          <input type="password" id="new-pass" placeholder="mínimo 6 caracteres">
-          <label>Confirmar nova senha</label>
-          <input type="password" id="confirm-pass" placeholder="••••••••">
-          <div class="err" id="pass-err"></div>
-          <div class="success" id="pass-ok">Senha alterada com sucesso!</div>
-          <button class="btn btn-ghost btn-full" onclick="changePassword()">Alterar senha</button>
-        </div>
-      </div>
-
-      <div class="settings-section">
-        <div class="settings-section-title">Estatísticas da Conta</div>
-        <div class="grid-3" style="gap:12px">
-          <div class="stat-card" style="padding:16px">
-            <div class="stat-label">Alunos</div>
-            <div class="stat-val" id="profile-stat-students">0</div>
+          <div class="divider"></div>
+          <div class="card-title">Local & Experiência</div>
+          <label>Cidade</label><input type="text" id="p-city" placeholder="Caruaru, PE">
+          <label>Anos de experiência</label><input type="number" id="p-exp" placeholder="5" min="0">
+          <div class="divider"></div>
+          <div class="card-title">🌿 Compromisso ODS 3</div>
+          <div class="tip-card" style="margin-bottom:10px">
+            <div class="tip-icon">🎯</div>
+            <div>
+              <div class="tip-title">Meta de impacto</div>
+              <div class="tip-text">Quantos alunos você quer impactar positivamente esse ano?</div>
+            </div>
           </div>
-          <div class="stat-card" style="padding:16px">
-            <div class="stat-label">Treinos criados</div>
-            <div class="stat-val" id="profile-stat-workouts">0</div>
-          </div>
-          <div class="stat-card" style="padding:16px">
-            <div class="stat-label">Conta criada</div>
-            <div class="stat-val" style="font-size:1rem;margin-top:8px" id="profile-stat-created">—</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="settings-section" style="border-color:#3a1010">
-        <div class="settings-section-title" style="color:var(--danger)">Zona de Perigo</div>
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
-          <div>
-            <div style="font-size:.88rem">Sair da conta</div>
-            <div style="font-size:.78rem;color:var(--muted)">Você precisará fazer login novamente</div>
-          </div>
-          <button class="btn btn-danger" onclick="doLogout()">Sair</button>
+          <label>Meta de alunos (ano)</label><input type="number" id="p-meta" placeholder="20" min="1">
         </div>
       </div>
     </div>
 
-  </div><!-- .main -->
-</div><!-- #app -->
+  </div><!-- /main -->
+</div><!-- /app -->
+<!-- ═══════════ MODAIS ═══════════ -->
 
-<!-- MOBILE NAV -->
-<div class="mobile-menu" id="mobile-menu" style="display:none">
-  <button class="mob-nav active" id="mob-dashboard" onclick="showPage('dashboard')">
-    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-    Início
-  </button>
-  <button class="mob-nav" id="mob-students" onclick="showPage('students')">
-    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-    Alunos
-  </button>
-  <button class="mob-nav" id="mob-all-workouts" onclick="showPage('all-workouts')">
-    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-    Treinos
-  </button>
-  <button class="mob-nav" id="mob-profile" onclick="showPage('profile')">
-    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    Perfil
-  </button>
-</div>
-
-<!-- MODALS -->
+<!-- Student -->
 <div class="modal-overlay" id="modal-student">
   <div class="modal">
-    <div class="modal-title">➕ Novo Aluno</div>
-    <label>Nome completo *</label>
-    <input type="text" id="s-name" placeholder="Maria Souza">
-    <div class="form-row" style="margin-bottom:16px">
-      <div><label>Idade</label><input type="number" id="s-age" placeholder="28" min="1" max="120" style="margin-bottom:0"></div>
-      <div><label>Telefone / WhatsApp</label><input type="text" id="s-phone" placeholder="(81) 99999-9999" style="margin-bottom:0"></div>
+    <div class="modal-title">Novo Aluno</div>
+    <label>Nome completo</label><input type="text" id="s-name" placeholder="Maria Souza">
+    <div class="grid-2" style="gap:10px">
+      <div><label>Idade</label><input type="number" id="s-age" placeholder="28" min="1" max="120"></div>
+      <div><label>Sexo</label><select id="s-sex"><option value="">—</option><option>Masculino</option><option>Feminino</option><option>Outro</option></select></div>
     </div>
     <label>Objetivo</label>
-    <select id="s-goal"><option value="">Selecione...</option><option>Hipertrofia</option><option>Emagrecimento</option><option>Condicionamento</option><option>Força</option><option>Reabilitação</option><option>Flexibilidade</option><option>Outro</option></select>
-    <div class="form-row" style="margin-bottom:16px">
-      <div><label>Peso atual (kg)</label><input type="number" id="s-weight" placeholder="70.5" step="0.1" style="margin-bottom:0"></div>
-      <div><label>Altura (cm)</label><input type="number" id="s-height" placeholder="170" style="margin-bottom:0"></div>
-    </div>
-    <label>Nível de experiência</label>
-    <select id="s-level"><option value="">Selecione...</option><option>Iniciante</option><option>Intermediário</option><option>Avançado</option></select>
-    <label>Observações / Restrições</label>
-    <textarea id="s-obs" placeholder="Lesões, restrições médicas, histórico..."></textarea>
+    <select id="s-goal"><option value="">Selecione...</option><option>Hipertrofia</option><option>Emagrecimento</option><option>Condicionamento</option><option>Força</option><option>Reabilitação</option><option>Outro</option></select>
+    <label>Nível</label>
+    <select id="s-level"><option value="">—</option><option>Iniciante</option><option>Intermediário</option><option>Avançado</option></select>
+    <label>Telefone</label><input type="tel" id="s-phone" placeholder="(81) 99999-9999">
+    <label>Observações / Restrições</label><textarea id="s-obs" placeholder="Lesões, histórico, restrições..."></textarea>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('student')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveStudent()">Salvar Aluno</button>
+      <button class="btn btn-primary" onclick="saveStudent()">Salvar aluno</button>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="modal-edit-student">
+<!-- Edit Student -->
+<div class="modal-overlay" id="modal-editStudent">
   <div class="modal">
-    <div class="modal-title">✏️ Editar Aluno</div>
-    <label>Nome completo *</label>
-    <input type="text" id="es-name" placeholder="Maria Souza">
-    <div class="form-row" style="margin-bottom:16px">
-      <div><label>Idade</label><input type="number" id="es-age" placeholder="28" style="margin-bottom:0"></div>
-      <div><label>Telefone / WhatsApp</label><input type="text" id="es-phone" placeholder="(81) 99999-9999" style="margin-bottom:0"></div>
+    <div class="modal-title">Editar Aluno</div>
+    <label>Nome completo</label><input type="text" id="es-name">
+    <div class="grid-2" style="gap:10px">
+      <div><label>Idade</label><input type="number" id="es-age" min="1" max="120"></div>
+      <div><label>Sexo</label><select id="es-sex"><option value="">—</option><option>Masculino</option><option>Feminino</option><option>Outro</option></select></div>
     </div>
     <label>Objetivo</label>
-    <select id="es-goal"><option value="">Selecione...</option><option>Hipertrofia</option><option>Emagrecimento</option><option>Condicionamento</option><option>Força</option><option>Reabilitação</option><option>Flexibilidade</option><option>Outro</option></select>
-    <div class="form-row" style="margin-bottom:16px">
-      <div><label>Peso atual (kg)</label><input type="number" id="es-weight" placeholder="70.5" step="0.1" style="margin-bottom:0"></div>
-      <div><label>Altura (cm)</label><input type="number" id="es-height" placeholder="170" style="margin-bottom:0"></div>
-    </div>
-    <label>Nível de experiência</label>
-    <select id="es-level"><option value="">Selecione...</option><option>Iniciante</option><option>Intermediário</option><option>Avançado</option></select>
-    <label>Observações / Restrições</label>
-    <textarea id="es-obs" placeholder="Lesões, restrições médicas, histórico..."></textarea>
+    <select id="es-goal"><option value="">—</option><option>Hipertrofia</option><option>Emagrecimento</option><option>Condicionamento</option><option>Força</option><option>Reabilitação</option><option>Outro</option></select>
+    <label>Nível</label>
+    <select id="es-level"><option value="">—</option><option>Iniciante</option><option>Intermediário</option><option>Avançado</option></select>
+    <label>Telefone</label><input type="tel" id="es-phone">
+    <label>Observações</label><textarea id="es-obs"></textarea>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('edit-student')">Cancelar</button>
-      <button class="btn btn-primary" onclick="updateStudent()">Atualizar</button>
+      <button class="btn btn-ghost" onclick="closeModal('editStudent')">Cancelar</button>
+      <button class="btn btn-primary" onclick="updateStudent()">Salvar</button>
     </div>
   </div>
 </div>
 
+<!-- Workout -->
 <div class="modal-overlay" id="modal-workout">
-  <div class="modal" style="max-width:660px">
-    <div class="modal-title">🏋️ Novo Treino</div>
-    <label>Nome do treino *</label>
-    <input type="text" id="w-name" placeholder="Ex: Treino A — Peito e Tríceps">
-    <div class="form-row" style="margin-bottom:16px">
-      <div><label>Dia da semana</label><select id="w-day" style="margin-bottom:0"><option value="">Qualquer dia</option><option>Segunda-feira</option><option>Terça-feira</option><option>Quarta-feira</option><option>Quinta-feira</option><option>Sexta-feira</option><option>Sábado</option><option>Domingo</option></select></div>
-      <div><label>Duração estimada</label><select id="w-duration" style="margin-bottom:0"><option value="">Não especificado</option><option>30 min</option><option>45 min</option><option>60 min</option><option>75 min</option><option>90 min</option></select></div>
+  <div class="modal modal-lg">
+    <div class="modal-title">Novo Treino</div>
+    <label>Nome do treino</label><input type="text" id="w-name" placeholder="Treino A – Peito e Tríceps">
+    <label>Observações</label><textarea id="w-obs" placeholder="Aquecimento, instruções gerais..." style="min-height:55px"></textarea>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <label style="margin:0">Exercícios</label>
+      <button class="btn btn-ghost btn-sm" onclick="openUseTemplate()">Usar template</button>
     </div>
-    <label>Observações gerais</label>
-    <textarea id="w-obs" placeholder="Aquecimento, instruções gerais, tempo de descanso padrão..." style="min-height:60px"></textarea>
-    <div class="divider"></div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-      <div style="font-weight:600;font-size:.9rem">Exercícios</div>
-      <button class="btn btn-ghost" style="padding:5px 12px;font-size:.78rem" onclick="addExerciseRow()">+ Adicionar</button>
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 30px;gap:7px;margin-bottom:4px">
+      <span style="font-size:.72rem;color:var(--muted);text-transform:uppercase">Exercício</span>
+      <span style="font-size:.72rem;color:var(--muted);text-transform:uppercase">Séries</span>
+      <span style="font-size:.72rem;color:var(--muted);text-transform:uppercase">Reps</span>
+      <span style="font-size:.72rem;color:var(--muted);text-transform:uppercase">Carga</span>
+      <span></span>
     </div>
-    <div class="ex-header"><span>Exercício</span><span>Séries</span><span>Reps</span><span>Carga / Desc.</span><span></span></div>
     <div id="exercise-rows"></div>
+    <button class="add-ex-btn" onclick="addExRow('exercise-rows')">+ Adicionar exercício</button>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('workout')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveWorkout()">Salvar Treino</button>
+      <button class="btn btn-primary" onclick="saveWorkout()">Salvar treino</button>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="modal-edit-workout">
-  <div class="modal" style="max-width:660px">
-    <div class="modal-title">✏️ Editar Treino</div>
-    <input type="hidden" id="ew-id">
-    <label>Nome do treino *</label>
-    <input type="text" id="ew-name" placeholder="Ex: Treino A — Peito e Tríceps">
-    <div class="form-row" style="margin-bottom:16px">
-      <div><label>Dia da semana</label><select id="ew-day" style="margin-bottom:0"><option value="">Qualquer dia</option><option>Segunda-feira</option><option>Terça-feira</option><option>Quarta-feira</option><option>Quinta-feira</option><option>Sexta-feira</option><option>Sábado</option><option>Domingo</option></select></div>
-      <div><label>Duração estimada</label><select id="ew-duration" style="margin-bottom:0"><option value="">Não especificado</option><option>30 min</option><option>45 min</option><option>60 min</option><option>75 min</option><option>90 min</option></select></div>
+<!-- Medidas -->
+<div class="modal-overlay" id="modal-medidas">
+  <div class="modal">
+    <div class="modal-title">🌿 Registrar Medidas</div>
+    <label>Data</label><input type="date" id="m-date">
+    <div class="grid-2" style="gap:10px">
+      <div><label>Peso (kg)</label><input type="number" id="m-peso" placeholder="75.5" step="0.1"></div>
+      <div><label>Altura (cm)</label><input type="number" id="m-altura" placeholder="175" step="0.1"></div>
+      <div><label>% Gordura</label><input type="number" id="m-gord" placeholder="18.5" step="0.1"></div>
+      <div><label>% Músculo</label><input type="number" id="m-musc" placeholder="45.0" step="0.1"></div>
+      <div><label>Cintura (cm)</label><input type="number" id="m-cintura" placeholder="80" step="0.1"></div>
+      <div><label>Quadril (cm)</label><input type="number" id="m-quadril" placeholder="95" step="0.1"></div>
+      <div><label>Braço (cm)</label><input type="number" id="m-braco" placeholder="35" step="0.1"></div>
+      <div><label>Coxa (cm)</label><input type="number" id="m-coxa" placeholder="58" step="0.1"></div>
     </div>
-    <label>Observações gerais</label>
-    <textarea id="ew-obs" style="min-height:60px"></textarea>
-    <div class="divider"></div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-      <div style="font-weight:600;font-size:.9rem">Exercícios</div>
-      <button class="btn btn-ghost" style="padding:5px 12px;font-size:.78rem" onclick="addExerciseRowTo('edit-exercise-rows')">+ Adicionar</button>
-    </div>
-    <div class="ex-header"><span>Exercício</span><span>Séries</span><span>Reps</span><span>Carga / Desc.</span><span></span></div>
-    <div id="edit-exercise-rows"></div>
+    <label>Pressão arterial</label><input type="text" id="m-pa" placeholder="120/80 mmHg">
+    <label>Frequência cardíaca em repouso (bpm)</label><input type="number" id="m-fc" placeholder="65" min="30" max="200">
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('edit-workout')">Cancelar</button>
-      <button class="btn btn-primary" onclick="updateWorkout()">Atualizar Treino</button>
+      <button class="btn btn-ghost" onclick="closeModal('medidas')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveMedidas()">Salvar medidas</button>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="modal-progress">
-  <div class="modal" style="max-width:440px">
-    <div class="modal-title">📈 Registrar Progresso</div>
-    <div class="form-row" style="margin-bottom:16px">
-      <div><label>Data</label><input type="date" id="p-date" style="margin-bottom:0"></div>
-      <div><label>Peso (kg)</label><input type="number" id="p-weight" placeholder="70.5" step="0.1" style="margin-bottom:0"></div>
+<!-- Session -->
+<div class="modal-overlay" id="modal-session">
+  <div class="modal">
+    <div class="modal-title">Nova Sessão</div>
+    <label>Aluno</label><select id="sess-student"><option value="">Selecione...</option></select>
+    <label>Data</label><input type="date" id="sess-date">
+    <div class="grid-2" style="gap:10px">
+      <div><label>Hora</label><input type="time" id="sess-time"></div>
+      <div><label>Duração (min)</label><input type="number" id="sess-dur" placeholder="60" min="15" step="15"></div>
     </div>
-    <div class="form-row" style="margin-bottom:16px">
-      <div><label>% Gordura</label><input type="number" id="p-fat" placeholder="18.5" step="0.1" style="margin-bottom:0"></div>
-      <div><label>Circunf. abdominal (cm)</label><input type="number" id="p-waist" placeholder="85" step="0.5" style="margin-bottom:0"></div>
-    </div>
-    <label>Observações</label>
-    <textarea id="p-obs" placeholder="Como o aluno se sentiu, evolução notada..." style="min-height:70px"></textarea>
+    <label>Tipo</label>
+    <select id="sess-type"><option>Musculação</option><option>Funcional</option><option>Avaliação</option><option>Cardio</option><option>Outro</option></select>
+    <label>Observações</label><textarea id="sess-obs" placeholder="Notas da sessão..." style="min-height:55px"></textarea>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('progress')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveProgress()">Salvar</button>
+      <button class="btn btn-ghost" onclick="closeModal('session')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveSession()">Agendar</button>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="modal-reset">
-  <div class="modal" style="max-width:400px">
-    <div class="modal-title">🔑 Recuperar Senha</div>
-    <p style="color:var(--muted);font-size:.88rem;margin-bottom:16px">Digite seu e-mail para receber as instruções de recuperação.</p>
-    <label>E-mail</label>
-    <input type="email" id="reset-email" placeholder="seuemail@exemplo.com">
-    <div class="err" id="reset-err"></div>
-    <div class="success" id="reset-ok">E-mail enviado! Verifique sua caixa de entrada.</div>
+<!-- Template -->
+<div class="modal-overlay" id="modal-template">
+  <div class="modal modal-lg">
+    <div class="modal-title">Novo Template</div>
+    <label>Nome</label><input type="text" id="t-name" placeholder="Full Body – Iniciante">
+    <div class="grid-2" style="gap:10px">
+      <div><label>Nível</label><select id="t-level"><option>Iniciante</option><option>Intermediário</option><option>Avançado</option></select></div>
+      <div><label>Foco</label><select id="t-focus"><option>Hipertrofia</option><option>Força</option><option>Emagrecimento</option><option>Condicionamento</option><option>Funcional</option></select></div>
+    </div>
+    <label>Descrição</label><textarea id="t-desc" placeholder="Descrição e instruções..." style="min-height:55px"></textarea>
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 30px;gap:7px;margin:10px 0 4px">
+      <span style="font-size:.72rem;color:var(--muted);text-transform:uppercase">Exercício</span>
+      <span style="font-size:.72rem;color:var(--muted);text-transform:uppercase">Séries</span>
+      <span style="font-size:.72rem;color:var(--muted);text-transform:uppercase">Reps</span>
+      <span style="font-size:.72rem;color:var(--muted);text-transform:uppercase">Carga</span>
+      <span></span>
+    </div>
+    <div id="template-ex-rows"></div>
+    <button class="add-ex-btn" onclick="addExRow('template-ex-rows')">+ Adicionar exercício</button>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('reset')">Fechar</button>
-      <button class="btn btn-primary" onclick="doReset()">Enviar</button>
+      <button class="btn btn-ghost" onclick="closeModal('template')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveTemplate()">Salvar template</button>
     </div>
   </div>
 </div>
 
+<!-- Use Template -->
+<div class="modal-overlay" id="modal-useTemplate">
+  <div class="modal">
+    <div class="modal-title">Escolher Template</div>
+    <div id="use-template-list" style="display:flex;flex-direction:column;gap:8px;max-height:380px;overflow-y:auto"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('useTemplate')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm -->
 <div class="modal-overlay" id="modal-confirm">
-  <div class="modal" style="max-width:380px">
-    <div class="modal-title">⚠️ Confirmar exclusão</div>
-    <p style="color:var(--muted);font-size:.88rem;margin-bottom:24px" id="confirm-msg">Tem certeza?</p>
+  <div class="modal" style="max-width:360px">
+    <div class="modal-title">Confirmar exclusão</div>
+    <p style="color:var(--muted);font-size:.88rem;margin-bottom:22px" id="confirm-msg">Tem certeza?</p>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('confirm')">Cancelar</button>
-      <button class="btn btn-danger" id="confirm-action-btn">Excluir</button>
+      <button class="btn btn-danger" id="confirm-btn">Excluir</button>
     </div>
   </div>
 </div>
 
 <div id="toast"></div>
-
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import {
-  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail,
-  EmailAuthProvider, reauthenticateWithCredential, updatePassword
-} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import {
-  getFirestore, collection, doc, addDoc, getDocs, getDoc, deleteDoc,
-  updateDoc, query, orderBy, serverTimestamp, setDoc
-} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut,
+  onAuthStateChanged, updateProfile, updatePassword }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, collection, doc, addDoc, getDoc, getDocs, setDoc,
+  updateDoc, deleteDoc, serverTimestamp }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-const ADMIN_EMAIL = 'bernardorodrigues161118@gmail.com';
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBQ2lLtKow3dbTdaJiOWyULBiLO24tt_AQ",
-  authDomain: "fitsil-65f23.firebaseapp.com",
-  projectId: "fitsil-65f23",
-  storageBucket: "fitsil-65f23.firebasestorage.app",
-  messagingSenderId: "850776718438",
-  appId: "1:850776718438:web:09eec47fa78cb9030901a7",
-  measurementId: "G-5LE02KPMKJ"
+const FB = {
+  apiKey:"AIzaSyBQ2lLtKow3dbTdaJiOWyULBiLO24tt_AQ",
+  authDomain:"fitsil-65f23.firebaseapp.com",
+  projectId:"fitsil-65f23",
+  storageBucket:"fitsil-65f23.firebasestorage.app",
+  messagingSenderId:"850776718438",
+  appId:"1:850776718438:web:09eec47fa78cb9030901a7"
 };
+const fbApp = initializeApp(FB);
+const auth  = getAuth(fbApp);
+const db    = getFirestore(fbApp);
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+/* ── STATE ── */
+let uid = null, currentSid = null, currentSData = null;
+let calYear, calMonth, allSessions = [];
+let evoCharts = {}, reportCharts = {};
 
-let currentUser = null;
-let currentStudentId = null;
-let allStudentsCache = [];
-let currentFilter = 'all';
-let isAdmin = false;
-
-// ── AUTH STATE ───────────────────────────────────────────────
-onAuthStateChanged(auth, async (user) => {
-  document.getElementById('loading').style.display = 'none';
+/* ── AUTH STATE ── */
+onAuthStateChanged(auth, async user => {
+  hide('loading');
   if (user) {
-    currentUser = user;
-    isAdmin = user.email === ADMIN_EMAIL;
-
-    document.getElementById('app').style.display = '';
-    document.getElementById('mobile-menu').style.display = 'flex';
-    document.getElementById('auth-screen').style.display = 'none';
-
-    const name = user.displayName || user.email.split('@')[0];
-    document.getElementById('sidebar-name').textContent = name;
-    document.getElementById('sidebar-avatar').textContent = name[0].toUpperCase();
-    document.getElementById('sidebar-role').textContent = isAdmin ? '⭐ Administrador' : 'Personal Trainer';
-    document.getElementById('dash-greeting').textContent = `Olá, ${name.split(' ')[0]}! Bom treino 💪`;
-
-    // Ensure trainer doc exists in Firestore
-    try {
-      const trainerRef = doc(db, 'trainers', user.uid);
-      const trainerSnap = await getDoc(trainerRef);
-      if (!trainerSnap.exists()) {
-        await setDoc(trainerRef, {
-          name: user.displayName || '',
-          email: user.email,
-          createdAt: serverTimestamp(),
-          isAdmin: isAdmin
-        });
-      } else if (isAdmin && !trainerSnap.data().isAdmin) {
-        await updateDoc(trainerRef, { isAdmin: true });
-      }
-    } catch(e) { console.warn('Trainer doc init:', e); }
-
+    uid = user.uid;
+    show('app'); hide('auth-screen');
+    const name = user.displayName || user.email;
+    $('sidebar-name').textContent = name;
+    $('sidebar-av-letter').textContent = name[0].toUpperCase();
+    $('dash-greeting').textContent = `Bem-vindo, ${name.split(' ')[0]}! 🌿`;
+    const now = new Date(); calYear = now.getFullYear(); calMonth = now.getMonth();
     loadDashboard();
+    loadProfile();
   } else {
-    currentUser = null;
-    isAdmin = false;
-    document.getElementById('app').style.display = 'none';
-    document.getElementById('auth-screen').style.display = '';
-    document.getElementById('mobile-menu').style.display = 'none';
+    uid = null; hide('app'); show('auth-screen');
   }
 });
 
-// ── AUTH ─────────────────────────────────────────────────────
+/* ── AUTH ── */
 window.doLogin = async () => {
-  const email = v('login-email'), pass = v('login-pass');
-  hideEl('login-err');
-  if (!email || !pass) return showErr('login-err','Preencha todos os campos.');
-  const btn = document.getElementById('login-btn');
-  btn.textContent = 'Entrando...'; btn.disabled = true;
-  try {
-    await signInWithEmailAndPassword(auth, email, pass);
-  } catch(e) {
-    btn.textContent = 'Entrar'; btn.disabled = false;
-    showErr('login-err', friendlyError(e));
-  }
+  hideErr('login-err');
+  try { await signInWithEmailAndPassword(auth, v('login-email'), v('login-pass')); }
+  catch(e) { showErr('login-err', fe(e)); }
 };
-
 window.doRegister = async () => {
-  const name = v('reg-name'), email = v('reg-email'), pass = v('reg-pass');
-  hideEl('reg-err');
-  if (!name) return showErr('reg-err','Nome obrigatório.');
-  if (!email) return showErr('reg-err','E-mail obrigatório.');
-  if (pass.length < 6) return showErr('reg-err','Senha deve ter no mínimo 6 caracteres.');
-  const btn = document.getElementById('reg-btn');
-  btn.textContent = 'Criando...'; btn.disabled = true;
+  hideErr('reg-err');
+  const name = v('reg-name');
+  if (!name) return showErr('reg-err','Nome obrigatório');
   try {
-    const cred = await createUserWithEmailAndPassword(auth, email, pass);
-    await updateProfile(cred.user, { displayName: name });
-    // Force refresh so displayName is available
-    await cred.user.reload();
-  } catch(e) {
-    btn.textContent = 'Criar conta'; btn.disabled = false;
-    showErr('reg-err', friendlyError(e));
-  }
+    const c = await createUserWithEmailAndPassword(auth, v('reg-email'), v('reg-pass'));
+    await updateProfile(c.user, { displayName: name });
+  } catch(e) { showErr('reg-err', fe(e)); }
+};
+window.doLogout = () => signOut(auth);
+window.switchTab = t => {
+  $('tab-login').style.display  = t==='login'  ? '' : 'none';
+  $('tab-register').style.display = t==='register' ? '' : 'none';
+  document.querySelectorAll('.auth-tab').forEach((el,i) =>
+    el.classList.toggle('active',(t==='login'&&i===0)||(t==='register'&&i===1)));
 };
 
-window.doLogout = async () => {
-  if(confirm('Deseja sair da sua conta?')) await signOut(auth);
+/* ── NAVIGATION ── */
+window.showPage = page => {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+page)?.classList.add('active');
+  document.getElementById('nav-'+page)?.classList.add('active');
+  if(page==='dashboard') loadDashboard();
+  if(page==='students')  loadStudents();
+  if(page==='agenda')    { loadAgenda(); renderCal(); }
+  if(page==='templates') loadTemplates();
+  if(page==='reports')   loadReports();
+  if(page==='profile')   loadProfile();
 };
 
-window.doReset = async () => {
-  const email = v('reset-email');
-  hideEl('reset-err');
-  document.getElementById('reset-ok').style.display = 'none';
-  if (!email) return showErr('reset-err','Digite seu e-mail.');
-  try {
-    await sendPasswordResetEmail(auth, email);
-    document.getElementById('reset-ok').style.display = 'block';
-  } catch(e) { showErr('reset-err', friendlyError(e)); }
-};
-
-window.switchTab = (tab) => {
-  document.getElementById('tab-login').style.display = tab === 'login' ? '' : 'none';
-  document.getElementById('tab-register').style.display = tab === 'register' ? '' : 'none';
-  document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active', (tab==='login'&&i===0)||(tab==='register'&&i===1)));
-};
-
-// ── NAVIGATION ───────────────────────────────────────────────
-window.showPage = (page) => {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item, .mob-nav').forEach(n => n.classList.remove('active'));
-  const pageEl = document.getElementById('page-' + page);
-  if (pageEl) pageEl.classList.add('active');
-  const navEl = document.getElementById('nav-' + page);
-  if (navEl) navEl.classList.add('active');
-  const mobEl = document.getElementById('mob-' + page);
-  if (mobEl) mobEl.classList.add('active');
-  if (page === 'dashboard') loadDashboard();
-  if (page === 'students') loadStudents();
-  if (page === 'all-workouts') loadAllWorkouts();
-  if (page === 'profile') loadProfilePage();
-};
-
-// ── PROFILE PAGE ──────────────────────────────────────────────
-async function loadProfilePage() {
-  if (!currentUser) return;
-  const name = currentUser.displayName || currentUser.email.split('@')[0];
-  document.getElementById('profile-avatar-big').textContent = name[0].toUpperCase();
-  document.getElementById('profile-name-display').textContent = name;
-  document.getElementById('profile-email-display').textContent = currentUser.email;
-  document.getElementById('profile-name-input').value = name;
-  document.getElementById('profile-email-input').value = currentUser.email;
-
-  const adminPanel = document.getElementById('admin-panel');
-  const adminBadge = document.getElementById('profile-badge-admin');
-  if (isAdmin) {
-    adminPanel.style.display = '';
-    adminBadge.style.display = '';
-  } else {
-    adminPanel.style.display = 'none';
-    adminBadge.style.display = 'none';
-  }
-
-  // Stats
-  try {
-    const snap = await getDocs(collection(db, 'trainers', currentUser.uid, 'students'));
-    document.getElementById('profile-stat-students').textContent = snap.size;
-    let totalW = 0;
-    for (const s of snap.docs) {
-      const ws = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', s.id, 'workouts'));
-      totalW += ws.size;
-    }
-    document.getElementById('profile-stat-workouts').textContent = totalW;
-  } catch(e) {}
-
-  // Creation date
-  const meta = currentUser.metadata;
-  if (meta?.creationTime) {
-    const d = new Date(meta.creationTime);
-    document.getElementById('profile-stat-created').textContent = d.toLocaleDateString('pt-BR');
-  }
-}
-
-window.saveProfile = async () => {
-  hideEl('profile-err');
-  hideEl('profile-ok');
-  const name = v('profile-name-input');
-  if (!name) return showErr('profile-err', 'Nome obrigatório.');
-  try {
-    await updateProfile(currentUser, { displayName: name });
-    await updateDoc(doc(db, 'trainers', currentUser.uid), { name });
-    document.getElementById('profile-ok').style.display = 'block';
-    document.getElementById('sidebar-name').textContent = name;
-    document.getElementById('sidebar-avatar').textContent = name[0].toUpperCase();
-    document.getElementById('profile-avatar-big').textContent = name[0].toUpperCase();
-    document.getElementById('profile-name-display').textContent = name;
-    toast('Perfil atualizado! ✅');
-  } catch(e) { showErr('profile-err', 'Erro ao salvar: ' + e.message); }
-};
-
-window.changePassword = async () => {
-  hideEl('pass-err');
-  hideEl('pass-ok');
-  const oldPass = v('old-pass');
-  const newPass = v('new-pass');
-  const confirmPass = v('confirm-pass');
-  if (!oldPass || !newPass || !confirmPass) return showErr('pass-err', 'Preencha todos os campos.');
-  if (newPass.length < 6) return showErr('pass-err', 'Nova senha deve ter mínimo 6 caracteres.');
-  if (newPass !== confirmPass) return showErr('pass-err', 'As senhas não coincidem.');
-  try {
-    const cred = EmailAuthProvider.credential(currentUser.email, oldPass);
-    await reauthenticateWithCredential(currentUser, cred);
-    await updatePassword(currentUser, newPass);
-    document.getElementById('pass-ok').style.display = 'block';
-    document.getElementById('old-pass').value = '';
-    document.getElementById('new-pass').value = '';
-    document.getElementById('confirm-pass').value = '';
-    toast('Senha alterada com sucesso! 🔒');
-  } catch(e) {
-    if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
-      showErr('pass-err', 'Senha atual incorreta.');
-    } else {
-      showErr('pass-err', 'Erro: ' + e.message);
-    }
-  }
-};
-
-// ── DASHBOARD ────────────────────────────────────────────────
+/* ── DASHBOARD ── */
 async function loadDashboard() {
-  if (!currentUser) return;
-  try {
-    const snap = await getDocs(collection(db, 'trainers', currentUser.uid, 'students'));
-    const students = snap.docs;
-    allStudentsCache = students.map(s => ({id:s.id,...s.data()}));
-    document.getElementById('stat-students').textContent = students.length;
-    document.getElementById('nav-badge-students').textContent = students.length;
-
-    let totalWorkouts = 0, weekWorkouts = 0;
-    const oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-    for (const s of students) {
-      const ws = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', s.id, 'workouts'));
-      totalWorkouts += ws.size;
-      ws.docs.forEach(w => {
-        const ts = w.data().createdAt?.toDate?.();
-        if (ts && ts > oneWeekAgo) weekWorkouts++;
-      });
-    }
-    document.getElementById('stat-workouts').textContent = totalWorkouts;
-    document.getElementById('stat-week').textContent = weekWorkouts;
-    document.getElementById('stat-active').textContent = students.length;
-
-    const list = document.getElementById('dash-student-list');
-    if (students.length === 0) {
-      list.innerHTML = '<div class="empty"><div class="empty-icon">🏋️</div><p>Nenhum aluno ainda.<br><small>Clique em "+ Novo Aluno" para começar.</small></p></div>';
-    } else {
-      list.innerHTML = students.slice(0,4).map(s => studentCardHTML(s.id, s.data())).join('');
-    }
-
-    const wEl = document.getElementById('dash-workout-list');
-    const recentWorkouts = [];
-    for (const s of students.slice(0,5)) {
-      const ws = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', s.id, 'workouts'));
-      ws.docs.forEach(w => recentWorkouts.push({sid:s.id, sname:s.data().name, wid:w.id, ...w.data()}));
-    }
-    recentWorkouts.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
-    if (recentWorkouts.length === 0) {
-      wEl.innerHTML = '<div class="empty" style="padding:24px 0"><div class="empty-icon">📋</div><p>Nenhum treino ainda.</p></div>';
-    } else {
-      wEl.innerHTML = recentWorkouts.slice(0,5).map(w => `
-        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="openStudent('${w.sid}')">
-          <div style="width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0"></div>
-          <div style="flex:1;min-width:0">
-            <div style="font-size:.88rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${w.name}</div>
-            <div style="font-size:.75rem;color:var(--muted)">${w.sname}</div>
-          </div>
-          <div style="font-size:.75rem;color:var(--muted)">${w.createdAt?.toDate ? w.createdAt.toDate().toLocaleDateString('pt-BR') : ''}</div>
-        </div>`).join('');
-    }
-  } catch(e) { console.error('Dashboard error:', e); }
-}
-
-// ── STUDENTS ─────────────────────────────────────────────────
-async function loadStudents() {
-  const list = document.getElementById('student-list');
-  list.innerHTML = '<div style="color:var(--muted);padding:20px;font-size:.88rem">Carregando...</div>';
-  const snap = await getDocs(collection(db, 'trainers', currentUser.uid, 'students'));
-  allStudentsCache = snap.docs.map(s => ({id:s.id,...s.data()}));
-  document.getElementById('nav-badge-students').textContent = allStudentsCache.length;
-  renderStudentList();
-}
-
-function renderStudentList() {
-  const list = document.getElementById('student-list');
-  const searchVal = document.getElementById('student-search')?.value?.toLowerCase() || '';
-  let filtered = allStudentsCache.filter(s => {
-    const matchSearch = s.name?.toLowerCase().includes(searchVal) || s.goal?.toLowerCase().includes(searchVal);
-    const matchFilter = currentFilter === 'all' || s.goal === currentFilter;
-    return matchSearch && matchFilter;
+  if(!uid) return;
+  const [stuSnap,tplSnap,sessSnap] = await Promise.all([
+    getDocs(collection(db,'trainers',uid,'students')),
+    getDocs(collection(db,'trainers',uid,'templates')),
+    getDocs(collection(db,'trainers',uid,'sessions'))
+  ]);
+  $('stat-students').textContent  = stuSnap.size;
+  $('stat-templates').textContent = tplSnap.size;
+  $('impact-score').textContent   = stuSnap.size;
+  const now = new Date();
+  const thisMo = sessSnap.docs.filter(s=>{
+    const d=s.data().date; if(!d) return false;
+    const [y,m]=d.split('-').map(Number);
+    return y===now.getFullYear()&&m===(now.getMonth()+1);
   });
-  if (filtered.length === 0) {
-    list.innerHTML = '<div class="empty"><div class="empty-icon">👤</div><p>Nenhum aluno encontrado.</p></div>';
-    return;
+  $('stat-sessions').textContent = thisMo.length;
+  let tw=0;
+  for(const s of stuSnap.docs){
+    const ws=await getDocs(collection(db,'trainers',uid,'students',s.id,'workouts'));
+    tw+=ws.size;
   }
-  list.innerHTML = filtered.map(s => studentCardHTML(s.id, s)).join('');
+  $('stat-workouts').textContent = tw;
+  const sl=$('dash-student-list');
+  sl.innerHTML = stuSnap.empty ? emptyHTML('🏋️','Nenhum aluno ainda.')
+    : stuSnap.docs.slice(0,5).map(s=>stuCardHTML(s.id,s.data())).join('');
+  const upcoming = sessSnap.docs.map(s=>({id:s.id,...s.data()}))
+    .filter(s=>s.date>=now.toISOString().slice(0,10))
+    .sort((a,b)=>a.date.localeCompare(b.date)).slice(0,5);
+  $('dash-session-list').innerHTML = upcoming.length
+    ? upcoming.map(sessItemHTML).join('') : emptyHTML('📅','Nenhuma sessão agendada.');
+  renderHealthTips();
 }
 
-window.filterStudents = renderStudentList;
-window.setFilter = (el, filter) => {
-  currentFilter = filter;
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  renderStudentList();
-};
+/* ── ODS3 HEALTH TIPS ── */
+const TIPS = [
+  {icon:'💧',title:'Hidratação',text:'Lembre seus alunos: 35ml de água por kg de peso ao dia. Hidratação é saúde!'},
+  {icon:'😴',title:'Sono & Recuperação',text:'Oriente 7-9h de sono. A recuperação muscular acontece durante o descanso.'},
+  {icon:'🥗',title:'Alimentação Adequada',text:'Encourage proteína em todas as refeições. Meta: 1,6-2,2g/kg para quem treina.'},
+  {icon:'❤️','title':'Saúde Cardiovascular',text:'Recomende 150min de atividade moderada/semana. Reduza risco de doenças cardíacas.'},
+  {icon:'🧠',title:'Saúde Mental',text:'Exercício reduz ansiedade e depressão. Celebre cada conquista do aluno!'},
+  {icon:'📏',title:'Monitore o IMC',text:'IMC entre 18,5-24,9 é saudável. Registre medidas regularmente para acompanhar.'},
+];
+function renderHealthTips(){
+  const grid=$('health-tips-grid');
+  if(!grid) return;
+  const tip3=TIPS.sort(()=>Math.random()-.5).slice(0,3);
+  grid.innerHTML = tip3.map(t=>`
+    <div class="tip-card">
+      <div class="tip-icon">${t.icon}</div>
+      <div><div class="tip-title">${t.title}</div><div class="tip-text">${t.text}</div></div>
+    </div>`).join('');
+}
 
-function studentCardHTML(id, d) {
-  const goalBadge = d.goal ? `<span class="badge badge-green">${d.goal}</span>` : '';
-  const levelBadge = d.level ? `<span class="badge">${d.level}</span>` : '';
-  const phone = d.phone ? `<a href="https://wa.me/55${d.phone.replace(/\D/g,'')}" target="_blank" onclick="event.stopPropagation()" style="color:var(--accent);font-size:.8rem;text-decoration:none" title="WhatsApp">💬</a>` : '';
+/* ── STUDENTS ── */
+async function loadStudents(){
+  const list=$('student-list');
+  list.innerHTML='<div style="color:var(--muted);padding:16px">Carregando...</div>';
+  const snap=await getDocs(collection(db,'trainers',uid,'students'));
+  list.innerHTML=snap.empty?emptyHTML('👤','Nenhum aluno.'):snap.docs.map(s=>stuCardHTML(s.id,s.data())).join('');
+}
+function stuCardHTML(id,d){
+  const imc = d._imc ? `<span class="badge ${imcBadgeClass(d._imc)}" style="margin-left:6px">IMC ${d._imc}</span>` : '';
   return `<div class="student-card" onclick="openStudent('${id}')">
     <div class="student-av">${(d.name||'?')[0].toUpperCase()}</div>
     <div class="student-info">
-      <div class="student-name">${d.name}</div>
-      <div class="student-meta">${[d.age ? d.age + ' anos' : '', d.weight ? d.weight + ' kg' : '', d.level].filter(Boolean).join(' · ')}</div>
+      <div class="student-name">${d.name}${imc}</div>
+      <div class="student-meta">${[d.age?d.age+' anos':'',d.sex,d.goal,d.level].filter(Boolean).join(' · ')}</div>
     </div>
-    <div class="student-actions">${goalBadge} ${levelBadge} ${phone}</div>
-  </div>`;
+    <span class="badge badge-green">Ativo</span></div>`;
+}
+function imcBadgeClass(imc){
+  if(imc<18.5) return 'badge-warn';
+  if(imc<25) return 'badge-green';
+  if(imc<30) return 'badge-warn';
+  return 'badge'; // obeso
 }
 
-window.openStudent = async (sid) => {
-  currentStudentId = sid;
-  try {
-    const snap = await getDoc(doc(db, 'trainers', currentUser.uid, 'students', sid));
-    if (!snap.exists()) { toast('Aluno não encontrado.','err'); return; }
-    const d = snap.data();
-    document.getElementById('detail-name').textContent = d.name;
-    document.getElementById('detail-avatar').textContent = (d.name||'?')[0].toUpperCase();
-    const metaParts = [d.age ? d.age + ' anos' : '', d.weight ? d.weight + ' kg' : '', d.goal, d.level].filter(Boolean);
-    document.getElementById('detail-meta').textContent = metaParts.join(' · ');
-
-    const infoRows = [
-      ['Nome', d.name],['Idade', d.age ? d.age + ' anos' : '—'],['Telefone', d.phone || '—'],
-      ['Peso', d.weight ? d.weight + ' kg' : '—'],['Altura', d.height ? d.height + ' cm' : '—'],
-      ['IMC', (d.weight && d.height) ? (d.weight / ((d.height/100)**2)).toFixed(1) : '—'],
-      ['Objetivo', d.goal || '—'],['Nível', d.level || '—'],
-    ].map(([l,val]) => `<div class="info-row"><span class="info-row-label">${l}</span><span class="info-row-val">${val}</span></div>`).join('');
-    document.getElementById('detail-info-rows').innerHTML = infoRows;
-    document.getElementById('detail-obs').textContent = d.obs || 'Sem observações registradas.';
-
-    setVal('es-name', d.name); setVal('es-age', d.age); setVal('es-phone', d.phone);
-    setVal('es-weight', d.weight); setVal('es-height', d.height);
-    setVal('es-goal', d.goal); setVal('es-level', d.level); setVal('es-obs', d.obs);
-
-    // Reset to treinos tab
-    switchDetailTab('treinos', document.querySelectorAll('.tab-btn')[0]);
-    loadWorkouts(sid);
-    loadProgress(sid);
-    showPage('student-detail');
-    document.getElementById('nav-students').classList.add('active');
-  } catch(e) { toast('Erro ao abrir aluno: ' + e.message, 'err'); }
+window.openStudent = async sid => {
+  currentSid=sid;
+  const snap=await getDoc(doc(db,'trainers',uid,'students',sid));
+  currentSData=snap.data();
+  const d=currentSData;
+  $('detail-name').textContent=d.name;
+  $('detail-meta').textContent=[d.age?d.age+' anos':'',d.sex,d.goal,d.level,d.phone].filter(Boolean).join(' · ');
+  openStudentTab('treinos');
+  loadWorkouts(sid);
+  showPage('student-detail');
+  document.getElementById('nav-students')?.classList.add('active');
 };
 
 window.saveStudent = async () => {
-  const name = v('s-name');
-  if (!name) return toast('Nome é obrigatório!','err');
-  await addDoc(collection(db, 'trainers', currentUser.uid, 'students'), {
-    name, age: v('s-age'), phone: v('s-phone'), goal: v('s-goal'),
-    obs: v('s-obs'), weight: v('s-weight'), height: v('s-height'), level: v('s-level'),
-    createdAt: serverTimestamp()
+  const name=v('s-name'); if(!name) return toast('Nome obrigatório','err');
+  await addDoc(collection(db,'trainers',uid,'students'),{
+    name,age:v('s-age'),sex:v('s-sex'),goal:v('s-goal'),level:v('s-level'),phone:v('s-phone'),obs:v('s-obs'),createdAt:serverTimestamp()
   });
   closeModal('student');
-  clearFields(['s-name','s-age','s-phone','s-goal','s-obs','s-weight','s-height','s-level']);
-  toast('Aluno salvo com sucesso! 🎉');
-  loadStudents();
+  clearFields(['s-name','s-age','s-sex','s-goal','s-level','s-phone','s-obs']);
+  toast('Aluno salvo!'); loadStudents();
 };
 
 window.updateStudent = async () => {
-  const name = v('es-name');
-  if (!name) return toast('Nome é obrigatório!','err');
-  await updateDoc(doc(db, 'trainers', currentUser.uid, 'students', currentStudentId), {
-    name, age: v('es-age'), phone: v('es-phone'), goal: v('es-goal'),
-    obs: v('es-obs'), weight: v('es-weight'), height: v('es-height'), level: v('es-level'),
+  await updateDoc(doc(db,'trainers',uid,'students',currentSid),{
+    name:v('es-name'),age:v('es-age'),sex:v('es-sex'),goal:v('es-goal'),level:v('es-level'),phone:v('es-phone'),obs:v('es-obs')
   });
-  closeModal('edit-student');
-  toast('Aluno atualizado!');
-  openStudent(currentStudentId);
+  closeModal('editStudent'); toast('Dados atualizados!'); openStudent(currentSid);
 };
 
 window.confirmDeleteStudent = () => {
-  document.getElementById('confirm-msg').textContent = 'Isso excluirá o aluno e todos os treinos. Esta ação não pode ser desfeita.';
-  document.getElementById('confirm-action-btn').onclick = deleteStudent;
+  $('confirm-msg').textContent='Isso excluirá o aluno e todos os dados. Continuar?';
+  $('confirm-btn').onclick=deleteStudent;
   openModal('confirm');
 };
-
-async function deleteStudent() {
-  const sid = currentStudentId;
-  const ws = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', sid, 'workouts'));
-  for (const w of ws.docs) await deleteDoc(w.ref);
-  const ps = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', sid, 'progress'));
-  for (const p of ps.docs) await deleteDoc(p.ref);
-  await deleteDoc(doc(db, 'trainers', currentUser.uid, 'students', sid));
-  closeModal('confirm');
-  toast('Aluno excluído.');
-  showPage('students');
+async function deleteStudent(){
+  for(const sub of ['workouts','medidas']){
+    const snap=await getDocs(collection(db,'trainers',uid,'students',currentSid,sub));
+    for(const d of snap.docs) await deleteDoc(d.ref);
+  }
+  await deleteDoc(doc(db,'trainers',uid,'students',currentSid));
+  closeModal('confirm'); toast('Aluno excluído'); showPage('students');
 }
 
-// ── WORKOUTS ─────────────────────────────────────────────────
-async function loadWorkouts(sid) {
-  const list = document.getElementById('workout-list');
-  list.innerHTML = '<div style="color:var(--muted);padding:20px;font-size:.88rem">Carregando...</div>';
-  const snap = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', sid, 'workouts'));
-  if (snap.empty) { list.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><p>Nenhum treino cadastrado ainda.<br><small>Clique em "+ Novo Treino" para criar.</small></p></div>'; return; }
-  list.innerHTML = snap.docs.map(w => workoutCardHTML(w.id, w.data())).join('');
-}
+/* ── STUDENT TABS ── */
+window.openStudentTab = tab => {
+  ['treinos','ficha','evolucao','saude'].forEach(t=>{
+    const el=document.getElementById('stab-'+t);
+    if(el) el.style.display=t===tab?'':'none';
+  });
+  document.querySelectorAll('#student-tabs .tab').forEach((t,i)=>{
+    t.classList.toggle('active',['treinos','ficha','evolucao','saude'][i]===tab);
+  });
+  if(tab==='ficha')    loadFicha();
+  if(tab==='evolucao') loadEvoCharts();
+  if(tab==='saude')    loadSaudeTab();
+};
 
-function workoutCardHTML(id, d) {
-  const rows = (d.exercises || []).map(e =>
-    `<tr><td><strong>${e.name||'—'}</strong></td><td><span class="ex-chip">${e.sets||'—'}</span></td><td><span class="ex-chip">${e.reps||'—'}</span></td><td>${e.load||'—'}</td></tr>`
-  ).join('');
-  const date = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleDateString('pt-BR') : '';
-  const dayBadge = d.day ? `<span class="badge">${d.day}</span>` : '';
-  const durBadge = d.duration ? `<span class="badge">${d.duration}</span>` : '';
+/* ── WORKOUTS ── */
+async function loadWorkouts(sid){
+  const list=$('workout-list');
+  list.innerHTML='<div style="color:var(--muted);padding:14px">Carregando...</div>';
+  const snap=await getDocs(collection(db,'trainers',uid,'students',sid,'workouts'));
+  list.innerHTML=snap.empty?emptyHTML('📋','Nenhum treino.'):snap.docs.map(w=>wCardHTML(w.id,w.data())).join('');
+}
+function wCardHTML(id,d){
+  const rows=(d.exercises||[]).map(e=>`<tr><td>${e.name||'—'}</td><td>${e.sets||'—'}</td><td>${e.reps||'—'}</td><td>${e.load||'—'}</td></tr>`).join('');
+  const date=d.createdAt?.toDate?d.createdAt.toDate().toLocaleDateString('pt-BR'):'';
   return `<div class="workout-card">
     <div class="workout-header">
-      <div>
-        <div class="workout-title">${d.name}</div>
-        <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">${dayBadge}${durBadge}</div>
-      </div>
-      <div class="workout-actions">
-        <span class="workout-date">${date}</span>
-        <button class="btn btn-ghost" style="padding:5px 10px;font-size:.78rem" onclick="openEditWorkout('${id}')">✏️ Editar</button>
-        <button class="btn btn-ghost" style="padding:5px 10px;font-size:.78rem" onclick="copyWorkoutToClipboard('${id}')">📋 Copiar</button>
-        <button class="btn btn-ghost" style="padding:5px 10px;font-size:.78rem" onclick="shareWorkoutWhatsApp('${id}')">📲 WhatsApp</button>
-        <button class="btn btn-danger" style="padding:5px 10px;font-size:.78rem" onclick="confirmDeleteWorkout('${id}')">Excluir</button>
+      <div class="workout-title">${d.name}</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:.76rem;color:var(--muted)">${date}</span>
+        <button class="btn btn-danger btn-sm" onclick="confirmDelWorkout('${id}')">Excluir</button>
       </div>
     </div>
-    ${d.obs ? `<div style="font-size:.83rem;color:var(--muted);margin:8px 0;background:var(--bg);border-radius:6px;padding:8px 12px;">${d.obs}</div>` : ''}
-    ${rows ? `<table class="exercise-table"><thead><tr><th>Exercício</th><th>Séries</th><th>Reps</th><th>Carga / Desc.</th></tr></thead><tbody>${rows}</tbody></table>` : '<div style="color:var(--muted);font-size:.85rem;padding:8px 0">Nenhum exercício adicionado.</div>'}
+    ${d.obs?`<div style="font-size:.81rem;color:var(--muted);margin-bottom:7px">${d.obs}</div>`:''}
+    ${rows?`<table class="exercise-table"><thead><tr><th>Exercício</th><th>Séries</th><th>Reps</th><th>Carga/Desc</th></tr></thead><tbody>${rows}</tbody></table>`:
+      '<div style="color:var(--muted);font-size:.83rem">Sem exercícios.</div>'}
   </div>`;
 }
-
-window.addExerciseRow = () => addExerciseRowTo('exercise-rows');
-window.addExerciseRowTo = (containerId) => {
-  const container = document.getElementById(containerId);
-  const idx = Date.now() + Math.floor(Math.random()*1000);
-  const row = document.createElement('div');
-  row.className = 'ex-row'; row.id = 'ex-' + idx;
-  row.innerHTML = `
-    <input type="text" placeholder="Supino reto" class="ex-name">
-    <input type="text" placeholder="4" class="ex-sets">
-    <input type="text" placeholder="10-12" class="ex-reps">
-    <input type="text" placeholder="60kg" class="ex-load">
-    <button class="remove-ex" onclick="document.getElementById('ex-${idx}').remove()">✕</button>`;
-  container.appendChild(row);
-  row.querySelector('.ex-name').focus();
+window.saveWorkout = async () => {
+  const name=v('w-name'); if(!name) return toast('Nome obrigatório','err');
+  const exercises=getExercises('exercise-rows');
+  await addDoc(collection(db,'trainers',uid,'students',currentSid,'workouts'),{name,obs:v('w-obs'),exercises,createdAt:serverTimestamp()});
+  closeModal('workout'); clearFields(['w-name','w-obs']);
+  $('exercise-rows').innerHTML=''; toast('Treino salvo!'); loadWorkouts(currentSid);
 };
-
-function getExercisesFrom(containerId) {
-  return Array.from(document.querySelectorAll(`#${containerId} .ex-row`)).map(r => ({
-    name: r.querySelector('.ex-name')?.value?.trim() || '',
-    sets: r.querySelector('.ex-sets')?.value?.trim() || '',
-    reps: r.querySelector('.ex-reps')?.value?.trim() || '',
-    load: r.querySelector('.ex-load')?.value?.trim() || '',
-  })).filter(e => e.name);
+window.confirmDelWorkout = wid => {
+  $('confirm-msg').textContent='Excluir este treino?';
+  $('confirm-btn').onclick=()=>delWorkout(wid);
+  openModal('confirm');
+};
+async function delWorkout(wid){
+  await deleteDoc(doc(db,'trainers',uid,'students',currentSid,'workouts',wid));
+  closeModal('confirm'); toast('Treino excluído'); loadWorkouts(currentSid);
 }
 
-window.saveWorkout = async () => {
-  const name = v('w-name');
-  if (!name) return toast('Nome do treino é obrigatório!','err');
-  const exercises = getExercisesFrom('exercise-rows');
-  await addDoc(collection(db, 'trainers', currentUser.uid, 'students', currentStudentId, 'workouts'), {
-    name, obs: v('w-obs'), day: v('w-day'), duration: v('w-duration'),
-    exercises, createdAt: serverTimestamp()
+/* ── FICHA & MEDIDAS ── */
+async function loadFicha(){
+  const d=currentSData;
+  $('stab-ficha').innerHTML=`
+    <div class="grid-2" style="gap:18px">
+      <div class="card">
+        <div class="card-title">Dados pessoais</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:.88rem">
+          ${rr('Nome',d.name)}${rr('Idade',d.age?d.age+' anos':'—')}
+          ${rr('Sexo',d.sex||'—')}${rr('Objetivo',d.goal||'—')}
+          ${rr('Nível',d.level||'—')}${rr('Telefone',d.phone||'—')}
+          ${rr('Obs',d.obs||'—')}
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="openModal('editStudent')" style="margin-top:12px">✏️ Editar</button>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div class="card-title" style="margin-bottom:0">Medidas atuais</div>
+          <button class="btn btn-primary btn-sm" onclick="openModal('medidas')">+ Registrar</button>
+        </div>
+        <div class="measure-grid" id="measure-latest-grid"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">Histórico de medidas</div>
+      <div id="medidas-hist" style="overflow-x:auto"></div>
+    </div>`;
+  await refreshMedidas();
+}
+function rr(label,val){return `<div style="display:flex;gap:8px"><span style="color:var(--muted);min-width:70px;font-size:.76rem;text-transform:uppercase">${label}</span><span>${val}</span></div>`;}
+
+async function refreshMedidas(){
+  const snap=await getDocs(collection(db,'trainers',uid,'students',currentSid,'medidas'));
+  const all=snap.docs.map(m=>m.data()).sort((a,b)=>a.date.localeCompare(b.date));
+  const latest=all[all.length-1], prev=all[all.length-2];
+  const mg=document.getElementById('measure-latest-grid');
+  if(!mg) return;
+  const fields=[['peso','Peso','kg'],['gord','Gordura','%'],['musc','Músculo','%'],['cintura','Cintura','cm'],['quadril','Quadril','cm'],['fc','FC repouso','bpm']];
+  if(!latest){ mg.innerHTML='<div style="color:var(--muted);font-size:.83rem">Nenhuma medida.</div>'; }
+  else {
+    mg.innerHTML=fields.filter(([k])=>latest[k]).map(([k,label,unit])=>{
+      const delta=prev&&prev[k]?(parseFloat(latest[k])-parseFloat(prev[k])).toFixed(1):null;
+      const dh=delta?`<div class="${parseFloat(delta)<0?'delta-down':'delta-up'}">${parseFloat(delta)>0?'+':''}${delta}</div>`:'';
+      return `<div class="measure-item"><div class="measure-label">${label}</div>
+        <div class="measure-val">${latest[k]}<span class="measure-unit"> ${unit}</span></div>${dh}</div>`;
+    }).join('');
+    // update imc on student doc
+    if(latest.peso&&latest.altura){
+      const imc=(parseFloat(latest.peso)/Math.pow(parseFloat(latest.altura)/100,2)).toFixed(1);
+      await updateDoc(doc(db,'trainers',uid,'students',currentSid),{_imc:parseFloat(imc)}).catch(()=>{});
+    }
+  }
+  const hist=document.getElementById('medidas-hist');
+  if(!hist) return;
+  if(!all.length){hist.innerHTML='<div style="color:var(--muted);font-size:.83rem;padding:10px 0">Sem registros.</div>';return;}
+  hist.innerHTML=`<table class="exercise-table"><thead><tr><th>Data</th><th>Peso</th><th>Gordura</th><th>Músculo</th><th>Cintura</th><th>FC</th><th>PA</th></tr></thead><tbody>
+    ${all.map(m=>`<tr><td>${fmtDate(m.date)}</td><td>${m.peso||'—'} kg</td><td>${m.gord||'—'} %</td><td>${m.musc||'—'} %</td><td>${m.cintura||'—'} cm</td><td>${m.fc||'—'} bpm</td><td>${m.pa||'—'}</td></tr>`).join('')}
+  </tbody></table>`;
+}
+window.saveMedidas = async () => {
+  const date=v('m-date')||new Date().toISOString().slice(0,10);
+  await addDoc(collection(db,'trainers',uid,'students',currentSid,'medidas'),{
+    date,peso:v('m-peso'),altura:v('m-altura'),gord:v('m-gord'),musc:v('m-musc'),
+    cintura:v('m-cintura'),quadril:v('m-quadril'),braco:v('m-braco'),coxa:v('m-coxa'),
+    pa:v('m-pa'),fc:v('m-fc'),createdAt:serverTimestamp()
   });
-  closeModal('workout');
-  clearFields(['w-name','w-obs','w-day','w-duration']);
-  document.getElementById('exercise-rows').innerHTML = '';
-  toast('Treino salvo! 💪');
-  loadWorkouts(currentStudentId);
+  closeModal('medidas');
+  clearFields(['m-date','m-peso','m-altura','m-gord','m-musc','m-cintura','m-quadril','m-braco','m-coxa','m-pa','m-fc']);
+  toast('Medidas salvas! 🌿'); refreshMedidas();
 };
 
-window.openEditWorkout = async (wid) => {
-  const snap = await getDoc(doc(db, 'trainers', currentUser.uid, 'students', currentStudentId, 'workouts', wid));
-  const d = snap.data();
-  document.getElementById('ew-id').value = wid;
-  setVal('ew-name', d.name); setVal('ew-obs', d.obs); setVal('ew-day', d.day); setVal('ew-duration', d.duration);
-  const container = document.getElementById('edit-exercise-rows');
-  container.innerHTML = '';
-  (d.exercises || []).forEach(e => {
-    const idx = Date.now() + Math.floor(Math.random()*100000);
-    const row = document.createElement('div');
-    row.className = 'ex-row'; row.id = 'ex-' + idx;
-    row.innerHTML = `
-      <input type="text" placeholder="Exercício" class="ex-name" value="${e.name||''}">
-      <input type="text" placeholder="4" class="ex-sets" value="${e.sets||''}">
-      <input type="text" placeholder="10-12" class="ex-reps" value="${e.reps||''}">
-      <input type="text" placeholder="60kg" class="ex-load" value="${e.load||''}">
+/* ── EVOLUÇÃO CHARTS ── */
+async function loadEvoCharts(){
+  const snap=await getDocs(collection(db,'trainers',uid,'students',currentSid,'medidas'));
+  const all=snap.docs.map(m=>m.data()).sort((a,b)=>a.date.localeCompare(b.date));
+  const labels=all.map(m=>fmtDate(m.date));
+  const opt={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{ticks:{color:'#7a8a6a',font:{size:10}},grid:{color:'#1b1e14'}},y:{ticks:{color:'#7a8a6a',font:{size:10}},grid:{color:'#1b1e14'}}}};
+  const el=$('stab-evolucao');
+  el.innerHTML=`<div class="grid-2" style="gap:18px">
+    <div class="card"><div class="card-title">Peso (kg)</div><div class="chart-wrap"><canvas id="ev-peso"></canvas></div></div>
+    <div class="card"><div class="card-title">% Gordura</div><div class="chart-wrap"><canvas id="ev-gord"></canvas></div></div>
+    <div class="card"><div class="card-title">IMC</div><div class="chart-wrap"><canvas id="ev-imc"></canvas></div></div>
+    <div class="card"><div class="card-title">FC Repouso (bpm)</div><div class="chart-wrap"><canvas id="ev-fc"></canvas></div></div>
+  </div>`;
+  const mkLine=(id,data)=>{
+    if(evoCharts[id]) evoCharts[id].destroy();
+    evoCharts[id]=new Chart(document.getElementById(id),{type:'line',data:{labels,datasets:[{data,borderColor:'#7ec832',backgroundColor:'rgba(126,200,50,.1)',tension:.4,fill:true,pointBackgroundColor:'#7ec832',spanGaps:true}]},options:opt});
+  };
+  mkLine('ev-peso',all.map(m=>parseFloat(m.peso)||null));
+  mkLine('ev-gord',all.map(m=>parseFloat(m.gord)||null));
+  const imc=all.map(m=>m.peso&&m.altura?(parseFloat(m.peso)/Math.pow(parseFloat(m.altura)/100,2)).toFixed(1):null);
+  mkLine('ev-imc',imc);
+  mkLine('ev-fc',all.map(m=>parseFloat(m.fc)||null));
+}
+
+/* ── SAÚDE ODS3 TAB ── */
+async function loadSaudeTab(){
+  const snap=await getDocs(collection(db,'trainers',uid,'students',currentSid,'medidas'));
+  const all=snap.docs.map(m=>m.data()).sort((a,b)=>a.date.localeCompare(b.date));
+  const latest=all[all.length-1];
+  const el=$('stab-saude');
+  let imcInfo='', imcPct=50, imcVal='—';
+  if(latest?.peso&&latest?.altura){
+    const imc=parseFloat(latest.peso)/Math.pow(parseFloat(latest.altura)/100,2);
+    imcVal=imc.toFixed(1);
+    imcPct=Math.min(Math.max(((imc-15)/(40-15))*100,2),98);
+    if(imc<18.5) imcInfo='<span style="color:var(--warn)">⚠️ Abaixo do peso</span>';
+    else if(imc<25) imcInfo='<span style="color:var(--ods3)">✅ Peso normal</span>';
+    else if(imc<30) imcInfo='<span style="color:var(--warn)">⚠️ Sobrepeso</span>';
+    else imcInfo='<span style="color:var(--danger)">❗ Obesidade</span>';
+  }
+  const goals=getHealthGoals(currentSData);
+  el.innerHTML=`
+    <div class="grid-2" style="gap:18px;margin-bottom:18px">
+      <div class="card">
+        <div class="card-title">🌿 Índice de Massa Corporal</div>
+        <div style="font-family:Syne,sans-serif;font-size:2.5rem;font-weight:800;color:var(--accent)">${imcVal}</div>
+        <div style="margin:4px 0 10px">${imcInfo}</div>
+        <div class="imc-bar"><div class="imc-cursor" style="left:${imcPct}%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-top:4px">
+          <span>Baixo peso</span><span>Normal</span><span>Sobrepeso</span><span>Obesidade</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🎯 Metas de Saúde ODS 3</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          ${goals.map(g=>`
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:.84rem;margin-bottom:4px">
+                <span>${g.label}</span>
+                <span style="color:var(--accent)">${g.val}</span>
+              </div>
+              <div style="height:6px;background:var(--surface2);border-radius:3px">
+                <div style="height:100%;width:${g.pct}%;background:var(--accent);border-radius:3px;transition:.5s"></div>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">💡 Recomendações personalizadas</div>
+      <div class="grid-3" style="gap:10px">
+        ${getPersonalizedTips(currentSData,latest).map(t=>`
+          <div class="tip-card">
+            <div class="tip-icon">${t.icon}</div>
+            <div><div class="tip-title">${t.title}</div><div class="tip-text">${t.text}</div></div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+function getHealthGoals(d){
+  const goal=d.goal||'';
+  return [
+    {label:'Frequência semanal ideal',val:'3-5x',pct:70},
+    {label:'Hidratação diária',val:'2.5L/dia',pct:60},
+    {label:'Sono recomendado',val:'7-9h',pct:80},
+    {label:'Progresso no objetivo',val:goal||'—',pct:45},
+  ];
+}
+function getPersonalizedTips(d,latest){
+  const tips=[];
+  if(d.goal==='Emagrecimento') tips.push({icon:'🔥',title:'Déficit calórico',text:'Combine treino aeróbico e musculação. Déficit de 300-500kcal/dia é sustentável.'});
+  if(d.goal==='Hipertrofia') tips.push({icon:'💪',title:'Supercompensação',text:'72h de descanso por grupo muscular. Proteína: 1,8-2,2g/kg de peso.'});
+  if(d.level==='Iniciante') tips.push({icon:'🌱',title:'Progressão gradual',text:'Aumente carga 5-10% por semana. Evite overtraining no início.'});
+  if(latest?.fc&&parseInt(latest.fc)>80) tips.push({icon:'❤️',title:'FC elevada',text:'FC em repouso acima de 80 bpm. Recomende mais cardio e avalie nível de estresse.'});
+  tips.push({icon:'🧘',title:'Bem-estar mental',text:'Exercício libera endorfina. Incentive consistência, não perfeição.'});
+  tips.push({icon:'📊',title:'Acompanhamento ODS 3',text:'Registre medidas mensalmente. Dados consistentes mostram impacto real na saúde.'});
+  return tips.slice(0,3);
+}
+/* ── AGENDA ── */
+async function loadAgenda(){
+  const snap=await getDocs(collection(db,'trainers',uid,'sessions'));
+  allSessions=snap.docs.map(s=>({id:s.id,...s.data()}));
+  renderCal(); renderSessAll();
+  const stuSnap=await getDocs(collection(db,'trainers',uid,'students'));
+  const sel=$('sess-student');
+  sel.innerHTML='<option value="">Selecione...</option>';
+  stuSnap.docs.forEach(s=>sel.innerHTML+=`<option value="${s.id}">${s.data().name}</option>`);
+}
+window.calNav = dir=>{
+  calMonth+=dir;
+  if(calMonth>11){calMonth=0;calYear++;}
+  if(calMonth<0){calMonth=11;calYear--;}
+  renderCal();
+};
+function renderCal(){
+  const MONTHS=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  $('cal-title').textContent=`${MONTHS[calMonth]} ${calYear}`;
+  const first=new Date(calYear,calMonth,1).getDay();
+  const days=new Date(calYear,calMonth+1,0).getDate();
+  const prevDays=new Date(calYear,calMonth,0).getDate();
+  const today=new Date().toISOString().slice(0,10);
+  const hasSess=d=>{
+    const iso=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    return allSessions.some(s=>s.date===iso);
+  };
+  let html='';
+  for(let i=0;i<first;i++) html+=`<div class="cal-day other-month">${prevDays-first+1+i}</div>`;
+  for(let d=1;d<=days;d++){
+    const iso=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    html+=`<div class="cal-day${iso===today?' today':''}${hasSess(d)?' has-session':''}" onclick="filterDay('${iso}')">${d}</div>`;
+  }
+  const rem=(first+days)%7?7-(first+days)%7:0;
+  for(let d=1;d<=rem;d++) html+=`<div class="cal-day other-month">${d}</div>`;
+  $('cal-grid').innerHTML=html;
+}
+window.filterDay=iso=>{
+  const day=allSessions.filter(s=>s.date===iso);
+  $('session-day-title').textContent=`Sessões — ${fmtDate(iso)}`;
+  $('session-list').innerHTML=day.length?day.map(sessItemHTML).join(''):emptyHTML('📅','Nenhuma sessão neste dia.');
+};
+function renderSessAll(){
+  $('session-day-title').textContent='Todas as sessões';
+  const sorted=[...allSessions].sort((a,b)=>a.date.localeCompare(b.date));
+  $('session-list').innerHTML=sorted.length?sorted.map(sessItemHTML).join(''):emptyHTML('📅','Nenhuma sessão.');
+}
+function sessItemHTML(s){
+  return `<div class="session-item">
+    <div><div class="session-name">${s.studentName||'Aluno'}</div>
+    <div class="session-meta">${fmtDate(s.date)}${s.time?' '+s.time:''} · ${s.type||''}${s.duration?' · '+s.duration+'min':''}</div></div>
+    <button class="btn btn-danger btn-sm" onclick="delSession('${s.id}')">✕</button>
+  </div>`;
+}
+window.saveSession=async()=>{
+  const sid=$('sess-student').value, date=v('sess-date');
+  if(!sid||!date) return toast('Selecione aluno e data','err');
+  const sSnap=await getDoc(doc(db,'trainers',uid,'students',sid));
+  await addDoc(collection(db,'trainers',uid,'sessions'),{
+    studentId:sid,studentName:sSnap.data()?.name||'',date,time:v('sess-time'),
+    duration:v('sess-dur'),type:$('sess-type').value,obs:v('sess-obs'),createdAt:serverTimestamp()
+  });
+  closeModal('session');
+  clearFields(['sess-student','sess-date','sess-time','sess-dur','sess-obs']);
+  toast('Sessão agendada!'); loadAgenda();
+};
+window.delSession=async id=>{
+  await deleteDoc(doc(db,'trainers',uid,'sessions',id));
+  toast('Sessão removida'); loadAgenda();
+};
+
+/* ── TEMPLATES ── */
+async function loadTemplates(){
+  const snap=await getDocs(collection(db,'trainers',uid,'templates'));
+  $('template-list').innerHTML=snap.empty?emptyHTML('📋','Nenhum template.'):snap.docs.map(t=>tplCardHTML(t.id,t.data())).join('');
+}
+function tplCardHTML(id,d){
+  return `<div class="template-card">
+    <div class="template-header">
+      <div class="template-name">${d.name}</div>
+      <button class="btn btn-danger btn-sm" onclick="delTemplate('${id}')">Excluir</button>
+    </div>
+    <div style="font-size:.8rem;color:var(--muted)">${d.level||''} · ${d.focus||''} · ${(d.exercises||[]).length} exercícios</div>
+    ${d.desc?`<div style="font-size:.8rem;color:var(--muted);margin-top:5px">${d.desc}</div>`:''}
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px">
+      ${(d.exercises||[]).slice(0,4).map(e=>`<span class="tag">${e.name}</span>`).join('')}
+      ${(d.exercises||[]).length>4?`<span class="tag">+${(d.exercises||[]).length-4}</span>`:''}
+    </div>
+  </div>`;
+}
+window.saveTemplate=async()=>{
+  const name=v('t-name'); if(!name) return toast('Nome obrigatório','err');
+  await addDoc(collection(db,'trainers',uid,'templates'),{
+    name,level:$('t-level').value,focus:$('t-focus').value,desc:v('t-desc'),
+    exercises:getExercises('template-ex-rows'),createdAt:serverTimestamp()
+  });
+  closeModal('template');
+  clearFields(['t-name','t-desc']);
+  $('template-ex-rows').innerHTML='';
+  toast('Template salvo!'); loadTemplates();
+};
+window.delTemplate=async id=>{
+  await deleteDoc(doc(db,'trainers',uid,'templates',id));
+  toast('Template excluído'); loadTemplates();
+};
+window.openUseTemplate=async()=>{
+  const snap=await getDocs(collection(db,'trainers',uid,'templates'));
+  const list=$('use-template-list');
+  list.innerHTML=snap.empty?'<div class="empty"><p>Nenhum template.</p></div>'
+    :snap.docs.map(t=>`<div class="template-card" style="cursor:pointer" onclick="applyTemplate('${t.id}')">
+      <div class="template-name">${t.data().name}</div>
+      <div style="font-size:.78rem;color:var(--muted)">${t.data().level||''} · ${(t.data().exercises||[]).length} exercícios</div>
+    </div>`).join('');
+  openModal('useTemplate');
+};
+window.applyTemplate=async id=>{
+  const snap=await getDoc(doc(db,'trainers',uid,'templates',id));
+  const container=$('exercise-rows');
+  container.innerHTML='';
+  (snap.data().exercises||[]).forEach(e=>{
+    const idx=Date.now()+Math.random();
+    const row=document.createElement('div'); row.className='ex-row'; row.id='ex-'+idx;
+    row.innerHTML=`<input type="text" class="ex-name" value="${e.name||''}" style="margin-bottom:0">
+      <input type="text" class="ex-sets" value="${e.sets||''}" style="margin-bottom:0">
+      <input type="text" class="ex-reps" value="${e.reps||''}" style="margin-bottom:0">
+      <input type="text" class="ex-load" value="${e.load||''}" style="margin-bottom:0">
       <button class="remove-ex" onclick="document.getElementById('ex-${idx}').remove()">✕</button>`;
     container.appendChild(row);
   });
-  openModal('edit-workout');
+  closeModal('useTemplate'); toast('Template aplicado!');
 };
 
-window.updateWorkout = async () => {
-  const wid = document.getElementById('ew-id').value;
-  const name = v('ew-name');
-  if (!name) return toast('Nome do treino é obrigatório!','err');
-  const exercises = getExercisesFrom('edit-exercise-rows');
-  await updateDoc(doc(db, 'trainers', currentUser.uid, 'students', currentStudentId, 'workouts', wid), {
-    name, obs: v('ew-obs'), day: v('ew-day'), duration: v('ew-duration'), exercises
+/* ── REPORTS ── */
+async function loadReports(){
+  const [stuSnap,sessSnap]=await Promise.all([
+    getDocs(collection(db,'trainers',uid,'students')),
+    getDocs(collection(db,'trainers',uid,'sessions'))
+  ]);
+  const goalCount={};
+  stuSnap.docs.forEach(s=>{const g=s.data().goal||'Outro';goalCount[g]=(goalCount[g]||0)+1;});
+  destroyChart('chart-goals');
+  reportCharts['chart-goals']=new Chart(document.getElementById('chart-goals'),{
+    type:'doughnut',
+    data:{labels:Object.keys(goalCount),datasets:[{data:Object.values(goalCount),backgroundColor:['#7ec832','#4a9de0','#e8a020','#e05555','#50e3c2','#9b59b6'],borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#7a8a6a',font:{size:11}}}}}
   });
-  closeModal('edit-workout');
-  toast('Treino atualizado!');
-  loadWorkouts(currentStudentId);
-};
-
-window.confirmDeleteWorkout = (wid) => {
-  document.getElementById('confirm-msg').textContent = 'Excluir este treino permanentemente? Esta ação não pode ser desfeita.';
-  document.getElementById('confirm-action-btn').onclick = () => deleteWorkout(wid);
-  openModal('confirm');
-};
-
-async function deleteWorkout(wid) {
-  await deleteDoc(doc(db, 'trainers', currentUser.uid, 'students', currentStudentId, 'workouts', wid));
-  closeModal('confirm');
-  toast('Treino excluído.');
-  loadWorkouts(currentStudentId);
-}
-
-// ── COPY / SHARE ──────────────────────────────────────────────
-window.copyWorkoutToClipboard = async (wid) => {
-  const snap = await getDoc(doc(db, 'trainers', currentUser.uid, 'students', currentStudentId, 'workouts', wid));
-  const d = snap.data();
-  let text = `🏋️ *${d.name}*\n`;
-  if (d.day) text += `📅 ${d.day}\n`;
-  if (d.duration) text += `⏱️ ${d.duration}\n`;
-  if (d.obs) text += `\n📝 ${d.obs}\n`;
-  text += `\n`;
-  (d.exercises||[]).forEach((e,i) => {
-    text += `${i+1}. ${e.name} — ${e.sets||'—'} x ${e.reps||'—'}${e.load ? ` (${e.load})` : ''}\n`;
+  const MONTHS=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const mc=Array(12).fill(0);
+  sessSnap.docs.forEach(s=>{const d=s.data().date;if(d){const m=parseInt(d.split('-')[1])-1;mc[m]++;}});
+  destroyChart('chart-monthly');
+  reportCharts['chart-monthly']=new Chart(document.getElementById('chart-monthly'),{
+    type:'bar',
+    data:{labels:MONTHS,datasets:[{data:mc,backgroundColor:'#7ec832',borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{color:'#7a8a6a'},grid:{display:false}},y:{ticks:{color:'#7a8a6a'},grid:{color:'#1b1e14'}}}}
   });
-  text += `\n💬 Dúvidas? (81) 99161-0473`;
-  try { await navigator.clipboard.writeText(text); toast('Treino copiado! 📋'); }
-  catch(e) { toast('Não foi possível copiar.','err'); }
-};
-
-window.shareWorkoutWhatsApp = async (wid) => {
-  const sSnap = await getDoc(doc(db, 'trainers', currentUser.uid, 'students', currentStudentId));
-  const s = sSnap.data();
-  const snap = await getDoc(doc(db, 'trainers', currentUser.uid, 'students', currentStudentId, 'workouts', wid));
-  const d = snap.data();
-  let text = `Olá ${s.name?.split(' ')[0] || ''}! 🏋️\n\n*${d.name}*\n`;
-  if (d.day) text += `📅 ${d.day}\n`;
-  if (d.duration) text += `⏱️ Duração: ${d.duration}\n`;
-  if (d.obs) text += `\n📝 ${d.obs}\n`;
-  text += `\n*Exercícios:*\n`;
-  (d.exercises||[]).forEach((e,i) => {
-    text += `${i+1}. ${e.name} — ${e.sets||'—'} x ${e.reps||'—'}${e.load ? ` (${e.load})` : ''}\n`;
-  });
-  text += `\nQualquer dúvida, me chame! 💪\n(81) 99161-0473`;
-  const phone = s.phone ? '55' + s.phone.replace(/\D/g,'') : '';
-  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
-};
-
-// ── PROGRESS ─────────────────────────────────────────────────
-async function loadProgress(sid) {
-  const list = document.getElementById('progress-list');
-  if (!list) return;
-  const snap = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', sid, 'progress'));
-  if (snap.empty) { list.innerHTML = '<div class="empty"><div class="empty-icon">📊</div><p>Nenhum registro ainda.</p></div>'; return; }
-  const entries = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b) => b.date > a.date ? 1 : -1);
-  list.innerHTML = entries.map(e => `
-    <div class="history-entry">
-      <div class="history-dot"></div>
-      <div class="history-date">${e.date || '—'}</div>
-      <div class="history-desc">
-        ${e.weight ? `<strong>${e.weight} kg</strong>` : ''}
-        ${e.fat ? ` · ${e.fat}% gordura` : ''}
-        ${e.waist ? ` · ${e.waist}cm abd.` : ''}
-        ${e.obs ? `<div style="color:var(--muted);font-size:.8rem;margin-top:2px">${e.obs}</div>` : ''}
-      </div>
-      <button class="btn btn-danger" style="padding:4px 10px;font-size:.75rem" onclick="deleteProgress('${e.id}')">✕</button>
-    </div>`).join('');
-}
-
-window.saveProgress = async () => {
-  const date = v('p-date'), weight = v('p-weight');
-  if (!date) return toast('Data é obrigatória!','err');
-  await addDoc(collection(db, 'trainers', currentUser.uid, 'students', currentStudentId, 'progress'), {
-    date, weight, fat: v('p-fat'), waist: v('p-waist'), obs: v('p-obs'), createdAt: serverTimestamp()
-  });
-  closeModal('progress');
-  clearFields(['p-date','p-weight','p-fat','p-waist','p-obs']);
-  toast('Progresso registrado!');
-  loadProgress(currentStudentId);
-};
-
-window.deleteProgress = async (pid) => {
-  await deleteDoc(doc(db, 'trainers', currentUser.uid, 'students', currentStudentId, 'progress', pid));
-  toast('Registro excluído.');
-  loadProgress(currentStudentId);
-};
-
-// ── ALL WORKOUTS ──────────────────────────────────────────────
-async function loadAllWorkouts() {
-  const container = document.getElementById('all-workouts-list');
-  container.innerHTML = '<div style="color:var(--muted);padding:20px;font-size:.88rem">Carregando...</div>';
-  const studentsSnap = await getDocs(collection(db, 'trainers', currentUser.uid, 'students'));
-  const all = [];
-  for (const s of studentsSnap.docs) {
-    const ws = await getDocs(collection(db, 'trainers', currentUser.uid, 'students', s.id, 'workouts'));
-    ws.docs.forEach(w => all.push({sid:s.id, sname:s.data().name, wid:w.id, ...w.data()}));
+  // IMC e gordura médios (ODS3)
+  let imcList=[], gordList=[];
+  for(const s of stuSnap.docs){
+    const ms=await getDocs(collection(db,'trainers',uid,'students',s.id,'medidas'));
+    const all=ms.docs.map(m=>m.data()).sort((a,b)=>a.date.localeCompare(b.date));
+    const lat=all[all.length-1];
+    if(lat?.peso&&lat?.altura) imcList.push(parseFloat(lat.peso)/Math.pow(parseFloat(lat.altura)/100,2));
+    if(lat?.gord) gordList.push(parseFloat(lat.gord));
   }
-  all.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
-  if (all.length === 0) { container.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><p>Nenhum treino criado ainda.</p></div>'; return; }
-  container.innerHTML = all.map(w => `
-    <div class="workout-card" style="margin-bottom:12px">
-      <div class="workout-header">
-        <div>
-          <div class="workout-title">${w.name}</div>
-          <div style="color:var(--muted);font-size:.8rem;margin-top:3px">
-            👤 <span style="cursor:pointer;color:var(--accent)" onclick="openStudent('${w.sid}')">${w.sname}</span>
-            ${w.day ? ` · ${w.day}` : ''}
-          </div>
-        </div>
-        <div style="font-size:.75rem;color:var(--muted)">${w.createdAt?.toDate ? w.createdAt.toDate().toLocaleDateString('pt-BR') : ''}</div>
-      </div>
-      ${(w.exercises||[]).length > 0 ? `<div style="color:var(--muted);font-size:.83rem;margin-top:8px">${w.exercises.map(e=>e.name).filter(Boolean).join(' · ')}</div>` : ''}
-    </div>`).join('');
-}
-
-// ── TABS ──────────────────────────────────────────────────────
-window.switchDetailTab = (tab, btn) => {
-  ['treinos','info','progresso'].forEach(t => {
-    const el = document.getElementById('tab-' + t);
-    if (el) el.style.display = t === tab ? '' : 'none';
+  const imcLabels=['<18.5','18.5-24.9','25-29.9','≥30'];
+  const imcBuckets=[0,0,0,0];
+  imcList.forEach(i=>{if(i<18.5)imcBuckets[0]++;else if(i<25)imcBuckets[1]++;else if(i<30)imcBuckets[2]++;else imcBuckets[3]++;});
+  destroyChart('chart-imc-report');
+  reportCharts['chart-imc-report']=new Chart(document.getElementById('chart-imc-report'),{
+    type:'bar',
+    data:{labels:imcLabels,datasets:[{data:imcBuckets,backgroundColor:['#4a9de0','#7ec832','#e8a020','#e05555'],borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{color:'#7a8a6a'},grid:{display:false}},y:{ticks:{color:'#7a8a6a',stepSize:1},grid:{color:'#1b1e14'}}}}
   });
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-};
-
-// ── MODALS ────────────────────────────────────────────────────
-window.openModal = (id) => {
-  if (id === 'workout') {
-    document.getElementById('exercise-rows').innerHTML = '';
-    addExerciseRow();
+  const gordLabels=['<10%','10-20%','20-30%','>30%'];
+  const gordBuckets=[0,0,0,0];
+  gordList.forEach(g=>{if(g<10)gordBuckets[0]++;else if(g<20)gordBuckets[1]++;else if(g<30)gordBuckets[2]++;else gordBuckets[3]++;});
+  destroyChart('chart-gord-report');
+  reportCharts['chart-gord-report']=new Chart(document.getElementById('chart-gord-report'),{
+    type:'bar',
+    data:{labels:gordLabels,datasets:[{data:gordBuckets,backgroundColor:['#7ec832','#7ec832','#e8a020','#e05555'],borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{color:'#7a8a6a'},grid:{display:false}},y:{ticks:{color:'#7a8a6a',stepSize:1},grid:{color:'#1b1e14'}}}}
+  });
+  const rows=[]; for(const s of stuSnap.docs){
+    const ws=await getDocs(collection(db,'trainers',uid,'students',s.id,'workouts'));
+    rows.push({name:s.data().name,goal:s.data().goal||'—',count:ws.size});
   }
-  if (id === 'progress') {
-    document.getElementById('p-date').valueAsDate = new Date();
-  }
-  document.getElementById('modal-' + id)?.classList.add('open');
-};
-window.closeModal = (id) => document.getElementById('modal-' + id)?.classList.remove('open');
-document.querySelectorAll('.modal-overlay').forEach(m => {
-  m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); });
-});
-
-// ── HELPERS ───────────────────────────────────────────────────
-function v(id) { return document.getElementById(id)?.value?.trim() || ''; }
-function setVal(id, val) { const el = document.getElementById(id); if(el) el.value = val || ''; }
-function showErr(id, msg) { const el = document.getElementById(id); if(el){ el.textContent = msg; el.style.display = 'block'; } }
-function hideEl(id) { const el = document.getElementById(id); if(el) el.style.display = 'none'; }
-function clearFields(ids) { ids.forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; }); }
-
-function toast(msg, type='ok') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.background = type === 'err' ? 'var(--danger)' : 'var(--accent)';
-  t.style.color = type === 'err' ? '#fff' : '#000';
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  rows.sort((a,b)=>b.count-a.count);
+  $('report-table').innerHTML=rows.length?`<table class="exercise-table"><thead><tr><th>Aluno</th><th>Objetivo</th><th>Treinos</th></tr></thead><tbody>
+    ${rows.map(r=>`<tr><td>${r.name}</td><td>${r.goal}</td><td><strong style="color:var(--accent)">${r.count}</strong></td></tr>`).join('')}
+  </tbody></table>`:'<div style="color:var(--muted);padding:10px 0;font-size:.83rem">Sem dados.</div>';
+}
+function destroyChart(id){
+  if(reportCharts[id]){reportCharts[id].destroy();delete reportCharts[id];}
 }
 
-function friendlyError(e) {
-  const map = {
-    'auth/invalid-email': 'E-mail inválido.',
-    'auth/user-not-found': 'Usuário não encontrado.',
-    'auth/wrong-password': 'Senha incorreta.',
-    'auth/email-already-in-use': 'E-mail já cadastrado.',
-    'auth/weak-password': 'Senha muito fraca (mín. 6 caracteres).',
-    'auth/invalid-credential': 'E-mail ou senha incorretos.',
-    'auth/network-request-failed': 'Erro de conexão. Verifique sua internet.',
-    'auth/too-many-requests': 'Muitas tentativas. Tente novamente mais tarde.',
+/* ── PROFILE ── */
+async function loadProfile(){
+  if(!auth.currentUser) return;
+  $('p-email').value=auth.currentUser.email||'';
+  const snap=await getDoc(doc(db,'trainers',uid,'profile','data'));
+  if(snap.exists()){
+    const d=snap.data();
+    $('p-name').value=d.name||auth.currentUser.displayName||'';
+    $('p-phone').value=d.phone||'';
+    $('p-cref').value=d.cref||'';
+    $('p-bio').value=d.bio||'';
+    $('p-city').value=d.city||'';
+    $('p-exp').value=d.exp||'';
+    $('p-meta').value=d.meta||'';
+    if(d.specs) d.specs.forEach(s=>document.querySelectorAll('.spec-tag').forEach(t=>{if(t.textContent===s)t.classList.add('selected');}));
+    if(d.photoURL){
+      $('profile-av').innerHTML=`<img src="${d.photoURL}">`;
+      $('sidebar-av').innerHTML=`<img src="${d.photoURL}" style="width:32px;height:32px;border-radius:50%;object-fit:cover">`;
+    }
+  } else { $('p-name').value=auth.currentUser.displayName||''; }
+}
+window.saveProfile=async()=>{
+  const name=v('p-name');
+  const specs=[...document.querySelectorAll('.spec-tag.selected')].map(t=>t.textContent);
+  await setDoc(doc(db,'trainers',uid,'profile','data'),{
+    name,phone:v('p-phone'),cref:v('p-cref'),bio:v('p-bio'),city:v('p-city'),
+    exp:v('p-exp'),meta:v('p-meta'),specs,updatedAt:serverTimestamp()
+  },{merge:true});
+  if(name) await updateProfile(auth.currentUser,{displayName:name});
+  $('sidebar-name').textContent=name;
+  $('sidebar-av-letter').textContent=name[0]?.toUpperCase()||'P';
+  toast('Perfil salvo! 🌿');
+};
+window.changePassword=async()=>{
+  const p=v('p-newpass'); if(!p||p.length<6) return toast('Mínimo 6 caracteres','err');
+  try{await updatePassword(auth.currentUser,p);toast('Senha atualizada!');$('p-newpass').value='';}
+  catch(e){toast(fe(e),'err');}
+};
+window.handlePhoto=e=>{
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=async ev=>{
+    const url=ev.target.result;
+    $('profile-av').innerHTML=`<img src="${url}">`;
+    $('sidebar-av').innerHTML=`<img src="${url}" style="width:32px;height:32px;border-radius:50%;object-fit:cover">`;
+    await setDoc(doc(db,'trainers',uid,'profile','data'),{photoURL:url},{merge:true});
+    toast('Foto atualizada!');
   };
-  return map[e.code] || e.message;
+  reader.readAsDataURL(file);
+};
+window.toggleSpec=el=>el.classList.toggle('selected');
+
+/* ── EXERCISE BUILDER ── */
+window.addExRow=(cid='exercise-rows')=>{
+  const container=document.getElementById(cid);
+  const idx=Date.now()+Math.random();
+  const row=document.createElement('div'); row.className='ex-row'; row.id='ex-'+idx;
+  row.innerHTML=`
+    <input type="text" class="ex-name" placeholder="Supino reto" style="margin-bottom:0">
+    <input type="text" class="ex-sets" placeholder="4" style="margin-bottom:0">
+    <input type="text" class="ex-reps" placeholder="10-12" style="margin-bottom:0">
+    <input type="text" class="ex-load" placeholder="60kg/60s" style="margin-bottom:0">
+    <button class="remove-ex" onclick="document.getElementById('ex-${idx}').remove()">✕</button>`;
+  container.appendChild(row);
+};
+function getExercises(cid){
+  return Array.from(document.querySelectorAll(`#${cid} .ex-row`)).map(r=>({
+    name:r.querySelector('.ex-name').value.trim(),
+    sets:r.querySelector('.ex-sets').value.trim(),
+    reps:r.querySelector('.ex-reps').value.trim(),
+    load:r.querySelector('.ex-load').value.trim()
+  })).filter(e=>e.name);
+}
+
+/* ── MODALS ── */
+window.openModal=id=>{
+  if(id==='workout'){$('exercise-rows').innerHTML='';addExRow('exercise-rows');}
+  if(id==='template'){$('template-ex-rows').innerHTML='';addExRow('template-ex-rows');}
+  if(id==='editStudent'&&currentSData){
+    const d=currentSData;
+    $('es-name').value=d.name||'';$('es-age').value=d.age||'';$('es-sex').value=d.sex||'';
+    $('es-goal').value=d.goal||'';$('es-level').value=d.level||'';$('es-phone').value=d.phone||'';$('es-obs').value=d.obs||'';
+  }
+  if(id==='medidas') $('m-date').value=new Date().toISOString().slice(0,10);
+  if(id==='useTemplate'){openUseTemplate();return;}
+  document.getElementById('modal-'+id)?.classList.add('open');
+};
+window.closeModal=id=>document.getElementById('modal-'+id)?.classList.remove('open');
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+
+/* ── HELPERS ── */
+function $(id){return document.getElementById(id);}
+function v(id){return document.getElementById(id)?.value?.trim()||'';}
+function show(id){document.getElementById(id).style.display='';}
+function hide(id){document.getElementById(id).style.display='none';}
+function showErr(id,msg){const el=$(id);el.textContent=msg;el.style.display='block';}
+function hideErr(id){$(id).style.display='none';}
+function clearFields(ids){ids.forEach(id=>{const el=$(id);if(el)el.value='';});}
+function fmtDate(iso){if(!iso)return'';const[y,m,d]=iso.split('-');return`${d}/${m}/${y}`;}
+function emptyHTML(icon,msg){return`<div class="empty"><div class="empty-icon">${icon}</div><p>${msg}</p></div>`;}
+function toast(msg,type='ok'){
+  const t=$('toast');
+  t.textContent=msg;t.style.background=type==='err'?'var(--danger)':'var(--accent)';
+  t.style.color=type==='err'?'#fff':'#000';
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
+}
+function fe(e){
+  const map={'auth/invalid-email':'E-mail inválido.','auth/user-not-found':'Usuário não encontrado.',
+    'auth/wrong-password':'Senha incorreta.','auth/email-already-in-use':'E-mail já cadastrado.',
+    'auth/weak-password':'Senha muito fraca.','auth/invalid-credential':'E-mail ou senha incorretos.',
+    'auth/requires-recent-login':'Faça login novamente para alterar a senha.'};
+  return map[e.code]||e.message;
 }
 </script>
 </body>
 </html>
-HTMLEOF
-echo "File created successfully"
-wc -l /home/claude/filsil.html
